@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>521a7c13-733b-41a5-b178-64a26adbb4e2</Guid>
+    <Name>Sectopod Garage</Name>
+    <Description>Description of My XCOM 2 Mod.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>SectopodGarage</AssemblyName>
+    <RootNamespace>SectopodGarage</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\SectopodGarage\" />
+    <Folder Include="Src\SectopodGarage\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameBoard.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData_CharacterStats.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComLucu_Garage_DefaultConfig.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\GameUnit_SectopodMini.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\Lucu_Garage.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\Sectopod_ANIMMini.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_BlasterLauncher_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Breacher_BM.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Breacher_CV.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Breacher_LS.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Breacher_MG.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_FlameThrower_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Gun_BM.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Gun_CV.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Gun_LS.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Gun_MG.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Mortar_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_PlasmaBlaster_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_RocketLauncher_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Shatterer_BM.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Shatterer_CV.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Shatterer_LS.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Shatterer_MG.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_ShredderGun_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_ShredstormCannon_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_TeslaCannon_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\WP_Garage_Wrath_Cannon_Small.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\SectopodGarage.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\SectopodGarage\Classes\Lucu_Garage_Config.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\Lucu_Garage_Utilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIArmory_Lucu_Garage_Loadout.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIArmory_Lucu_Garage_LoadoutItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIArmory_Lucu_Garage_ModuleItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIArmory_Lucu_Garage_Modules.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIArmory_Lucu_Garage_Protocols.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIArmory_Lucu_Garage_ModuleSlot.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIScreenListener_Lucu_Garage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIScreenListener_Lucu_Garage_AfterAction.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIScreenListener_Lucu_Garage_Loadout.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIScreenListener_Lucu_Garage_MainMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UIScreenListener_Lucu_Garage_TacticalHUD.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UITacticalHUD_Lucu_Garage_AmmoCounter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UITacticalHUD_Lucu_Garage_Counter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UITacticalHUD_Lucu_Garage_AmmoText.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UITacticalHUD_Lucu_Garage_Power.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UITacticalHUD_Lucu_Garage_PowerCounter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UITacticalHUD_Lucu_Garage_PowerMeter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\UITacticalHUD_Lucu_Garage_PowerText.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2AbilityCost_Lucu_Garage_ActionPoints.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2AbilityCost_Lucu_Garage_Power.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2AbilityCost_Lucu_Garage_ReloadAmmo.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2AbilityTarget_Lucu_Garage_Cursor.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Ability_Lucu_Garage_ChassisAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Ability_Lucu_Garage_ProtocolAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Ability_Lucu_Garage_UtilityItemAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Ability_Lucu_Garage_WeaponAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Action_Lucu_Garage_SecondaryWeaponStartFire.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Character_Lucu_Garage_Characters.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2ChassisTemplate_Lucu_Garage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2ChassisUpgradeTemplate_Lucu_Garage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Condition_Lucu_Garage_WeaponInfiniteAmmo.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2DownloadableContentInfo_SectopodGarage.uc" />
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_AbsorptionField.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_AmmoModify.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_AmmoReserveModify.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_HardenedArmor.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_LaserTargeter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_ModifyUnitValue.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_PersistentStatChange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_PowerMax.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_PowerModify.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_PowerRegen.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_RemoveEffects.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_ShattererDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Effect_Lucu_Garage_TransientWeapon.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2ItemTemplate_Lucu_Garage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Item_Lucu_Garage_Chassis.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Item_Lucu_Garage_Plating.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Item_Lucu_Garage_Utility.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2Item_Lucu_Garage_Weapons.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2StrategyElement_Lucu_Garage_Countries.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2TargetingMethod_Lucu_Garage_Cone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2TargetingMethod_Lucu_Garage_Line.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2TargetingMethod_Lucu_Garage_Mortar.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2TargetingMethod_Lucu_Garage_Radius.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\X2UtilityItemTemplate_Lucu_Garage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\XComGameState_Lucu_Garage_Effect_TransientWeapon.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\XComGameState_Lucu_Garage_Facility.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\XComGameState_Lucu_Garage_XtopodUnitState.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\SectopodGarage\Classes\XComHeadquartersCheatManager_Lucu_Garage.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

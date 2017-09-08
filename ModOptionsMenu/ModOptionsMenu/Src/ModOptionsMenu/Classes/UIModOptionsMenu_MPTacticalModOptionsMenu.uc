@@ -1,0 +1,1 @@
+class UIModOptionsMenu_MPTacticalModOptionsMenu extends UIModOptionsMenu_ModOptionsMenu;

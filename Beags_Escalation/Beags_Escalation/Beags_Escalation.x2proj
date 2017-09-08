@@ -1,0 +1,320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>e356fad0-de39-4e30-b6f1-c6109e7313e2</Guid>
+    <Name>Escalation Classes</Name>
+    <Description>Description of My XCOM 2 Mod.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>Beags_Escalation</AssemblyName>
+    <RootNamespace>Beags_Escalation</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\EscalationClasses" />
+    <Folder Include="Src\EscalationClasses\Classes" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\XComAI.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComBeags_Escalation_Ability.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComBeags_Escalation_Item.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGrenadesFallOff.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGrimyLoodMod.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComOverwatchAll.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComStrategyTuning.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_Beags_Escalation_Icons.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\EscalationClasses.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\EscalationClasses\Classes\Beags_Escalation_RocketScatterDisplay.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\UIScreenListener_Beags_Escalation_RocketScatterLabel.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\UIStrategyScreenListener_Beags_Escalation_GTSUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\UIText_Beags_Escalation_RocketScatter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2AbilityMultiTarget_Beags_Escalation_Cone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2AbilityMultiTarget_Beags_Escalation_ItemRadius.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2AbilityMultiTarget_Beags_Escalation_RadialCone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2AbilityTarget_Beags_Escalation_RadiusCursor.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2AbilityTarget_Beags_Escalation_Rocket.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2AbilityToHitCalc_Beags_Escalation_Rocket.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Ability_Beags_Escalation_Bombs.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Ability_Beags_Escalation_CommonAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Ability_Beags_Escalation_GunnerAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Ability_Beags_Escalation_RocketeerAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Ability_Beags_Escalation_ScoutAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Action_Beags_Escalation_AwarenessDetectedUnit.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Action_StartDangerZoneSuppression.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2AmbientNarrativeCriteria_Beags_Escalation_TemplateModificator.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2BombTemplate_Beags_Escalation.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_AbilityProperty.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_AbilitySourceBomb.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_AbilitySourceWeapon.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_Brace.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_CostlyAction.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_HMGMoved.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_InCover.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_TargetAbilityProperty.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_SquadsightTargetRange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_UnitEffectsWithAbilitySource.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_UnitHasAbility.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Condition_Beags_Escalation_VisibleToPlayer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2DownloadableContentInfo_EscalationClasses.uc" />
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Brace.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_DoubleTap.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_FireSuperiority.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_HMGMovementObserver.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_LowProfile.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Reload.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_RemoveEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_RocketRangeModifyFlat.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Assassinate.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Awareness.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_AwarenessPassive.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_BonusItemAmmo.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_BreachingCharge.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Executioner.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_AbilityDamageMultiplier.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_HEATAmmo.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_HitAndRun.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_LightningReflexes.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Opportunist.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_RapidReaction.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_ReadyForAnything.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Reaper.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_RocketRangeModifyPercent.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_RocketRangeModifySnapshot.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_ShredderAmmo.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_SquadsightRange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_Staggered.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_SuppressingFire.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_TransientUtilityItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_TransientWeaponUpgrade.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Effect_Beags_Escalation_WeaponsTeam.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Item_Beags_Escalation_Bombs.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Item_Beags_Escalation_HMG.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Item_Beags_Escalation_Rockets.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2Item_Beags_Escalation_WeaponUpgrades.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2RocketLauncherTemplate_Beags_Escalation.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2RocketTemplate_Beags_Escalation.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2StatusEffects_Beags_Escalation.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2StrategyElement_Beags_Escalation_GTSUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2TargetingMethod_Beags_Escalation_BunkerBuster.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2TargetingMethod_Beags_Escalation_CollateralDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2TargetingMethod_Beags_Escalation_Cone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2TargetingMethod_Beags_Escalation_Radius.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2TargetingMethod_Beags_Escalation_Rocket.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\X2TargetingMethod_Beags_Escalation_SightCone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_FireSuperiority.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_Assassinate.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_AwarenessPassive.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_HitAndRun.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_LightningReflexes.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_Reaper.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_TransientUtilityItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_ReadyForAnything.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\EscalationClasses\Classes\XComGameState_Beags_Escalation_Effect_TransientWeaponUpgrade.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>c4c558cb-5d39-4104-a2ff-4e5703bd9be2</Guid>
+    <Name>Mod Options Menu</Name>
+    <Description>A simple API designed to provide a unified, in-game options menu framework for mod developers.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>ModOptionsMenu</AssemblyName>
+    <RootNamespace>ModOptionsMenu</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\ModOptionsMenu\" />
+    <Folder Include="Src\ModOptionsMenu\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Localization\ModOptionsMenu.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_HQModOptionsMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_MainMenuModOptionsMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_ModOptionsButton.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_ModOptionsMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_MPLobbyModOptionsMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_MPTacticalModOptionsMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_ShellModOptionsMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_TacticalModOptionsMenu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIModOptionsMenu_TestOptionsScreen.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIScreenListener_ModOptionsMenu_ShowButton.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\UIScreenListener_ModOptionsMenu_TestModOptionsListener.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\ModOptionsMenu\Classes\X2DownloadableContentInfo_ModOptionsMenu.uc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

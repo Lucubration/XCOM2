@@ -1,0 +1,3 @@
+class X2ChassisUpgradeTemplate_Lucu_Garage extends X2ItemTemplate_Lucu_Garage;
+
+var int UtilitySlots;

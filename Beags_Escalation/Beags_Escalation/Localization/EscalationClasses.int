@@ -1,0 +1,81 @@
+;-------------------------------------------------------------------------------------------
+; Rockets
+;-------------------------------------------------------------------------------------------
+
+[Beags_Escalation_RocketLauncher_CV X2RocketLauncherTemplate_Beags_Escalation]
+FriendlyName="Rocket Launcher"
+FriendlyNamePlural="Rocket Launchers"
+BriefSummary="A Rocket Launcher allows the Rocketeer to launch rockets, a unique weapon type capable of longer ranges and larger payloads than conventional grenades."
+TacticalText="<Bullet/> The Rocket Launcher is the Rocketeer's specialty weapon.\n<Bullet/> It has a substantially increased range and payload relative to grenades.\n<Bullet/> Rocketeers can train several abilities that enhance their use of the Rocket Launcher."
+
+[Beags_Escalation_Rocket_HighExplosive X2RocketTemplate_Beags_Escalation]
+FriendlyName="High Explosive Rocket"
+FriendlyNamePlural="High Explosive Rockets"
+BriefSummary="A standard explosive rocket that blasts enemies with concussive force in a large area of effect."
+TacticalText="<Bullet/> High Explosive Rockets are effective against hardened foes and positions, capable of leveling cover and heavily damaging clustered foes.<br/><Bullet/> Rockets have a tendency to scatter from their intended point of impact if not carefully aimed.<br/><Bullet/> They will also destroy targets' equipment, so relying on rockets too much will reduce our salvage opportunities."
+ThrownAbilityName=""
+ThrownAbilityHelpText=""
+LaunchedAbilityName="Launch H.E. Rocket"
+LaunchedAbilityHelpText="Launch a high explosive rocket at the target area."
+
+[Beags_Escalation_Rocket_Shredder X2RocketTemplate_Beags_Escalation]
+FriendlyName="Shredder Rocket"
+FriendlyNamePlural="Shredder Rockets"
+BriefSummary="A rocket that blasts enemies and shreds armor in a very large area of effect."
+TacticalText="<Bullet/> Shredder Rockets are less damaging than conventional high explosives, they are effective at rendering heavily armored targets vulnerable.<br/><Bullet/> Rockets have a tendency to scatter from their intended point of impact if not carefully aimed.<br/><Bullet/> They will also destroy targets' equipment, so relying on rockets too much will reduce our salvage opportunities."
+ThrownAbilityName=""
+ThrownAbilityHelpText=""
+LaunchedAbilityName="Launch Shredder Rocket"
+LaunchedAbilityHelpText="Launch a Shredder rocket at the target area."
+
+[Beags_Escalation_Rocket_HighExplosive_Mk2 X2RocketTemplate_Beags_Escalation]
+FriendlyName="High Explosive Rocket Mk2"
+FriendlyNamePlural="High Explosive Rocket  Mk2s"
+BriefSummary="A standard explosive rocket that blasts enemies with concussive force in a large area of effect."
+TacticalText="<Bullet/> High Explosive Rockets are effective against hardened foes and positions, capable of leveling cover and heavily damaging clustered foes.<br/><Bullet/> Rockets have a tendency to scatter from their intended point of impact if not carefully aimed.<br/><Bullet/> They will also destroy targets' equipment, so relying on rockets too much will reduce our salvage opportunities."
+ThrownAbilityName=""
+ThrownAbilityHelpText=""
+LaunchedAbilityName="Launch H.E. Rocket Mk2"
+LaunchedAbilityHelpText="Launch a high explosive rocket at the target area."
+
+[Beags_Escalation_Rocket_Shredder_Mk2 X2RocketTemplate_Beags_Escalation]
+FriendlyName="Shredstorm Rocket"
+FriendlyNamePlural="Shredstorm Rockets"
+BriefSummary="A rocket that blasts enemies and shreds armor in a very large area of effect."
+TacticalText="<Bullet/> Shredstorm Rockets are less damaging than conventional high explosives, they are effective at rendering heavily armored targets vulnerable.<br/><Bullet/> Rockets have a tendency to scatter from their intended point of impact if not carefully aimed.<br/><Bullet/> They will also destroy targets' equipment, so relying on rockets too much will reduce our salvage opportunities."
+ThrownAbilityName=""
+ThrownAbilityHelpText=""
+LaunchedAbilityName="Launch Shredstorm Rocket"
+LaunchedAbilityHelpText="Launch a Shredstorm rocket at the target area."
+
+[Beags_Escalation_Rocket_BunkerBuster X2RocketTemplate_Beags_Escalation]
+FriendlyName="Bunker Buster Rocket"
+FriendlyNamePlural="Bunker Buster Rockets"
+BriefSummary="A high yield rocket that blasts penetrates covers and damages enemies in its path before exploding at the target location."
+TacticalText="<Bullet/> Bunker busters have extremely large payloads and can damage and destroy walls, units and other obstacles in their path.<br/><Bullet/> Rockets have a tendency to scatter from their intended point of impact if not carefully aimed.<br/><Bullet/> They will also destroy targets' equipment, so relying on rockets too much will reduce our salvage opportunities."
+ThrownAbilityName=""
+ThrownAbilityHelpText=""
+LaunchedAbilityName="Launch Bunker Buster"
+LaunchedAbilityHelpText="Launch a Bunker Buster rocket at the target area."
+
+
+;-------------------------------------------------------------------------------------------
+; Rockets
+;-------------------------------------------------------------------------------------------
+[X2StatusEffects_Beags_Escalation]
++StaggeredFriendlyName="Staggered"
++StaggeredFriendlyDesc="Lose 1 action point per turn while recovering."
++StaggeredAcquiredString="Staggered"
++StaggeredTickedString="Staggered"
++StaggeredLostString="No Longer Staggered"
++SuppressingFiredFriendlyName="Suppressing Fire"
++SuppressingFiredFriendlyDesc="Aim reduced by 5."
++SuppressingFiredAcquiredString="Suppressing Fire"
+
+[X2Ability_Beags_Escalation_GunnerAbilitySet]
++HMGBracedFriendlyName="Braced (HMG)"
++HMGBracedFriendlyDesc="An ally has braced you, allowing you to fire your HMG after moving.<br/><Bullet/> This effect ends if you move."
++HMGMovedFriendlyName="Moved (HMG)"
++HMGMovedFriendlyDesc="You have moved, preventing you from firing your HMG."
++HMGSquadsightFriendlyName="Squadsight (HMG)"
++HMGSquadsightFriendlyDesc="The HMG provides limited Squadsight with 8 tiles range."

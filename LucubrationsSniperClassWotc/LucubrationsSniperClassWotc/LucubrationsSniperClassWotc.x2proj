@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>8ff667f8-cb58-4b70-a380-2cd4be52a325</Guid>
+    <Name>Lucubrations Sniper Class Wotc</Name>
+    <Description>Adds an Sniper class to the game with many new abilities.
+This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper Class" for the base XCOM 2 game.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>LucubrationsSniperClassWotc</AssemblyName>
+    <RootNamespace>LucubrationsSniperClassWotc</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComEditor.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComEngine.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGame.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComLucu_Sniper_Ability.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComOverwatchAll.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComStrategyTuning.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_Lucu_Sniper_Icons.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LucubrationsSniperClass.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\Lucu_Sniper_Config.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\UIStrategyScreenListener_Lucu_Sniper_GTSUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2AbilityCost_Lucu_Sniper_ReplaceActionPoints.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2AbilityMultiTargetStyle_Lucu_Sniper_SabotRound.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Ability_Lucu_Sniper_SniperAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2AmbientNarrativeCriteria_Lucu_Sniper_TemplateModificator.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2DownloadableContentInfo_LucubrationsSniperClassWotc.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_BallisticsExpert.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_FollowUp.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_Hide.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_HideStealth.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_InTheZone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_LowProfile.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_PrecisionShotDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_Relocation.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_RemoveEffects.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_SabotRoundDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_SetUp.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_Sharpshooter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_SniperTraining.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_TargetLeading.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_VitalPointTargeting.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2Effect_Lucu_Sniper_ZeroIn.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2StrategyElement_Lucu_Sniper_GTSUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\X2TargetingMethod_Lucu_Sniper_SabotRound.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\XComGameState_Effect_Lucu_Sniper_InTheZone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\XComGameState_Effect_Lucu_Sniper_Relocation.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Config" />
+    <Folder Include="Content" />
+    <Folder Include="Localization" />
+    <Folder Include="Src" />
+    <Folder Include="Src\LucubrationsSniperClassWotc" />
+    <Folder Include="Src\LucubrationsSniperClassWotc\Classes" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

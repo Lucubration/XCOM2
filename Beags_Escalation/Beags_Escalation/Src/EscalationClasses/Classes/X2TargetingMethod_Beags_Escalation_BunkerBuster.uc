@@ -1,0 +1,6 @@
+class X2TargetingMethod_Beags_Escalation_BunkerBuster extends X2TargetingMethod_Beags_Escalation_Rocket;
+
+DefaultProperties
+{
+	PenetratesCover=true
+}

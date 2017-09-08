@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>ae908b7e-d593-4e9a-87f5-386b615e3ba7</Guid>
+    <Name>Collateral Demolition</Name>
+    <Description>Makes Demolition reliably deal damage to cover adjacent to the target.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>CollateralDemolition</AssemblyName>
+    <RootNamespace>CollateralDemolition</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\CollateralDemolition\" />
+    <Folder Include="Src\CollateralDemolition\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\XComCollateralDemolition.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\CollateralDemolition\Classes\X2AmbientNarrativeCriteria_CollateralDemolition_TemplateModificator.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\CollateralDemolition\Classes\X2DownloadableContentInfo_CollateralDemolition.uc" />
+    <Content Include="Src\CollateralDemolition\Classes\X2TargetingMethod_CollateralDemolition.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

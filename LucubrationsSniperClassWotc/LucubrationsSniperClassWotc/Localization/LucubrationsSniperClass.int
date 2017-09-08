@@ -1,0 +1,8 @@
+[X2Ability_Lucu_Sniper_SniperAbilitySet]
++SetUpFriendlyDesc="You gain Squadsight, but you only gain 1 action point per turn. Lasts until you move."
++ZeroInFriendlyDesc="You gain +10 hit and +10 crit to your next attack."
++CoverTargetFriendlyDesc="A Sniper is covering this target."
++FollowUpTargetFriendlyDesc="A Sniper may follow-up on this target."
++SetUpLostString="Set Up Removed"
++RelocationFriendlyName="Relocation"
++RelocationFriendlyDesc="You may move without ending Set Up."

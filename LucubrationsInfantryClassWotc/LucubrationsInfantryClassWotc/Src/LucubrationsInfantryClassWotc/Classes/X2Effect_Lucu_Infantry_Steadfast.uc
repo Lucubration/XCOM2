@@ -1,0 +1,1 @@
+class X2Effect_Lucu_Infantry_Steadfast extends X2Effect_Persistent;

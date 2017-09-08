@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>342d32c0-a3ab-477a-b23a-b6c37d2346b2</Guid>
+    <Name>Lucubrations Sniper Class</Name>
+    <Description>Adds a Sniper class to the game with many new abilities.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>LucubrationsSniperClass</AssemblyName>
+    <RootNamespace>LucubrationsSniperClass</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\LucubrationsSniperClass\" />
+    <Folder Include="Src\LucubrationsSniperClass\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComLucu_Sniper_Ability.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComOverwatchAll.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComStrategyTuning.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_Lucu_Sniper_Icons.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\LucubrationsSniperClass.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\LucubrationsSniperClass\Classes\Lucu_Sniper_Config.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\UIStrategyScreenListener_Lucu_Sniper_GTSUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2AbilityCost_Lucu_Sniper_ReplaceActionPoints.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2AbilityMultiTargetStyle_Lucu_Sniper_SabotRound.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Ability_Lucu_Sniper_SniperAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2AmbientNarrativeCriteria_Lucu_Sniper_TemplateModificator.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2DownloadableContentInfo_LucubrationsSniperClass.uc" />
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_BallisticsExpert.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_FollowUp.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_Hide.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_HideStealth.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_InTheZone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_LowProfile.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_PrecisionShotDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_Relocation.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_RemoveEffects.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_SabotRoundDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_SetUp.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_Sharpshooter.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_SniperTraining.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_TargetLeading.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_VitalPointTargeting.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2Effect_Lucu_Sniper_ZeroIn.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2StrategyElement_Lucu_Sniper_GTSUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\X2TargetingMethod_Lucu_Sniper_SabotRound.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\XComGameState_Effect_Lucu_Sniper_InTheZone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsSniperClass\Classes\XComGameState_Effect_Lucu_Sniper_Relocation.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

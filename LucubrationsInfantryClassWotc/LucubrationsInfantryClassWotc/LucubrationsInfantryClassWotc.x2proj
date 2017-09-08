@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>70872a99-38de-4e84-a2c2-97cb0b0444bd</Guid>
+    <Name>Lucubrations Infantry Class Wotc</Name>
+    <Description>Adds an Infantry class to the game with many new abilities.
+This mod is for the War of the Chosen expansion only. Use "Lucubrations Infantry Class" for the base XCOM 2 game.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>LucubrationsInfantryClassWotc</AssemblyName>
+    <RootNamespace>LucubrationsInfantryClassWotc</RootNamespace>
+    <ProjectGuid>{a2a83849-7e92-447a-bfb5-52063a1a7e4f}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComEditor.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComEngine.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGame.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData_SoldierSkills.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComLucubrationsInfantryClassWotc.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComStrategyTuning.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_InfantryClass.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\FRA\LucubrationsInfantryClassWotc.fra">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\FRA\XComGame.fra">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\INT\LucubrationsInfantryClassWotc.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\INT\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\KOR\LucubrationsInfantryClassWotc.kor">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\KOR\XComGame.kor">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\RUS\LucubrationsInfantryClassWotc.rus">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\RUS\XComGame.rus">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ModPreview.jpg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\UIStrategyScreenListener_Lucu_Infantry.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Ability_Lucu_Infantry_InfantryAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Action_Lucu_Infantry_ApplyWeaponDamageToUnit_ZoneOfControl.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Condition_Lucu_Infantry_EscapeAndEvade.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Condition_Lucu_Infantry_FlankedTarget.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Condition_Lucu_Infantry_ShakeItOff.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Condition_Lucu_Infantry_ZoneOfControlRange.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2DownloadableContentInfo_LucubrationsInfantryClassWotc.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_ApplyWeaponDamage_ZoneOfControl.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_DeepReserves.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_EscapeAndEvadeStealth.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_EscapeAndEvadeStealthRemover.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_EstablishedDefenses.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_EstablishedDefensesArmorBonus.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_EstablishedDefensesOverwatch.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_ExplosiveAction.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_ExplosiveActionRecovery.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_Illuminated.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_ApplyFlareTargetToWorld.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_Opportunist.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_ShakeItOff.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_Staggered.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_StaggeringShotDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_Steadfast.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_StickAndMove.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_StickAndMoveDamage.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_ZoneOfControl.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2Effect_Lucu_Infantry_ZoneOfControlCounterAttack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2GlobalHooks_Lucu_Infantry.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2StrategyElement_Lucu_Infantry_AcademyUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2TargetingMethod_Lucu_Infantry_FireForEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\X2TargetingMethod_Lucu_Infantry_Flare.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\XComGameState_Lucu_Infantry_Effect_DeepReserves.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\XComGameState_Lucu_Infantry_Effect_StickAndMove.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsInfantryClassWotc\Classes\XComGameState_Lucu_Infantry_Effect_ZoneOfControl.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Localization\INT" />
+    <Folder Include="Localization\KOR" />
+    <Folder Include="Localization\FRA" />
+    <Folder Include="Localization\RUS" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\LucubrationsInfantryClassWotc\" />
+    <Folder Include="Src\LucubrationsInfantryClassWotc\Classes\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

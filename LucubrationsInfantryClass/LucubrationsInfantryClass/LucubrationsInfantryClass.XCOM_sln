@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# XCOM ModBuddy Solution File, Format Version 11.00
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{5DAE07AF-E217-45C1-8DE7-FF99D6011E8A}") = "LucubrationsInfantryClass", "LucubrationsInfantryClass\LucubrationsInfantryClass.x2proj", "{1C3D0A0D-C19E-4E05-AA9F-6C04F3788182}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|XCOM 2 = Debug|XCOM 2
+		Default|XCOM 2 = Default|XCOM 2
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C3D0A0D-C19E-4E05-AA9F-6C04F3788182}.Debug|XCOM 2.ActiveCfg = Debug|XCOM 2
+		{1C3D0A0D-C19E-4E05-AA9F-6C04F3788182}.Debug|XCOM 2.Build.0 = Debug|XCOM 2
+		{1C3D0A0D-C19E-4E05-AA9F-6C04F3788182}.Default|XCOM 2.ActiveCfg = Default|XCOM 2
+		{1C3D0A0D-C19E-4E05-AA9F-6C04F3788182}.Default|XCOM 2.Build.0 = Default|XCOM 2
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>1501b448-3012-4219-92f9-4e7cef351cda</Guid>
+    <Name>Overwatch Ignores Concealment</Name>
+    <Description>Description of My XCOM 2 Mod.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>OverwatchIgnoresConcealment</AssemblyName>
+    <RootNamespace>OverwatchIgnoresConcealment</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\OverwatchIgnoresConcealment\" />
+    <Folder Include="Src\OverwatchIgnoresConcealment\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\OverwatchIgnoresConcealment\Classes\X2AmbientNarrativeCriteria_Lucu_OIC_GlobalHooks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\OverwatchIgnoresConcealment\Classes\X2Condition_Lucu_OIC_False.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\OverwatchIgnoresConcealment\Classes\X2DownloadableContentInfo_OverwatchIgnoresConcealment.uc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

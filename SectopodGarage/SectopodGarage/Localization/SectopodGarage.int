@@ -1,0 +1,187 @@
+[UIArmory_Lucu_Garage_Modules]
++m_strModulesHeader=MODULES
++m_strInstallModule=INSTALL MODULE
+
+[X2Ability_Lucu_Garage_XtopodAbilitySet]
++CoveredTargetFriendlyDesc="An Xtopod is covering this target."
+
+[UITacticalHUD_Lucu_Garage_Power]
++PowerTitle="Power"
+[UITacticalHUD_Lucu_Garage_PowerText]
++PowerTitle="Power"
+[UITacticalHUD_Lucu_Garage_AmmoText]
++AmmoTitle="Ammo"
+
+[X2Ability_Lucu_Garage_UtilityItemAbilitySet]
++ShieldedFriendlyName="Shielded"
++ShieldedLongDescription="Shielded! While the shield lasts, it will absorb incoming damage."
++ShieldedHelpText="This unit is protected by an energy shield, which temporarily grants them bonus HP."
++ShieldedFlyOverText="Shielded"
++WallBreakingFriendlyName="Wall-Breaking"
++WallBreakingFriendlyDesc="This unit may break through walls."
++WallBreakingEffectAcquiredString="Wall-Breaking"
++WallBreakingEffectLostString="Wall-Breaking Lost"
+
+[UIArmory_Lucu_Garage_Loadout]
++m_strInventoryTitle=INVENTORY
++m_strLockerTitle=SELECT <XGParam:StrValue0/!InventorySlotName/>
++m_strItemCatLabels=CHASSIS UPGRADE
++m_strItemCatLabels=PLATING
++m_strItemCatLabels=UTILITY
++m_strDisabledNotAnUpgrade=NOT AN UPGRADE
++m_strDisabledUtilityItemLimit=LIMIT
++m_strConfirmDialogTitle=CONFIRM UPGRADE
++m_strConfirmDialogDescription=Once a chassis upgrade is applied, it can be replaced but not reused. Are you sure you want to apply <XGParam:StrValue0/!ChassisUpgradeName/> to this weapon?
++m_strReplaceUpgradeTitle=CONFIRM UPGRADE REPLACEMENT
++m_strReplaceUpgradeText=A chassis upgrade is not reusable, removing <XGParam:StrValue0/!ChassisUpgradeName/> will destroy it. Are you sure you want to replace <XGParam:StrValue0/!ChassisUpgradeName/> with <XGParam:StrValue1/!ChassisUpgradeName/>?
+
+;-------------------------------------------------------------------------------------------
+; Chassis and Chassis Upgrades
+;-------------------------------------------------------------------------------------------
+
+[Lucu_Garage_XtopodChassis X2ChassisTemplate_Lucu_Garage]
+FriendlyName="Xtopod Chassis"
+FriendlyNamePlural="Xtopod Chassis"
+BriefSummary="This basic version of an Xtopod chassis contains all the hardware necessary to operate as a fully-automated mechanized warfare unit under the control of a VI system."
+TacticalText="<Bullet/> All Xtopod units receive an Xtopod chassis as a basic hardware platform. Research may give us access to Xtopod chassis upgrades.<br/>"
+
+[Lucu_Garage_BasicChassisUpgrade X2ChassisUpgradeTemplate_Lucu_Garage]
+FriendlyName="Xtopod Basic Chassis"
+FriendlyNamePlural="Xtopod Basic Chassis"
+BriefSummary="This basic version of an Xtopod chassis contains all the hardware necessary to operate as a fully-automated mechanized warfare unit under the control of a VI system."
+TacticalText="<Bullet/> +1 health.<br/><Bullet/> +1 utility slot.<br/>"
+
+[Lucu_Garage_AdvancedChassisUpgrade X2ChassisUpgradeTemplate_Lucu_Garage]
+FriendlyName="Xtopod Advanced Chassis"
+FriendlyNamePlural="Xtopod Advanced Chassis"
+BriefSummary="An advanced Xtopod chassis."
+TacticalText="<Bullet/> +2 health.<br/><Bullet/> +2 utility slots.<br/>"
+
+[Lucu_Garage_AlloyChassisUpgrade X2ChassisUpgradeTemplate_Lucu_Garage]
+FriendlyName="Xtopod Alloy Chassis"
+FriendlyNamePlural="Xtopod Alloy Chassis"
+BriefSummary="An Xtopod chassis made out of highly advanced materials."
+TacticalText="<Bullet/> +3 health.<br/><Bullet/> +3 utility slots.<br/>"
+
+[Lucu_Garage_ExperimentalChassisUpgrade X2ChassisUpgradeTemplate_Lucu_Garage]
+FriendlyName="Xtopod Experimental Chassis"
+FriendlyNamePlural="Xtopod Experimental Chassis"
+BriefSummary="An Xtopod chassis made out of highly advanced materials and an experimental design."
+TacticalText="<Bullet/> +4 health.<br/><Bullet/> +4 utility slots.<br/>"
+
+;-------------------------------------------------------------------------------------------
+; Armor Plating
+;-------------------------------------------------------------------------------------------
+
+[Lucu_Garage_BasicPlating X2ItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Basic Plating"
+FriendlyNamePlural="Xtopod Basic Plating"
+BriefSummary="Basic Xtopod protective plating."
+TacticalText="<Bullet/> +2 armor.<br/>"
+
+[Lucu_Garage_RhinoPlating X2ItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Rhino Plating"
+FriendlyNamePlural="Xtopod Rhino Plating"
+BriefSummary="Advanced Xtopod protective plating."
+TacticalText="<Bullet/> +1 health per chassis tier.<br/><Bullet/> +1 armor per chassis tier.<br/><Bullet/> May walk through obstructions.<br/>"
+
+[Lucu_Garage_RaptorPlating X2ItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Raptor Plating"
+FriendlyNamePlural="Xtopod Raptor Plating"
+BriefSummary="Advanced Xtopod protective plating."
+TacticalText="<Bullet/> 1 mobility per chassis tier.<br/><Bullet/> 10 dodge per chassis tier.<br/><Bullet/> Run and Gun ability.<br/>"
+
+;-------------------------------------------------------------------------------------------
+; Utility Items
+;-------------------------------------------------------------------------------------------
+
+[Lucu_Garage_TargetingUplink X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Targeting Uplink"
+FriendlyNamePlural="Xtopod Targeting Uplinks"
+BriefSummary="Grants the Xtopod unit Squadsight."
+TacticalText="<Bullet/> Grants Squadsight.<br/>"
+TinySummary="Xtopod Targeting Uplink"
+
+[Lucu_Garage_AutoLoader X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Auto-Loader"
+FriendlyNamePlural="Xtopod Auto-Loaders"
+BriefSummary="Reloading is a free action for the Xtopod unit."
+TacticalText="<Bullet/> Reloading becomes a free action.<br/>"
+TinySummary="Xtopod Auto-Loader"
+
+[Lucu_Garage_MunitionsStorage X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Munitions Storage"
+FriendlyNamePlural="Xtopod Munitions Storage"
+BriefSummary="Grants the Xtopod +2 reserve ammo and +25% secondary weapon charges per chassis tier."
+TacticalText="<Bullet/> +2 reserve ammo per chassis tier.<br/><Bullet/> +25% secondary weapon charges per chassis tier.<br/>"
+TinySummary="Xtopod Munitions Storage"
+
+[Lucu_Garage_ExtraCapacitors X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Extra Capacitors"
+FriendlyNamePlural="Xtopod Extra Capacitors"
+BriefSummary="Grants the Xtopod +1 power storage per chassis tier."
+TacticalText="<Bullet/> +1 power storage per chassis tier.<br/>"
+TinySummary="Xtopod Extra Capacitors"
+
+[Lucu_Garage_AuxiliaryGenerator X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Auxiliary Power Core"
+FriendlyNamePlural="Xtopod Auxiliary Power Cores"
+BriefSummary="Grants the Xtopod +1 power generation per turn."
+TacticalText="<Bullet/> +1 power generation per turn<br/>"
+TinySummary="Xtopod Auxiliary Power Core"
+
+[Lucu_Garage_AdaptiveCamo X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Adaptive Camo"
+FriendlyNamePlural="Xtopod Adaptive Camo"
+BriefSummary="When the squad is revealed, this soldier remains concealed."
+TacticalText="<Bullet/> When the squad is revealed, this soldier remains concealed.<br/><Bullet/> Immediately enter concealment.<br/><Bullet/> 2 charges.<br/>"
+TinySummary="Xtopod Adaptive Camo"
+
+[Lucu_Garage_HardenedArmor X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Hardened Armor"
+FriendlyNamePlural="Xtopod Hardened Armor"
+BriefSummary="-10 chance to be critically hit per point of armor."
+TacticalText="<Bullet/> -10 chance to be critically hit per point of armor.<br/>"
+TinySummary="Xtopod Hardened Armor"
+
+[Lucu_Garage_LaserTargeter X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Laser Targeter"
+FriendlyNamePlural="Xtopod Laser Targeters"
+BriefSummary="Grants the Xtopod +10% to +20% critical chance based on distance to the target."
+TacticalText="<Bullet/> Grants the Xtopod +10% to +20% critical chance based on distance to the target.<br/>"
+TinySummary="Xtopod Laser Targeter"
+
+[Lucu_Garage_AdvancedOptics X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Advanced Optics"
+FriendlyNamePlural="Xtopod Advanced Optics"
+BriefSummary="Grants the Xtopod +3 aim per chassis tier."
+TacticalText="<Bullet/> Grants the Xtopod +3 aim per chassis tier.<br/>"
+TinySummary="Xtopod Advanced Optics"
+
+[Lucu_Garage_RedundantSystems X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Redundant Systems"
+FriendlyNamePlural="Xtopod Redundant Systems"
+BriefSummary="Grants the Xtopod +1 health per chassis tier."
+TacticalText="<Bullet/> Grants the Xtopod +1 health per chassis tier.<br/>"
+TinySummary="Xtopod Redundant Systems"
+
+[Lucu_Garage_SmokescreenItem X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Smokescreen"
+FriendlyNamePlural="Xtopod Smokescreens"
+BriefSummary="Releases a cloud of smoke around the Xtopod, increasing the defense of affected targets.<br/>Increased radius with chassis tier."
+TacticalText="<Bullet/> Releases a cloud of smoke around the Xtopod, increasing the defense of affected targets.<br/><Bullet/> Increased radius with chassis tier.<br/>"
+TinySummary="Xtopod Smokescreen"
+
+[Lucu_Garage_AbsorptionField X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Absorption Field"
+FriendlyNamePlural="Xtopod Absorption Fields"
+BriefSummary="Reduces incoming damage by 50% for 1 turn."
+TacticalText="<Bullet/> -50% incoming damage for 1 turn.<br/><Bullet/> 1 turn duration.<br/><Bullet/> 3 power.<br/><Bullet/> Free action.<br/><Bullet/> 3 turn cooldown.<br/>"
+TinySummary="Xtopod Absorption Field"
+
+[Lucu_Garage_ShieldGenerator X2UtilityItemTemplate_Lucu_Garage]
+FriendlyName="Xtopod Shield Generator"
+FriendlyNamePlural="Xtopod Shield Generators"
+BriefSummary="Project an energy shield around yourself."
+TacticalText="<Bullet/> Project an energy shield around yourself.<br/><Bullet/> 3 shield health, +1 per chassis tier.<br/><Bullet/> 2 charges.<br/>"
+TinySummary="Xtopod Shield Generator"

@@ -1,0 +1,1 @@
+﻿Allows any unit to play a standard firing animation if their weapon doesn't support the Suppression animation.

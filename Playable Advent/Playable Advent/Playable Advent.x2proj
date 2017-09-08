@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>ea882333-fae0-4b8e-80f7-c912d55df418</Guid>
+    <Name>Playable Advent</Name>
+    <Description>empty description</Description>
+    <SteamPublishID>644076161</SteamPublishID>
+    <AssemblyName>Playable Advent</AssemblyName>
+    <RootNamespace>Playable Advent</RootNamespace>
+    <ProjectGuid>{5c7a9bd7-2d54-4893-906d-26b11473d7e1}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\PlayableAdvent\" />
+    <Folder Include="Src\PlayableAdvent\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComContent.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameBoard.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData_CharacterStats.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComPlayableAdvent.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\PA_Voice.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\PlayLid.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\PlayMEC.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\PlayViper.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_PlayableAdvent.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="PlayableAdvent.XComMod">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\PlayableAdvent\Classes\PA_Abilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_Armors.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_BerserkerTech.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_Characters.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_ChrysTech.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_Countries.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_MecTech.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_MoltCondition.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_MutonTech.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_Names.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_ParthenoEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_RegenerateEffect.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_RegenerateProperty.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_Schematics.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_StrategyGameRule.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_UIArmory_Loadout.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_UICustomize_Menu.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_ViperTech.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_Weapons.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_X2AmbientNarrativeCriteria.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_XComHeadquartersCheatManager.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\PA_XGStrategy.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\PlayableAdvent\Classes\X2DownloadableContentInfo_PlayableAdvent.uc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

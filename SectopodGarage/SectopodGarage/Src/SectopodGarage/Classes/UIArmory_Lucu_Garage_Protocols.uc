@@ -1,0 +1,1 @@
+class UIArmory_Lucu_Garage_Protocols extends UIArmory;

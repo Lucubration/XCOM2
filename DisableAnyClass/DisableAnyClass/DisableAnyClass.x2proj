@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>4a33e7ec-7e08-4efc-be5d-686a187906b8</Guid>
+    <Name>Disable Any Class</Name>
+    <Description>Prevents disabled classes from being selected by unit promitions, mission rewards, the resistance headquarters or the black market.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>DisableAnyClass</AssemblyName>
+    <RootNamespace>DisableAnyClass</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Config\" />
+    <Folder Include="Content\" />
+    <Folder Include="Localization\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\DisableAnyClass\" />
+    <Folder Include="Src\DisableAnyClass\Classes\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Localization\DisableAnyClass.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="ModPreview.jpg" />
+    <Content Include="Config\XComEditor.ini" />
+    <Content Include="Config\XComEngine.ini" />
+    <Content Include="Config\XComGame.ini" />
+    <Content Include="Localization\XComGame.int" />
+    <Content Include="Src\DisableAnyClass\Classes\DisableAnyClass_ClassValuesCollection.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\DisableAnyClass\Classes\DisableAnyClass_Config.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\DisableAnyClass\Classes\DisableAnyClass_Utilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\DisableAnyClass\Classes\UIModOptionsScreen_DisableAnyClass.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\DisableAnyClass\Classes\UIScreenListener_DisableAnyClass.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\DisableAnyClass\Classes\X2DownloadableContentInfo_DisableAnyClass.uc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>

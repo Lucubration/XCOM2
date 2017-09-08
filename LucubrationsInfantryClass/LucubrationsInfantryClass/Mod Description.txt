@@ -1,0 +1,20 @@
+Adds an Infantry class to the game with many new abilities.
+
+Incompatibilities: None that I have tested, but I strongly suspect that it will conflict with other mods that add an "Infantry" class to the game due to resource naming conflicts.
+
+Initial Release: 2/25/2016
+
+This is a pet mod I've been working on for a little while. I began to miss the basic rifleman class from the Long War mod and decided to create one of my own. The Infantry can us a rifle or shotgun as primary weapons, and a pistol as their secondary weapon. The Infantry also receives a balance of offense and defense stats as they level up.
+
+The Infantry class has two perk trees: the "Regular" Infantry and the "Irregular" Infantry. The Regular is intended to be a tough customer, able to take some hits and act as a roadblock to the enemy advance if necessary. The Irregular is intended to put pressure on the enemy, having means to exploit positions of advantage and some means of escaping the situations that they can put themselves in while seeking an opening.
+
+In the interest of full disclosure, I must caution the user that many of the abilities I've created for this class are the product of looking for new things to learn and practice in the Xcom 2 Development Tools. That's not to say that I didn't consider fun and balance while building this class, but I may have sometimes been influenced in my decision making, thinking "Hey, wouldn't that be a cool ability? I wonder if I could make the game do that?"
+
+In any case, I had a lot of fun designing, implementing and testing this class, and I hope you have as much playing with it.
+
+If you want to mess around with the parameters for the custom abilities, many of them are exposed in the 'XComLucubrationsInfantryClass.ini' file (search for it in your Steam directory).
+
+Known Bugs:
+Flare - The Irregular perk Flare does not have much in the way of visual effects. This is something that I've spent quite some time trying to solve, but I'm going to have to ask others in the modding community for some help in getting non-weapon-based attack animation tracks working.
+Zone of Control - The Regular perk Zone of Control sometimes has an issue where the Infantry winds up with extra reserve action points with which to perform their pistol overwatch shot. In these cases, the ability can proc against other targets far outside of the usual range limit of the Zone of Control ability.
+Fire for Effect - The ability does show the tiles affected by this ability on the ground, but it doesn't highlight the units properly.

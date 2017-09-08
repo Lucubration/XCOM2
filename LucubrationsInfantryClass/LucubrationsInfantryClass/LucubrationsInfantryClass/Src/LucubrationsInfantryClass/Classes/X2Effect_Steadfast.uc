@@ -1,0 +1,1 @@
+class X2Effect_Steadfast extends X2Effect_Persistent;

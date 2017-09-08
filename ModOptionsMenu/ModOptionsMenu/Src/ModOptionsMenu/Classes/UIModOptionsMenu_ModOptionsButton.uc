@@ -1,0 +1,2 @@
+class UIModOptionsMenu_ModOptionsButton extends UIButton;
+
