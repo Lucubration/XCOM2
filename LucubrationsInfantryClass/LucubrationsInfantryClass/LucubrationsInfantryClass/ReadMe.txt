@@ -1,5 +1,9 @@
 ﻿Adds an Infantry class to the game with many new abilities.
 
+Version 1.5.6: 9/7/2017
+
+Updated Korean localization.
+
 Version 1.5.3: 3/18/2016
 
 Updated Zone of Control counterattack to have an animation.
