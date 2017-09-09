@@ -221,7 +221,6 @@ static function X2AbilityTemplate SniperRifleShot()
 
 	KnockbackEffect = new class'X2Effect_Knockback';
 	KnockbackEffect.KnockbackDistance = 2;
-	KnockbackEffect.bUseTargetLocation = true;
 	Template.AddTargetEffect(KnockbackEffect);
 	
 	Template.OverrideAbilities.AddItem('SniperStandardFire');
@@ -1292,7 +1291,6 @@ static function X2AbilityTemplate FollowUpShot()
 
 	KnockbackEffect = new class'X2Effect_Knockback';
 	KnockbackEffect.KnockbackDistance = 2;
-	KnockbackEffect.bUseTargetLocation = true;
 	Template.AddTargetEffect(KnockbackEffect);
 	
 	Template.OverrideAbilities.AddItem('SniperStandardFire');

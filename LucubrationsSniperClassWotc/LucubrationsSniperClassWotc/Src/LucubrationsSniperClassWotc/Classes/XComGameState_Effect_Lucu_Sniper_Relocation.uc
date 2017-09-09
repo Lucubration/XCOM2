@@ -2,7 +2,7 @@ class XComGameState_Effect_Lucu_Sniper_Relocation extends XComGameState_BaseObje
 
 var StateObjectReference UnitRef;
 
-function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
+function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
 {
 	local X2EventManager EventManager;
 	local Object ListenerObj;
@@ -25,7 +25,7 @@ function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSou
 	return ELR_NoInterrupt;
 }
 
-function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
+function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
 {
 	local XComGameStateHistory History;
 	local XComGameState_Ability AbilityState;

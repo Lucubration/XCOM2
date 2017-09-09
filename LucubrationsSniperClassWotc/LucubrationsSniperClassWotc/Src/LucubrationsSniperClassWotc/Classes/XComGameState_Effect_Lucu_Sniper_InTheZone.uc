@@ -2,7 +2,7 @@ class XComGameState_Effect_Lucu_Sniper_InTheZone extends XComGameState_BaseObjec
 
 var StateObjectReference UnitRef;
 
-function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
+function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
 {
 	local X2EventManager EventManager;
 	local Object ListenerObj;
@@ -27,7 +27,7 @@ function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSou
 	return ELR_NoInterrupt;
 }
 
-function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSource, XComGameState GameState, Name EventID)
+function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
 {
 	local XComGameStateHistory History;
 	local XComGameStateContext_Ability AbilityContext;
@@ -162,28 +162,27 @@ function EventListenerReturn OnAbilityActivated(Object EventData, Object EventSo
 	return ELR_NoInterrupt;
 }
 
-function InTheZoneVisualizationFn(XComGameState VisualizeGameState, out array<VisualizationTrack> OutVisualizationTracks)
+function InTheZoneVisualizationFn(XComGameState VisualizeGameState)
 {
-	local XComGameState_Unit UnitState;
-	local X2Action_PlaySoundAndFlyOver SoundAndFlyOver;
-	local VisualizationTrack BuildTrack;
-	local XComGameStateHistory History;
-	local X2AbilityTemplate AbilityTemplate;
+	local XComGameState_Unit            UnitState;
+	local X2Action_PlaySoundAndFlyOver  SoundAndFlyOver;
+	local VisualizationActionMetadata   ActionMetadata;
+	local XComGameStateHistory          History;
+	local X2AbilityTemplate             AbilityTemplate;
 
 	History = `XCOMHISTORY;
+
+	AbilityTemplate = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager().FindAbilityTemplate('Lucu_Sniper_InTheZone');
+    
 	foreach VisualizeGameState.IterateByClassType(class'XComGameState_Unit', UnitState)
 	{
-		History.GetCurrentAndPreviousGameStatesForObjectID(UnitState.ObjectID, BuildTrack.StateObject_OldState, BuildTrack.StateObject_NewState, , VisualizeGameState.HistoryIndex);
-		BuildTrack.StateObject_NewState = UnitState;
-		BuildTrack.TrackActor = UnitState.GetVisualizer();
-
-		AbilityTemplate = class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager().FindAbilityTemplate('Lucu_Sniper_InTheZone');
-
-		SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTrack(BuildTrack, VisualizeGameState.GetContext()));
-		SoundAndFlyOver.SetSoundAndFlyOverParameters(None, AbilityTemplate.LocFlyOverText, '', eColor_Good, AbilityTemplate.IconImage);
-
-		OutVisualizationTracks.AddItem(BuildTrack);
-
+		History.GetCurrentAndPreviousGameStatesForObjectID(UnitState.ObjectID, ActionMetadata.StateObject_OldState, ActionMetadata.StateObject_NewState, , VisualizeGameState.HistoryIndex);
+		ActionMetadata.StateObject_NewState = UnitState;
+		ActionMetadata.VisualizeActor = UnitState.GetVisualizer();
+		
+		SoundAndFlyOver = X2Action_PlaySoundAndFlyOver(class'X2Action_PlaySoundAndFlyOver'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded));
+    	SoundAndFlyOver.SetSoundAndFlyOverParameters(None, AbilityTemplate.LocFlyOverText, '', eColor_Good, AbilityTemplate.IconImage, 0.75, true);
+		
 		break;
 	}
 }

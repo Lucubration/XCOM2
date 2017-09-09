@@ -1,38 +1,26 @@
 class X2Effect_Lucu_Sniper_SetUp extends X2Effect_Squadsight;
 
-simulated function bool OnEffectTicked(const out EffectAppliedData ApplyEffectParameters, XComGameState_Effect kNewEffectState, XComGameState NewGameState, bool FirstApplication)
+function ModifyTurnStartActionPoints(XComGameState_Unit UnitState, out array<name> ActionPoints, XComGameState_Effect EffectState)
 {
-	local XComGameState_Unit kOldTargetUnitState, kNewTargetUnitState;	
-	local int i;
-	local name ActionPointType;
+    local int i;
+    local name ActionPointType;
 
-	super.OnEffectTicked(ApplyEffectParameters, kNewEffectState, NewGameState, FirstApplication);
+    ActionPointType = class'X2CharacterTemplateManager'.default.StandardActionPoint;
 
-	kOldTargetUnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ApplyEffectParameters.TargetStateObjectRef.ObjectID));
-	if( kOldTargetUnitState != None )
-	{
-		ActionPointType = class'X2CharacterTemplateManager'.default.StandardActionPoint;
+    for (i = UnitState.ActionPoints.Length - 1; i >= 0; --i)
+    {
+	    if (UnitState.ActionPoints[i] == ActionPointType)
+	    {
+		    // Remove action point
+		    UnitState.ActionPoints.Remove(i, 1);
 
-		kNewTargetUnitState = XComGameState_Unit(NewGameState.CreateStateObject(class'XComGameState_Unit', kOldTargetUnitState.ObjectID));
-		for (i = kNewTargetUnitState.ActionPoints.Length - 1; i >= 0; --i)
-		{
-			if (kNewTargetUnitState.ActionPoints[i] == ActionPointType)
-			{
-				// Remove action point
-				kNewTargetUnitState.ActionPoints.Remove(i, 1);
+			//`LOG("Lucubration Sniper Class: Set Up tick removed 1 " @ string(ActionPointType) @ " action point from unit " @ kNewTargetUnitState.GetFullName() @ ".");
 
-				//`LOG("Lucubration Sniper Class: Set Up tick removed 1 " @ string(ActionPointType) @ " action point from unit " @ kNewTargetUnitState.GetFullName() @ ".");
-
-				break;
-			}
-		}
-
-		NewGameState.AddStateObject(kNewTargetUnitState);
+		    break;
+	    }
+    }
 
 		//`LOG("Lucubration Sniper Class: Set Up tick ended with " @ string(kNewTargetUnitState.ActionPoints.Length) @ " action points on unit " @ kNewTargetUnitState.GetFullName() @ ".");
-	}
-
-	return true;
 }
 
 function bool PostAbilityCostPaid(XComGameState_Effect EffectState, XComGameStateContext_Ability AbilityContext, XComGameState_Ability kAbility, XComGameState_Unit SourceUnit, XComGameState_Item AffectWeapon, XComGameState NewGameState, const array<name> PreCostActionPoints, const array<name> PreCostReservePoints)

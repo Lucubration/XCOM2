@@ -43,6 +43,9 @@ This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper C
     <Content Include="Localization\XComGame.int">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="ModPreview.jpg">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="Src\LucubrationsSniperClassWotc\Classes\Lucu_Sniper_Config.uc">
       <SubType>Content</SubType>

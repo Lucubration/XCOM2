@@ -2,14 +2,14 @@ class X2Effect_Lucu_Sniper_Hide extends X2Effect_ToHitModifier;
 
 var int StealthCritBonus;
 
-simulated function bool OnEffectTicked(const out EffectAppliedData ApplyEffectParameters, XComGameState_Effect kNewEffectState, XComGameState NewGameState, bool FirstApplication)
+simulated function bool OnEffectTicked(const out EffectAppliedData ApplyEffectParameters, XComGameState_Effect kNewEffectState, XComGameState NewGameState, bool FirstApplication, XComGameState_Player Player)
 {
 	local XComGameState_Unit kOldTargetUnitState, kNewTargetUnitState;
 	local UnitValue Value;
 	local int Check;
 	local bool bContinueTicking;
 	
-	bContinueTicking = super.OnEffectTicked(ApplyEffectParameters, kNewEffectState, NewGameState, FirstApplication);
+	bContinueTicking = super.OnEffectTicked(ApplyEffectParameters, kNewEffectState, NewGameState, FirstApplication, Player);
 
 	kOldTargetUnitState = XComGameState_Unit(`XCOMHISTORY.GetGameStateForObjectID(ApplyEffectParameters.TargetStateObjectRef.ObjectID));
 	if (kOldTargetUnitState != None && kOldTargetUnitState.ObjectID > 0)

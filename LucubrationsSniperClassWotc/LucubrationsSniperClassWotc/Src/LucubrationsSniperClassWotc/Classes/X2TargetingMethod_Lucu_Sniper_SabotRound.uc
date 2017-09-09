@@ -8,12 +8,12 @@ var protected TTile FiringTile;
 
 var protected X2Actor_LineTarget LineActor;
 
-function Init(AvailableAction InAction)
+function Init(AvailableAction InAction, int NewTargetIndex)
 {
 	local X2AbilityTemplate AbilityTemplate;
 	local float TileLength;
 	
-	super.Init(InAction);
+	super.Init(InAction, NewTargetIndex);
 	WorldData = `XWORLD;
 
 	AbilityTemplate = Ability.GetMyTemplate( );

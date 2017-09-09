@@ -5,6 +5,7 @@ var bool        bCleanse;               //  Indicates the effect was removed "sa
 										//  e.g. Bleeding Out normally kills the soldier it is removed from, but if cleansed, it won't.
 var bool        bCheckSource;           //  Match each effect to the target of this one (rather than the source of this one)
 var bool		bCheckTarget;			//  Match the target of each effect (rather than the source of each effect)
+var bool		bDoNotVisualize;		// Adding this because an ability may have two X2Effect_RemoveEffects but we only need one to visualize because it is dumb
 
 simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState, XComGameState_Effect NewEffectState)
 {
@@ -32,12 +33,13 @@ simulated function bool ShouldRemoveEffect(XComGameState_Effect EffectState, X2E
 	return EffectNamesToRemove.Find(PersistentEffect.EffectName) != INDEX_NONE;
 }
 
-simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState, out VisualizationTrack BuildTrack, const name EffectApplyResult)
+simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState, out VisualizationActionMetadata ActionMetadata, name EffectApplyResult)
 {
 	local XComGameState_Effect EffectState;
 	local X2Effect_Persistent Effect;
 
-	if (EffectApplyResult != 'AA_Success')
+	if ((EffectApplyResult != 'AA_Success') ||
+		bDoNotVisualize)
 		return;
 
 	//  We are assuming that any removed effects were cleansed by this RemoveEffects. If this turns out to not be a good assumption, something will have to change.
@@ -45,22 +47,22 @@ simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState
 	{
 		if (EffectState.bRemoved)
 		{
-			if (EffectState.ApplyEffectParameters.TargetStateObjectRef.ObjectID == BuildTrack.StateObject_NewState.ObjectID)
+			if (EffectState.ApplyEffectParameters.TargetStateObjectRef.ObjectID == ActionMetadata.StateObject_NewState.ObjectID)
 			{
 				Effect = EffectState.GetX2Effect();
 				if (Effect.CleansedVisualizationFn != none && bCleanse)
 				{
-					Effect.CleansedVisualizationFn(VisualizeGameState, BuildTrack, EffectApplyResult);
+					Effect.CleansedVisualizationFn(VisualizeGameState, ActionMetadata, EffectApplyResult);
 				}
 				else
 				{
-					Effect.AddX2ActionsForVisualization_Removed(VisualizeGameState, BuildTrack, EffectApplyResult, EffectState);
+					Effect.AddX2ActionsForVisualization_Removed(VisualizeGameState, ActionMetadata, EffectApplyResult, EffectState);
 				}
 			}
-			else if (EffectState.ApplyEffectParameters.SourceStateObjectRef.ObjectID == BuildTrack.StateObject_NewState.ObjectID)
+			else if (EffectState.ApplyEffectParameters.SourceStateObjectRef.ObjectID == ActionMetadata.StateObject_NewState.ObjectID)
 			{
 				Effect = EffectState.GetX2Effect();
-				Effect.AddX2ActionsForVisualization_RemovedSource(VisualizeGameState, BuildTrack, EffectApplyResult, EffectState);
+				Effect.AddX2ActionsForVisualization_RemovedSource(VisualizeGameState, ActionMetadata, EffectApplyResult, EffectState);
 			}
 		}
 	}
@@ -69,4 +71,5 @@ simulated function AddX2ActionsForVisualization(XComGameState VisualizeGameState
 DefaultProperties
 {
 	bCleanse = true
+	bDoNotVisualize=false
 }
