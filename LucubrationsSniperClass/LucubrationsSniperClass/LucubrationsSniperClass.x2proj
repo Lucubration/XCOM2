@@ -7,6 +7,7 @@
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>LucubrationsSniperClass</AssemblyName>
     <RootNamespace>LucubrationsSniperClass</RootNamespace>
+    <ProjectGuid>{845539a7-2e93-47f8-b4ce-ccd039ac99ce}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -15,6 +16,8 @@
     <Folder Include="Config\" />
     <Folder Include="Content\" />
     <Folder Include="Localization\" />
+    <Folder Include="Localization\INT\" />
+    <Folder Include="Localization\KOR\" />
     <Folder Include="Src\" />
     <Folder Include="Src\LucubrationsSniperClass\" />
     <Folder Include="Src\LucubrationsSniperClass\Classes\" />
@@ -38,7 +41,10 @@
     <Content Include="Content\UILibrary_Lucu_Sniper_Icons.upk">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Localization\LucubrationsSniperClass.int">
+    <Content Include="Localization\INT\LucubrationsSniperClass.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\KOR\LucubrationsSniperClass.kor">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />
@@ -46,7 +52,8 @@
     <Content Include="Config\XComEditor.ini" />
     <Content Include="Config\XComEngine.ini" />
     <Content Include="Config\XComGame.ini" />
-    <Content Include="Localization\XComGame.int" />
+    <Content Include="Localization\INT\XComGame.int" />
+    <Content Include="Localization\KOR\XComGame.kor" />
     <Content Include="Src\LucubrationsSniperClass\Classes\Lucu_Sniper_Config.uc">
       <SubType>Content</SubType>
     </Content>

@@ -8,6 +8,7 @@ This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper C
     <SteamPublishID>0</SteamPublishID>
     <AssemblyName>LucubrationsSniperClassWotc</AssemblyName>
     <RootNamespace>LucubrationsSniperClassWotc</RootNamespace>
+    <ProjectGuid>{a48630bb-2227-4cf5-8f56-da969c9a3906}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config\XComClassData.ini">
@@ -25,6 +26,9 @@ This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper C
     <Content Include="Config\XComGameData.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComGameData_SoldierSkills.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Config\XComLucu_Sniper_Ability.ini">
       <SubType>Content</SubType>
     </Content>
@@ -37,10 +41,16 @@ This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper C
     <Content Include="Content\UILibrary_Lucu_Sniper_Icons.upk">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Localization\LucubrationsSniperClass.int">
+    <Content Include="Localization\INT\LucubrationsSniperClass.int">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Localization\XComGame.int">
+    <Content Include="Localization\INT\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\KOR\LucubrationsSniperClass.kor">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\KOR\XComGame.kor">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ModPreview.jpg">
@@ -133,6 +143,8 @@ This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper C
     <Folder Include="Config" />
     <Folder Include="Content" />
     <Folder Include="Localization" />
+    <Folder Include="Localization\INT\" />
+    <Folder Include="Localization\KOR\" />
     <Folder Include="Src" />
     <Folder Include="Src\LucubrationsSniperClassWotc" />
     <Folder Include="Src\LucubrationsSniperClassWotc\Classes" />
