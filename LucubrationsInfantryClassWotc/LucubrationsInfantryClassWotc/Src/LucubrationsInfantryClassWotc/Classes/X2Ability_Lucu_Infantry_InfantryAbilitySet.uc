@@ -15,6 +15,7 @@ var name EstablishedDefensesOverwatchDefenseAbilityName;
 var name EstablishedDefensesOverwatchDefenseEffectName;
 var name EstablishedDefensesOverwatchPointsName;
 var name StaggeredEffectName;
+var name ShakeItOffAbilityName;
 var name DeepReservesAbilityName;
 var name StickAndMoveDamageAbilityName;
 var name StickAndMoveDamageEffectName;
@@ -846,13 +847,15 @@ static function X2AbilityTemplate ShakeItOff()
 	local X2AbilityTemplate				Template;
 	local X2Effect_Lucu_Infantry_ShakeItOff			Effect;
 	
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'Lucu_Infantry_ShakeItOff');
+	`CREATE_X2ABILITY_TEMPLATE(Template, default.ShakeItOffAbilityName);
 	
 	//Template.AdditionalAbilities.AddItem('TestDisoriented');
 	//Template.AdditionalAbilities.AddItem('TestStunned');
 	//Template.AdditionalAbilities.AddItem('TestConfused');
 	//Template.AdditionalAbilities.AddItem('TestPanicked');
 	//Template.AdditionalAbilities.AddItem('TestUnconscious');
+
+    Template.SoldierAbilityPurchasedFn = ShakeItOffPurchased;
 	
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
@@ -868,7 +871,6 @@ static function X2AbilityTemplate ShakeItOff()
 	Effect.EffectName='Lucu_Infantry_ShakeItOff';
 	Effect.BuildPersistentEffect(1, true, false, true, eGameRule_PlayerTurnEnd);
 	Effect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
-	Effect.AddPersistentStatChange(eStat_Will, default.ShakeItOffWillBonus);
 	Effect.DuplicateResponse = eDupe_Ignore;
 	Template.AddTargetEffect(Effect);
 	
@@ -876,6 +878,34 @@ static function X2AbilityTemplate ShakeItOff()
 	//Template.BuildVisualizationFn = TypicalAbility_BuildVisualization
 	
 	return Template;
+}
+
+function ShakeItOffPurchased(XComGameState NewGameState, XComGameState_Unit UnitState)
+{
+	local XComGameState_HeadquartersXCom				XComHQ;
+    local XComGameState_Lucu_Infantry_HQ                AuxHQ;
+    local StateObjectReference                          UnitRef;
+	local int											OldMax, OldCurr, NewMax, NewCurr;
+
+	XComHQ = class'UIUtilities_Strategy'.static.GetXComHQ();
+    AuxHQ = class'UIStrategyScreenListener_Lucu_Infantry'.static.GetAuxiliaryHQ(XComHQ);
+    UnitRef = UnitState.GetReference();
+
+    if (!AuxHQ.HasShakeItOffWillBonus(UnitRef))
+    {
+        OldMax = UnitState.GetBaseStat(eStat_Will);
+        OldCurr = UnitState.GetCurrentStat(eStat_Will);
+        NewMax = OldMax + default.ShakeItOffWillBonus;
+        NewCurr = OldCurr + default.ShakeItOffWillBonus;
+        UnitState.SetBaseMaxStat(eStat_Will, NewMax);
+        UnitState.SetCurrentStat(eStat_Will, NewCurr);
+
+        AuxHQ = XComGameState_Lucu_Infantry_HQ(NewGameState.CreateStateObject(class'XComGameState_Lucu_Infantry_HQ', AuxHQ.ObjectID));
+        AuxHQ.AddHasShakeItOffWillBonus(UnitRef);
+        NewGameState.AddStateObject(AuxHQ);
+
+		`LOG("Lucubration Infantry Class: Added Shake it Off will bonus to unit " @ UnitState.GetFullName() @ " (from " @ OldCurr @ "/" @ OldMax @ " to " @ NewCurr @ "/" @ NewMax @ ").");
+    }
 }
 
 
@@ -3036,6 +3066,7 @@ DefaultProperties
 	EstablishedDefensesOverwatchArmorEffectName="EstablishedDefensesOverwatchArmor"
 	EstablishedDefensesOverwatchPointsName="EstablishedDefensesOverwatchPoints"
 	StaggeredEffectName="Staggered"
+    ShakeItOffAbilityName="Lucu_Infantry_ShakeItOff"
 	DeepReservesAbilityName="Lucu_Infantry_DeepReserves"
 	StickAndMoveDamageAbilityName="Lucu_Infantry_StickAndMoveDamage"
 	StickAndMoveDamageEffectName="Lucu_Infantry_StickAndMoveDamage"
