@@ -32,7 +32,7 @@ This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper C
     <Content Include="Config\XComLucu_Sniper_Ability.ini">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Config\XComOverwatchAll.ini">
+    <Content Include="Config\XComOverwatchAllWotC.ini">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Config\XComStrategyTuning.ini">

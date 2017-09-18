@@ -1,0 +1,27 @@
+;-------------------------------------------------------------------------------------------
+; Abilities
+;-------------------------------------------------------------------------------------------
+
+[Lucu_CombatEngineer_ThrowDetPack X2AbilityTemplate]
+LocFriendlyName="Throw Det Pack"
+LocLongDescription="Throw a Det Pack. Det Packs may be remotely detonated by the Combat Engineer.<br/><Bullet/> 5 damage.<br/><Bullet/> 3 shred.<br/><Bullet/> High environmental damage.<br/><Bullet/> Costs 1 action."
+LocHelpText="Throw a Det Pack. High environmental damage."
+LocFlyOverText="Throw Det Pack"
+LocPromotionPopupText="Throw a Det Pack. Det Packs may be remotely detonated by the Combat Engineer.<br/><Bullet/> 5 damage.<br/><Bullet/> 3 shred.<br/><Bullet/> High environmental damage.<br/><Bullet/> Costs 1 action."
+
+[Lucu_CombatEngineer_Detonate X2AbilityTemplate]
+LocFriendlyName="Detonate"
+LocLongDescription="Detonates all Det Packs placed by the Combat Engineer.<br/><Bullet/> Costs 1 action."
+LocHelpText="Detonates all Det Packs placed by the Combat Engineer."
+LocFlyOverText="Detonate"
+LocPromotionPopupText="Detonates all Det Packs placed by the Combat Engineer.<br/><Bullet/> Costs 1 action."
+
+;-------------------------------------------------------------------------------------------
+; Weapons
+;-------------------------------------------------------------------------------------------
+
+[Lucu_CombatEngineer_DetPack_CV X2WeaponTemplate]
+FriendlyName="Det Pack"
+FriendlyNamePlural="Det Packs"
+BriefSummary="An explosive device. Very destructive."
+TacticalText="An explosive device. Very destructive."
