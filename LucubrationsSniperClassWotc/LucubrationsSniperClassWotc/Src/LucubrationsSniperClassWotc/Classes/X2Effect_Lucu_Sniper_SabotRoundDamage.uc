@@ -3,14 +3,22 @@ class X2Effect_Lucu_Sniper_SabotRoundDamage extends X2Effect_Persistent;
 function int GetExtraArmorPiercing(XComGameState_Effect EffectState, XComGameState_Unit Attacker, Damageable TargetDamageable, XComGameState_Ability AbilityState, const out EffectAppliedData AppliedData)
 {
 	local XComGameState_Item SourceWeapon;
-	local int Pierce;
+	local int Pierce, Tier;
 	
 	if (AbilityState.GetMyTemplateName() == class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundAbilityName ||
 		AbilityState.GetMyTemplateName() == class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundSetUpAbilityName)
 	{
 		SourceWeapon = AbilityState.GetSourceWeapon();
 		if (SourceWeapon != none)
-			Pierce = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundArmorPenetration[SourceWeapon.GetMyTemplate().Tier];
+        {
+            Tier = SourceWeapon.GetMyTemplate().Tier;
+            // Some custom weapons seem to have really outlandish weapon tiers. Always give them the average damage bonus?
+            if (Tier >= class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundArmorPenetration.Length)
+            {
+                Tier = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundArmorPenetration.Length / 2;
+            }
+			Pierce = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundArmorPenetration[Tier];
+        }
 	}
 
 	return Pierce;
@@ -19,14 +27,22 @@ function int GetExtraArmorPiercing(XComGameState_Effect EffectState, XComGameSta
 function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGameState_Unit Attacker, Damageable TargetDamageable, XComGameState_Ability AbilityState, const out EffectAppliedData AppliedData, const int CurrentDamage, optional XComGameState NewGameState)
 {
 	local XComGameState_Item SourceWeapon;
-	local int ExtraDamage;
+	local int ExtraDamage, Tier;
 	
 	if (AbilityState.GetMyTemplateName() == class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundAbilityName ||
 		AbilityState.GetMyTemplateName() == class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundSetUpAbilityName)
 	{
 		SourceWeapon = AbilityState.GetSourceWeapon();
 		if (SourceWeapon != none)
-			ExtraDamage = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundDamageBonus[SourceWeapon.GetMyTemplate().Tier];
+        {
+            Tier = SourceWeapon.GetMyTemplate().Tier;
+            // Some custom weapons seem to have really outlandish weapon tiers. Always give them the average damage bonus?
+            if (Tier >= class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundDamageBonus.Length)
+            {
+                Tier = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundDamageBonus.Length / 2;
+            }
+			ExtraDamage = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundDamageBonus[Tier];
+        }
 	}
 
 	return ExtraDamage;
