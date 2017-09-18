@@ -35,7 +35,7 @@ static function ApplyAntiJakeSolomonToAbility(X2AbilityTemplate AbilityTemplate)
 	for (i = 0; i < AbilityTemplate.AbilityShooterConditions.Length; i++)
 	{
 		ShooterCondition = X2Condition_UnitProperty(AbilityTemplate.AbilityShooterConditions[i]);
-		if (ShooterCondition.ExcludeConcealed)
+		if (ShooterCondition != none && ShooterCondition.ExcludeConcealed)
 		{
 			ShooterCondition.ExcludeConcealed = false;
 
