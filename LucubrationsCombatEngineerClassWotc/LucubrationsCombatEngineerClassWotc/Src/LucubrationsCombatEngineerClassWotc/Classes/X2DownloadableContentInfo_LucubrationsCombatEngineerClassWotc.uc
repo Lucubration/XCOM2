@@ -31,9 +31,6 @@ static event OnPostTemplatesCreated()
 {
 	// Update the conventional bullpup template to make it starting equipment
     MakeStartingItemTemplate('Bullpup_CV');
-
-    // Update all standard aim abilities except Detonate to prevent shooting directly at det packs
-    PreventTargetingDetPacks();
 }
 
 static function MakeStartingItemTemplate(name TemplateName)
@@ -53,6 +50,7 @@ static function MakeStartingItemTemplate(name TemplateName)
     }
 }
 
+// TODO: Remove during finalization
 static function PreventTargetingDetPacks()
 {
     local X2DataTemplate DataTemplate;

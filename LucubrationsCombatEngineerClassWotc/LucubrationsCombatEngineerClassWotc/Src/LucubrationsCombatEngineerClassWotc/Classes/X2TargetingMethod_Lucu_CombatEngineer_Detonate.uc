@@ -67,6 +67,7 @@ function ShowDamagePreview()
     
 	if (Tiles.Length > 1)
 	{
+        // TODO: Figure out why we don't get destructibles in our final actors list
 		GetTargetedActorsInTiles(AllTiles, CurrentlyMarkedTargets, false);
 		CheckForFriendlyUnit(CurrentlyMarkedTargets);
 		MarkTargetedActors(CurrentlyMarkedTargets, eTeam_None);
