@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Default" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Guid>aa99e61a-096a-4d2f-b474-abb7977df0b2</Guid>
+    <Name>Lucubrations Combat Engineer Class Wotc</Name>
+    <Description>Description of My XCOM 2 Mod.</Description>
+    <SteamPublishID>0</SteamPublishID>
+    <AssemblyName>LucubrationsCombatEngineerClassWotc</AssemblyName>
+    <RootNamespace>LucubrationsCombatEngineerClassWotc</RootNamespace>
+    <ProjectGuid>{8fbeed0c-50c2-497a-98d2-b99ff7bcc81d}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Config\XComClassData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComEditor.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComEngine.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGame.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComGameData_SoldierSkills.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComLucu_CombatEngineer_Ability.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Config\XComLucu_CombatEngineer_Item.ini">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\UILibrary_Lucu_CombatEngineer.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\INT\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ModPreview.jpg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ReadMe.txt" />
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\UIStrategyScreenListener_Lucu_CombatEngineer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_AllOwnDetPacks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_DetPackRadius.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_HasActiveDetPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_IsActiveDetPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2DownloadableContentInfo_LucubrationsCombatEngineerClassWotc.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_DetPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Item_Lucu_CombatEngineer_Weapons.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2TargetingMethod_Lucu_CombatEngineer_Detonate.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2TargetingMethod_Lucu_CombatEngineer_DetPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Utilities_Lucu_CombatEngineer.uc">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content" />
+    <Folder Include="Config" />
+    <Folder Include="Localization" />
+    <Folder Include="Localization\INT" />
+    <Folder Include="Src" />
+    <Folder Include="Src\LucubrationsCombatEngineerClassWotc" />
+    <Folder Include="Src\LucubrationsCombatEngineerClassWotc\Classes" />
+  </ItemGroup>
+  <Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />
+</Project>
