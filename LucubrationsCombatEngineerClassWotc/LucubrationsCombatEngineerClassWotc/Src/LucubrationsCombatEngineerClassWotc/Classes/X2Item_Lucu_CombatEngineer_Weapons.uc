@@ -3,6 +3,7 @@ class X2Item_Lucu_CombatEngineer_Weapons extends X2Item
 
 var config int DetPackRange;
 var config int DetPackRadius;
+var config int DetPackEnvironmentalDamage;
 
 var name DetpackCVItemName;
 
@@ -32,6 +33,8 @@ static function X2DataTemplate DetPackCV()
     // These parameters give us proper target visualizations when throwing detpacks
 	Template.iRange = default.DetPackRange;
 	Template.iRadius = default.DetPackRadius;
+	Template.iEnvironmentDamage = default.DetPackEnvironmentalDamage; // For preview
+    Template.Tier = 1;
 	
 	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_DetPack";
 
@@ -41,6 +44,8 @@ static function X2DataTemplate DetPackCV()
 	Template.CanBeBuilt = false;
 	Template.bInfiniteItem = true;
     
+	//Template.HideIfResearched = 'PlasmaGrenade';
+
 	Template.WeaponPrecomputedPathData.MaxNumberOfBounces = 0;
 
 	return Template;

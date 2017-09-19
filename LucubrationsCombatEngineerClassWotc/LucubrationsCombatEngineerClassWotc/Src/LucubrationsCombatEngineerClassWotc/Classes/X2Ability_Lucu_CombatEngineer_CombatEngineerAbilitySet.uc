@@ -231,7 +231,12 @@ static function X2AbilityTemplate Detonate()
 
 function Detonate_OverrideAbilityAvailability(out AvailableAction Action, XComGameState_Ability AbilityState, XComGameState_Unit OwnerState)
 {
-    Action.AvailableCode = GatherDetonateAbilityTargets(AbilityState, Action.AvailableTargets);
+    Action.AvailableCode = AbilityState.CanActivateAbility(OwnerState);
+
+	if (Action.AvailableCode == 'AA_Success')
+    {
+        Action.AvailableCode = GatherDetonateAbilityTargets(AbilityState, Action.AvailableTargets);
+    }
 }
 
 function name GatherDetonateAbilityTargets(const XComGameState_Ability Ability, out array<AvailableTarget> Targets)

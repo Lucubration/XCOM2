@@ -11,7 +11,6 @@ protected function GetTargetedActors(const vector Location, out array<Actor> Tar
     // Get tiles in the blast radius using ability targeting logic
     AbilityMultiTarget.GetValidTilesForLocation(Ability, Location, TargetTiles);
 
-    // Gather multi-targets for tiles in the blast radius using native logic?
-    // TODO: Figure out why we don't get destructibles in our final actors list
+    // Gather multi-targets for tiles in the blast radius using native logic
     GetTargetedActorsInTiles(TargetTiles, TargetActors, false);
 }
