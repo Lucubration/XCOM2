@@ -11,12 +11,7 @@ function int GetExtraArmorPiercing(XComGameState_Effect EffectState, XComGameSta
 		SourceWeapon = AbilityState.GetSourceWeapon();
 		if (SourceWeapon != none)
         {
-            Tier = SourceWeapon.GetMyTemplate().Tier;
-            // Some custom weapons seem to have really outlandish weapon tiers. Always give them the average damage bonus?
-            if (Tier >= class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundArmorPenetration.Length)
-            {
-                Tier = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundArmorPenetration.Length / 2;
-            }
+            Tier = class'Lucu_Sniper_Utilities'.static.GetItemTechTier(SourceWeapon.GetMyTemplate());
 			Pierce = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundArmorPenetration[Tier];
         }
 	}
@@ -35,12 +30,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
 		SourceWeapon = AbilityState.GetSourceWeapon();
 		if (SourceWeapon != none)
         {
-            Tier = SourceWeapon.GetMyTemplate().Tier;
-            // Some custom weapons seem to have really outlandish weapon tiers. Always give them the average damage bonus?
-            if (Tier >= class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundDamageBonus.Length)
-            {
-                Tier = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundDamageBonus.Length / 2;
-            }
+            Tier = class'Lucu_Sniper_Utilities'.static.GetItemTechTier(SourceWeapon.GetMyTemplate());
 			ExtraDamage = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.SabotRoundDamageBonus[Tier];
         }
 	}

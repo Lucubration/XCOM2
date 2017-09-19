@@ -60,6 +60,9 @@ This mod is for the War of the Chosen expansion only. Use "Lucubrations Sniper C
     <Content Include="Src\LucubrationsSniperClassWotc\Classes\Lucu_Sniper_Config.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsSniperClassWotc\Classes\Lucu_Sniper_Utilities.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsSniperClassWotc\Classes\UIStrategyScreenListener_Lucu_Sniper_GTSUnlocks.uc">
       <SubType>Content</SubType>
     </Content>

@@ -10,12 +10,7 @@ function int GetAttackingDamageModifier(XComGameState_Effect EffectState, XComGa
 		SourceWeapon = AbilityState.GetSourceWeapon();
 		if (SourceWeapon != none)
         {
-            Tier = SourceWeapon.GetMyTemplate().Tier;
-            // Some custom weapons seem to have really outlandish weapon tiers. Always give them the average damage bonus?
-            if (Tier >= class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.PrecisionShotDamageBonus.Length)
-            {
-                Tier = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.PrecisionShotDamageBonus.Length / 2;
-            }
+            Tier = class'Lucu_Sniper_Utilities'.static.GetItemTechTier(SourceWeapon.GetMyTemplate());
 		    ExtraDamage = class'X2Ability_Lucu_Sniper_SniperAbilitySet'.default.PrecisionShotDamageBonus[Tier];
         }
 	}
