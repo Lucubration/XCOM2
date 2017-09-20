@@ -1,0 +1,15 @@
+;-------------------------------------------------------------------------------------------
+; Weapons
+;-------------------------------------------------------------------------------------------
+
+[Lucu_CombatEngineer_DetPack_CV X2DetPackTemplate_Lucu_CombatEngineer]
+FriendlyName="Det Pack"
+FriendlyNamePlural="Det Packs"
+BriefSummary="An explosive device, the Det Pack may be deployed and remotely detonated to level obstacles on the battlefield."
+TacticalText="An explosive device, the Det Pack may be deployed and remotely detonated to level obstacles on the battlefield."
+
+[Lucu_CombatEngineer_DetPack_BM X2DetPackTemplate_Lucu_CombatEngineer]
+FriendlyName="Plas Pack"
+FriendlyNamePlural="Plas Packs"
+BriefSummary="An improved version of the Det Pack, the Plas Pack may be deployed and remotely detonated to level obstacles on the battlefield."
+TacticalText="An improved version of the Det Pack, the Plas Pack may be deployed and remotely detonated to level obstacles on the battlefield."

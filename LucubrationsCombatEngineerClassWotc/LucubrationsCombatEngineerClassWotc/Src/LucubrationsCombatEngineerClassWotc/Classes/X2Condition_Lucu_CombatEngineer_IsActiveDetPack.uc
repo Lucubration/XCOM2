@@ -27,7 +27,7 @@ function name UnitIsActiveDetPack(XComGameState_BaseObject kTarget, XComGameStat
             {
 			    DestructibleState = XComGameState_Destructible(History.GetGameStateForObjectID(EffectState.CreatedObjectReference.ObjectID));
                 if (DestructibleState != none &&
-                    DestructibleState.SpawnedDestructibleArchetype == class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.DetPackDestructibleArchetype &&
+                    class'Lucu_CombatEngineer_Utilities'.static.IsDetPackArchetype(DestructibleState.SpawnedDestructibleArchetype) &&
                     DestructibleState.Health > 0)
                 {
                     // If we are ensuring this IS NOT a det pack, we don't check ownership, just archetype

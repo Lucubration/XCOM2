@@ -2,8 +2,6 @@ class X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet extends X2Ability
 	config(Lucu_CombatEngineer_Ability);
 
 var config int DetPackCharges;
-var config WeaponDamageValue DetPackDamage;
-var config string DetPackDestructibleArchetype;
 var config int PackmasterCharges;
 
 var name ThrowDetPackAbilityTemplateName;
@@ -70,7 +68,6 @@ static function X2AbilityTemplate ThrowDetPack()
 	DetPackEffect.TargetingIcon=Texture2D'UILibrary_XPACK_Common.target_claymore';
 	DetPackEffect.bTargetableBySpawnedTeamOnly = true;
     DetPackEffect.BuildPersistentEffect(1, true, false, false);
-	DetPackEffect.DestructibleArchetype = default.DetPackDestructibleArchetype;
 	Template.AddShooterEffect(DetPackEffect);
 
 	//if (TemplateName != 'ThrowClaymore')
@@ -103,8 +100,21 @@ static function X2AbilityTemplate ThrowDetPack()
 
 function bool DetPackDamagePreview(XComGameState_Ability AbilityState, StateObjectReference TargetRef, out WeaponDamageValue MinDamagePreview, out WeaponDamageValue MaxDamagePreview, out int AllowsShield)
 {
-    MinDamagePreview = default.DetPackDamage;
-    MaxDamagePreview = default.DetPackDamage;
+	local XComGameStateHistory History;
+    local XComGameState_Item SourceItem;
+    local X2DetPackTemplate_Lucu_CombatEngineer SourceItemTemplate;
+    
+	History = `XCOMHISTORY;
+
+    // Find and set the destructible archetype just before the effect spawns it
+    SourceItem = XComGameState_Item(History.GetGameStateForObjectID(AbilityState.SourceWeapon.ObjectID));
+    `assert(SourceItem != none);
+
+    SourceItemTemplate = X2DetPackTemplate_Lucu_CombatEngineer(SourceItem.GetMyTemplate());
+    `assert(SourceItemTemplate != none);
+
+    MinDamagePreview = SourceItemTemplate.BaseDamage;
+    MaxDamagePreview = SourceItemTemplate.BaseDamage;
 	return true;
 }
 

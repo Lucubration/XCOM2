@@ -37,7 +37,13 @@
     <Content Include="Config\XComLucu_CombatEngineer_Item.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Config\XComLucu_CombatEngineer_Tech.ini">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\UILibrary_Lucu_CombatEngineer.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Localization\INT\LucubrationsCombatEngineerClassWotc.int">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Localization\INT\XComGame.int">
@@ -65,6 +71,9 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_IsActiveDetPack.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2DetPackTemplate_Lucu_CombatEngineer.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2DownloadableContentInfo_LucubrationsCombatEngineerClassWotc.uc">
       <SubType>Content</SubType>
     </Content>
@@ -74,13 +83,16 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Item_Lucu_CombatEngineer_Weapons.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2StrategyElement_Lucu_CombatEngineer_Techs.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2TargetingMethod_Lucu_CombatEngineer_Detonate.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2TargetingMethod_Lucu_CombatEngineer_DetPack.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Utilities_Lucu_CombatEngineer.uc">
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\Lucu_CombatEngineer_Utilities.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

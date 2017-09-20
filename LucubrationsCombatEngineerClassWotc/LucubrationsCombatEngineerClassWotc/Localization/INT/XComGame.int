@@ -4,10 +4,10 @@
 
 [Lucu_CombatEngineer_ThrowDetPack X2AbilityTemplate]
 LocFriendlyName="Throw Det Pack"
-LocLongDescription="Throw a Det Pack. Det Packs may be remotely detonated by the Combat Engineer.<br/><Bullet/> 4 damage.<br/><Bullet/> 3 shred.<br/><Bullet/> High environmental damage."
+LocLongDescription="Throw a Det Pack. Det Packs may be remotely detonated by the Combat Engineer."
 LocHelpText="Throw a Det Pack. High environmental damage."
 LocFlyOverText="Throw Det Pack"
-LocPromotionPopupText="Throw a Det Pack. Det Packs may be remotely detonated by the Combat Engineer.<br/><Bullet/> 4 damage.<br/><Bullet/> 3 shred.<br/><Bullet/> High environmental damage."
+LocPromotionPopupText="Throw a Det Pack. Det Packs may be remotely detonated by the Combat Engineer."
 
 [Lucu_CombatEngineer_Detonate X2AbilityTemplate]
 LocFriendlyName="Detonate"
@@ -17,11 +17,22 @@ LocFlyOverText="Detonate"
 LocPromotionPopupText="Detonates all Det Packs placed by the Combat Engineer."
 
 ;-------------------------------------------------------------------------------------------
-; Weapons
+; Techs
 ;-------------------------------------------------------------------------------------------
 
-[Lucu_CombatEngineer_DetPack_CV X2WeaponTemplate]
-FriendlyName="Det Pack"
-FriendlyNamePlural="Det Packs"
-BriefSummary="An explosive device. Very destructive."
-TacticalText="An explosive device. Very destructive."
+[Lucu_CombatEngineer_PlasmaPack X2TechTemplate]
+DisplayName="Plas Pack"
+Summary="In studying the aliens' more complex explosive ordinance, we concluded that the best means of advancing our own Det Pack designs was to scrap the conventional composition entirely. In its place, we have theorized that an Elerium-based detonator could be the key to assembling a substantially more destructive demolition charge for our own troops." 
+
+;-------------------------------------------------------------------------------------------
+; Class
+;-------------------------------------------------------------------------------------------
+
+[Lucu_CombatEngineer X2SoldierClassTemplate]
+DisplayName="Combat Engineer"
+ClassSummary="The Combat Engineer is the grease in the wheels of the XCOM machine. Their role involves various specializations in the field of logistics, including pathfinding, deployable equipment and cover destruction."
+LeftAbilityTreeTitle="Sapper"
+RightAbilityTreeTitle="Pioneer"
+AbilityTreeTitles[0]="Sapper"
+AbilityTreeTitles[1]="Pioneer"
+AbilityTreeTitles[2]="XCOM"
