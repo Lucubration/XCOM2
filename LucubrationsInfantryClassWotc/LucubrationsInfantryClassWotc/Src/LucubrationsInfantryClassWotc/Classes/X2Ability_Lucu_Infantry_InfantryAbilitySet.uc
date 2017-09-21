@@ -727,6 +727,13 @@ static function X2AbilityTemplate StaggeringShot()
 	// MAKE IT LIVE!
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+    
+	Template.bFrameEvenWhenUnitIsHidden = true;
 
 	return Template;	
 }
@@ -2036,6 +2043,14 @@ static function X2AbilityTemplate FireForEffect()
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = FireForEffect_BuildVisualization;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    
+	Template.bCrossClassEligible = true;
+
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+    
+	Template.bFrameEvenWhenUnitIsHidden = true;
 
 	return Template;
 }
@@ -2698,6 +2713,8 @@ static function X2AbilityTemplate Flare()
 	// This action is considered 'hostile' and can be interrupted!
 	Template.Hostility = eHostility_Offensive;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.NonAggressiveChosenActivationIncreasePerUse;
 	
 	return Template;
 }
