@@ -22,14 +22,14 @@ LocPromotionPopupText="Detonates all Det Packs placed by the Combat Engineer."
 
 [Lucu_CombatEngineer_PlasmaPack X2TechTemplate]
 DisplayName="Plas Pack"
-Summary="In studying the aliens' more complex explosive ordinance, we concluded that the best means of advancing our own Det Pack designs was to scrap the conventional composition entirely. In its place, we have theorized that an Elerium-based detonator could be the key to assembling a substantially more destructive demolition charge for our own troops." 
+Summary="In studying the aliens' more complex explosive ordinance, we concluded that the best means of advancing our own Det Pack designs was to scrap the conventional composition entirely. In its place, we have theorized that an Elerium-based detonator could be the key to assembling a more effective demolition charge for our own troops." 
 
 ;-------------------------------------------------------------------------------------------
 ; Class
 ;-------------------------------------------------------------------------------------------
 
 [Lucu_CombatEngineer X2SoldierClassTemplate]
-DisplayName="Combat Engineer"
+DisplayName="Engineer"
 ClassSummary="The Combat Engineer is the grease in the wheels of the XCOM machine. Their role involves various specializations in the field of logistics, including pathfinding, deployable equipment and cover destruction."
 LeftAbilityTreeTitle="Sapper"
 RightAbilityTreeTitle="Pioneer"
