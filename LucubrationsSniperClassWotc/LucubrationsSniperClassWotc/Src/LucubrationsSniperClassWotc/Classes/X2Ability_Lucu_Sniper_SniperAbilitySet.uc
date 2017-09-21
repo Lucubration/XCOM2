@@ -223,6 +223,13 @@ static function X2AbilityTemplate SniperRifleShot()
 	KnockbackEffect.KnockbackDistance = 2;
 	Template.AddTargetEffect(KnockbackEffect);
 	
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+	Template.bFrameEvenWhenUnitIsHidden = true;
+
+	Template.AlternateFriendlyNameFn = class'X2Ability_WeaponCommon'.static.StandardShot_AlternateFriendlyName;
+
 	Template.OverrideAbilities.AddItem('SniperStandardFire');
 
 	return Template;
@@ -259,6 +266,9 @@ static function X2AbilityTemplate SniperRifleOverwatch()
 	ActionPointCost.iNumPoints = 1;
 	ActionPointCost.bConsumeAllPoints = true;
 	ActionPointCost.bFreeCost = true;           //  ReserveActionPoints effect will take all action points away
+	ActionPointCost.DoNotConsumeAllEffects.Length = 0;
+	ActionPointCost.DoNotConsumeAllSoldierAbilities.Length = 0;
+	ActionPointCost.AllowedTypes.RemoveItem(class'X2CharacterTemplateManager'.default.SkirmisherInterruptActionPoint);
 	Template.AbilityCosts.AddItem(ActionPointCost);
 	
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
@@ -320,6 +330,8 @@ static function X2AbilityTemplate SniperRifleOverwatch()
 	Template.DefaultKeyBinding = class'UIUtilities_Input'.const.FXS_KEY_Y;
 	Template.bNoConfirmationWithHotKey = true;
 
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.NonAggressiveChosenActivationIncreasePerUse;
+
 	return Template;	
 }
 
@@ -354,6 +366,9 @@ static function X2AbilityTemplate SniperRifleOverwatch_SetUp()
 	ActionPointCost.iNumPoints = 1;
 	ActionPointCost.bConsumeAllPoints = true;
 	ActionPointCost.bFreeCost = true;           //  ReserveActionPoints effect will take all action points away
+	ActionPointCost.DoNotConsumeAllEffects.Length = 0;
+	ActionPointCost.DoNotConsumeAllSoldierAbilities.Length = 0;
+	ActionPointCost.AllowedTypes.RemoveItem(class'X2CharacterTemplateManager'.default.SkirmisherInterruptActionPoint);
 	Template.AbilityCosts.AddItem(ActionPointCost);
 	
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
@@ -362,6 +377,7 @@ static function X2AbilityTemplate SniperRifleOverwatch_SetUp()
 	Template.AddShooterEffectExclusions(SkipExclusions);
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_SkirmisherInterrupt'.default.EffectName, 'AA_AbilityUnavailable');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 	
 	RequiredEffects = new class'X2Condition_UnitEffects';
@@ -413,6 +429,8 @@ static function X2AbilityTemplate SniperRifleOverwatch_SetUp()
 	Template.DefaultKeyBinding = class'UIUtilities_Input'.const.FXS_KEY_Y;
 	Template.bNoConfirmationWithHotKey = true;
 
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.NonAggressiveChosenActivationIncreasePerUse;
+
 	return Template;	
 }
 
@@ -438,6 +456,9 @@ static function X2AbilityTemplate PistolOverwatch()
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
 	ActionPointCost.bConsumeAllPoints = true;   //  this will guarantee the unit has at least 1 action point
 	ActionPointCost.bFreeCost = true;           //  ReserveActionPoints effect will take all action points away
+	ActionPointCost.DoNotConsumeAllEffects.Length = 0;
+	ActionPointCost.DoNotConsumeAllSoldierAbilities.Length = 0;
+	ActionPointCost.AllowedTypes.RemoveItem(class'X2CharacterTemplateManager'.default.SkirmisherInterruptActionPoint);
 	Template.AbilityCosts.AddItem(ActionPointCost);
 	
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
@@ -447,6 +468,7 @@ static function X2AbilityTemplate PistolOverwatch()
 
 	SuppressedCondition = new class'X2Condition_UnitEffects';
 	SuppressedCondition.AddExcludeEffect(class'X2Effect_Suppression'.default.EffectName, 'AA_UnitIsSuppressed');
+	SuppressedCondition.AddExcludeEffect(class'X2Effect_SkirmisherInterrupt'.default.EffectName, 'AA_AbilityUnavailable');
 	Template.AbilityShooterConditions.AddItem(SuppressedCondition);
 	
 	ReserveActionPointsEffect = new class'X2Effect_ReserveOverwatchPoints';
@@ -492,6 +514,8 @@ static function X2AbilityTemplate PistolOverwatch()
 
 	Template.DefaultKeyBinding = class'UIUtilities_Input'.const.FXS_KEY_Y;
 	Template.bNoConfirmationWithHotKey = true;
+    
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.NonAggressiveChosenActivationIncreasePerUse;
 
 	return Template;
 }
@@ -685,6 +709,7 @@ static function X2AbilityTemplate PrecisionShot()
 	local X2AbilityCooldown                 Cooldown;
 	local X2AbilityToHitCalc_StandardAim    ToHitCalc;
 	local X2Condition_Visibility            TargetVisibilityCondition;
+	local X2Effect_Knockback				KnockbackEffect;
 	local X2AbilityCost_Ammo                AmmoCost;
 	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local int								i;
@@ -744,6 +769,17 @@ static function X2AbilityTemplate PrecisionShot()
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+    
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+
+	Template.bFrameEvenWhenUnitIsHidden = true;
 
 	Template.AdditionalAbilities.AddItem('Lucu_Sniper_PrecisionShotDamage');
 	
@@ -882,6 +918,8 @@ static function X2AbilityTemplate CoverTarget()
 	Template.CinescriptCameraType = "Overwatch";
 
 	Template.Hostility = eHostility_Defensive;
+    
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
 
 	Template.AdditionalAbilities.AddItem(default.CoverTargetShotAbilityName);
 	
@@ -1293,6 +1331,12 @@ static function X2AbilityTemplate FollowUpShot()
 	KnockbackEffect.KnockbackDistance = 2;
 	Template.AddTargetEffect(KnockbackEffect);
 	
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+
+	Template.bFrameEvenWhenUnitIsHidden = true;
+
 	Template.OverrideAbilities.AddItem('SniperStandardFire');
 
 	return Template;
@@ -1452,6 +1496,7 @@ static function X2AbilityTemplate SabotRound()
 	local X2AbilityCost_Ammo                AmmoCost;
 	local X2AbilityCost_ActionPoints        ActionPointCost;
 	local X2Effect_ApplyWeaponDamage		ShredderDamageEffect;
+	local X2Effect_Knockback				KnockbackEffect;
 	local int								i;
 	
 	`LOG("Lucubration Sniper Class: Sabot Round environmental damage=" @ string(default.SabotRoundEnvironmentalDamage));
@@ -1519,6 +1564,16 @@ static function X2AbilityTemplate SabotRound()
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+    
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 2;
+	Template.AddTargetEffect(KnockbackEffect);
+    
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotLostSpawnIncreasePerUse;
+
+	Template.bFrameEvenWhenUnitIsHidden = true;
 
 	Template.AdditionalAbilities.AddItem('Lucu_Sniper_SabotRoundDamage');
 
