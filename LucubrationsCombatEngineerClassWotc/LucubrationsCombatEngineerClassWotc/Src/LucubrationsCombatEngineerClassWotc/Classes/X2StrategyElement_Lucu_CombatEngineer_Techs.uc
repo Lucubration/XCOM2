@@ -32,7 +32,7 @@ static function X2DataTemplate CreatePlasmaPackTemplate()
 	Template.ResearchCompletedFn = class'X2StrategyElement_DefaultTechs'.static.UpgradeItems;
 	
 	// Requirements
-	//Template.Requirements.RequiredTechs.AddItem('AutopsyMuton');
+	Template.Requirements.RequiredTechs.AddItem('AutopsyMuton');
 
 	// Cost
  	Resources.ItemTemplateName = 'Supplies';

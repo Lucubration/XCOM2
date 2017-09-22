@@ -80,7 +80,13 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_DetPack.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_TransientUtilityItem.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Item_Lucu_CombatEngineer_Weapons.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2SIMONTemplate_Lucu_CombatEngineer.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2StrategyElement_Lucu_CombatEngineer_Techs.uc">
@@ -93,6 +99,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\Lucu_CombatEngineer_Utilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\XComGameState_Lucu_CombatEngineer_Effect_TransientUtilityItem.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

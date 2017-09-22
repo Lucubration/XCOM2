@@ -2,11 +2,15 @@ class X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet extends X2Ability
 	config(Lucu_CombatEngineer_Ability);
 
 var config int DetPackCharges;
+var config int SIMONCharges;
 var config int PackmasterCharges;
 
 var name ThrowDetPackAbilityTemplateName;
 var name DetPackEffectName;
 var name DetonateAbilityTemplateName;
+var name SIMONAbilityTemplateName;
+var name LaunchSIMONAbilityTemplateName;
+var name SIMONFuseAbilityTemplateName;
 var name PackmasterAbilityName;
     
 static function array<X2DataTemplate> CreateTemplates()
@@ -15,9 +19,15 @@ static function array<X2DataTemplate> CreateTemplates()
 	
 	Templates.AddItem(ThrowDetPack());
     Templates.AddItem(Detonate());
+    Templates.AddItem(SIMON());
+    Templates.AddItem(LaunchSIMON());
 	
 	return Templates;
 }
+
+//---------------------------------------------------------------------------------------------------
+// Throw Det Pack
+//---------------------------------------------------------------------------------------------------
 
 static function X2AbilityTemplate ThrowDetPack()
 {
@@ -163,6 +173,10 @@ function ThrowDetPack_BuildVisualization(XComGameState VisualizeGameState)
 	class'X2Action_ShowSpawnedDestructible'.static.AddToVisualizationTree(ActionMetadata, VisualizeGameState.GetContext(), false, ActionMetadata.LastActionAdded);
 }
 
+//---------------------------------------------------------------------------------------------------
+// Detonate
+//---------------------------------------------------------------------------------------------------
+
 static function X2AbilityTemplate Detonate()
 {
 	local X2AbilityTemplate                                         Template;
@@ -304,10 +318,224 @@ function name GatherDetonateAbilityTargets(const XComGameState_Ability Ability, 
 	return 'AA_Success';
 }
 
+//---------------------------------------------------------------------------------------------------
+// SIMON
+//---------------------------------------------------------------------------------------------------
+
+static function X2AbilityTemplate SIMON()
+{
+	local X2AbilityTemplate									Template;
+	local X2Effect_PersistentStatChange						StatChangeEffect;
+	local X2Effect_Lucu_CombatEngineer_TransientUtilityItem	TransientItemEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, default.SIMONAbilityTemplateName);
+
+	Template.AdditionalAbilities.AddItem(default.LaunchSIMONAbilityTemplateName);
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_firerocket";
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+
+	// Expand the unit's utility items to allow the transient item. This goes before the transient item effect
+	StatChangeEffect = new class'X2Effect_PersistentStatChange';
+	StatChangeEffect.EffectName = 'Lucu_CombatEngineer_TransientSIMONUtilitySlot';
+	StatChangeEffect.BuildPersistentEffect(1, true, false);
+	StatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	StatChangeEffect.DuplicateResponse = eDupe_Allow;
+	StatChangeEffect.AddPersistentStatChange(eStat_UtilityItems, 1); // Can't think of any clever way to make this value based on the item template, so I'll just hardcode the item size for now
+	Template.AddTargetEffect(StatChangeEffect);
+
+	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	TransientItemEffect.EffectName = 'Beags_Escalation_TransientExtraHERocket';
+	TransientItemEffect.BuildPersistentEffect(1, true, false);
+	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONItemName;
+	TransientItemEffect.UseItemAsAmmo = true;
+	Template.AddTargetEffect(TransientItemEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  NOTE: No visualization on purpose!
+	
+	return Template;
+}
+
+static function X2AbilityTemplate LaunchSIMON()
+{
+	local X2AbilityTemplate					Template;
+	local X2AbilityCost_Ammo				AmmoCost;
+	local X2AbilityCost_ActionPoints        ActionPointCost;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2AbilityTarget_Cursor            CursorTarget;
+	local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
+	local X2Condition_AbilitySourceWeapon	GrenadeCondition;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, default.LaunchSIMONAbilityTemplateName);
+
+	Template.AbilityCosts.AddItem(default.WeaponActionTurnEnding);
+
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+    
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	ActionPointCost.bConsumeAllPoints = true;
+	ActionPointCost.DoNotConsumeAllSoldierAbilities.AddItem('Salvo');
+	Template.AbilityCosts.AddItem(ActionPointCost);
+	
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bIndirectFire = true;
+	StandardAim.bAllowCrit = false;
+	Template.AbilityToHitCalc = StandardAim;
+	
+	Template.bUseLaunchedGrenadeEffects = true;
+	Template.bHideAmmoWeaponDuringFire = true; // hide the grenade
+	
+	CursorTarget = new class'X2AbilityTarget_Cursor';
+	CursorTarget.bRestrictToWeaponRange = true;
+	Template.AbilityTargetStyle = CursorTarget;
+    
+	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+	RadiusMultiTarget.bUseWeaponRadius = true;
+	RadiusMultiTarget.bUseWeaponBlockingCoverFlag = true;
+	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+    
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	Template.AbilityShooterConditions.AddItem(UnitPropertyCondition);
+    
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = false;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	UnitPropertyCondition.ExcludeHostileToSource = false;
+	Template.AbilityMultiTargetConditions.AddItem(UnitPropertyCondition);
+
+	GrenadeCondition = new class'X2Condition_AbilitySourceWeapon';
+	GrenadeCondition.CheckGrenadeFriendlyFire = true;
+	Template.AbilityMultiTargetConditions.AddItem(GrenadeCondition);
+    
+	Template.AddShooterEffectExclusions();
+    
+	Template.bRecordValidTiles = true;
+
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+    
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_HideSpecificErrors;
+	Template.HideErrors.AddItem('AA_CannotAfford_AmmoCost');
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_firerocket";
+	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.STANDARD_GRENADE_PRIORITY;
+	Template.bUseAmmoAsChargesForHUD = true;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+    
+	// Scott W says a Launcher VO cue doesn't exist, so I should use this one.  mdomowicz 2015_08_24
+	Template.ActivationSpeech = 'ThrowGrenade';
+    
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.TargetingMethod = class'X2TargetingMethod_Grenade';
+	//Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+	Template.CinescriptCameraType = "Grenadier_GrenadeLauncher";
+    
+	// This action is considered 'hostile' and can be interrupted!
+	Template.Hostility = eHostility_Offensive;
+	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
+
+	Template.bFrameEvenWhenUnitIsHidden = true;
+
+	return Template;
+}
+
+static function X2AbilityTemplate SIMONFuse()
+{
+	local X2AbilityTemplate                 Template;	
+	local X2AbilityCost_Ammo                AmmoCost;
+	local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
+	local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
+	local X2Condition_UnitProperty          UnitPropertyCondition;
+	local X2AbilityTrigger_EventListener    EventListener;
+	local X2AbilityToHitCalc_StandardAim    StandardAim;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, default.SIMONFuseAbilityTemplateName);
+	
+	AmmoCost = new class'X2AbilityCost_Ammo';	
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+		
+	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	StandardAim.bGuaranteedHit = true;
+	Template.AbilityToHitCalc = StandardAim;
+
+	WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
+	WeaponDamageEffect.bExplosiveDamage = true;
+	Template.AddMultiTargetEffect(WeaponDamageEffect);
+	
+	Template.AbilityTargetStyle = default.SelfTarget;
+
+	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+	RadiusMultiTarget.bAddPrimaryTargetAsMultiTarget = true;
+	RadiusMultiTarget.bUseWeaponRadius = true;
+	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	UnitPropertyCondition.ExcludeHostileToSource = false;
+	UnitPropertyCondition.FailOnNonUnits = false; 
+	Template.AbilityMultiTargetConditions.AddItem(UnitPropertyCondition);
+
+	EventListener = new class'X2AbilityTrigger_EventListener';
+	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
+	EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.FuseListener;
+	EventListener.ListenerData.EventID = class'X2Ability_PsiOperativeAbilitySet'.default.FuseEventName;
+	EventListener.ListenerData.Filter = eFilter_None;
+	Template.AbilityTriggers.AddItem(EventListener);
+	
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_firerocket";
+	Template.bUseAmmoAsChargesForHUD = true;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	Template.MergeVisualizationFn = FuseMergeVisualization;
+	Template.bShowActivation = true;
+	Template.bSkipExitCoverWhenFiring = true;
+	Template.ActionFireClass = class'X2Action_Fire_IgniteFuse';
+	Template.bHideWeaponDuringFire = true;
+	Template.Hostility = eHostility_Offensive;
+
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
+
+	Template.bFrameEvenWhenUnitIsHidden = true;
+
+	return Template;	
+}
+
 DefaultProperties
 {
 	ThrowDetPackAbilityTemplateName="Lucu_CombatEngineer_ThrowDetPack"
     DetPackEffectName="Lucu_CombatEngineer_DetPack"
     DetonateAbilityTemplateName="Lucu_CombatEngineer_Detonate"
+    SIMONAbilityTemplateName="Lucu_CombatEngineer_SIMON"
+    LaunchSIMONAbilityTemplateName="Lucu_CombatEngineer_LaunchSIMON"
+    SIMONFuseAbilityTemplateName="Lucu_CombatEngineer_SIMONFuse"
     PackmasterAbilityName="Lucu_CombatEngineer_Packmaster"
 }
