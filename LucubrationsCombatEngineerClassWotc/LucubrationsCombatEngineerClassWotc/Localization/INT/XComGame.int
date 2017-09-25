@@ -18,21 +18,17 @@ LocPromotionPopupText="Detonates all Det Packs placed by the Combat Engineer."
 
 [Lucu_CombatEngineer_SIMON X2AbilityTemplate]
 LocFriendlyName="SIMON"
-LocLongDescription="This bullet-trap rifle grenade carries a shaped explosive payload. Designed to breach doors and other barriers, the concussive force of the detonation may also disorient organic enemies."
+LocLongDescription="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
 LocHelpText="The Combat Engineer packs two SIMON grenades as standard equipment."
 LocFlyOverText="SIMON"
 LocPromotionPopupText="<Bullet/> +2 SIMON grenades per mission."
 
 [Lucu_CombatEngineer_LaunchSIMON X2AbilityTemplate]
 LocFriendlyName="Launch SIMON"
-LocLongDescription="This bullet-trap rifle grenade carries a shaped explosive payload. Designed to breach doors and other barriers, the concussive force of the detonation may also disorient organic enemies."
+LocLongDescription="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
 LocHelpText="Fires a SIMON breaching grenade at the target."
 LocFlyOverText="Launch SIMON"
 LocPromotionPopupText="Fires a SIMON breaching grenade at the target.<Bullet/> Destroys cover.</br><Bullet/> Deals no damage, but may disorient organic enemies.</br><Bullet/> Effect improves with higher-tier rifles."
-ThrownAbilityName="Launch SIMON"
-ThrownAbilityHelpText="Fires a SIMON breaching grenade at the target."
-LaunchedAbilityName="Launch SIMON"
-LaunchedAbilityHelpText="Fires a SIMON breaching grenade at the target."
 
 ;-------------------------------------------------------------------------------------------
 ; Techs

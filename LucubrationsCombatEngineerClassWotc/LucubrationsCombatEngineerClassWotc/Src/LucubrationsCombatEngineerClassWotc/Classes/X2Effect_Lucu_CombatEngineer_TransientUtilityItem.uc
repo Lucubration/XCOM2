@@ -40,7 +40,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 			if (TransientItemTemplate != none && TransientItemTemplate.InventorySlot == eInvSlot_Utility)
 			{
 				// Check for whether the unit has this item already
-				TransientItemState = GetItemOfTemplateName(UnitState, TransientItemTemplateName);
+				TransientItemState = GetItemOfTemplateName(UnitState, TransientItemTemplateName, NewGameState);
 
 				CreatedNewItem = false;
 				if (TransientItemState == none)
@@ -220,6 +220,12 @@ static function name FindUpgradeItemTemplateName(name TemplateName)
 
 	// Look for any item templates marked as upgrades for this one
 	UpgradeTemplate = ItemTemplateManager.GetUpgradedItemTemplateFromBase(TemplateName);
+    if (UpgradeTemplate == none)
+    {
+    	// No upgrade found
+        return TemplateName;
+    }
+
 	// Check if we have it in HQ
 	if (XComHQ.GetNumItemInInventory(UpgradeTemplate.DataName) > 0)
 	{
@@ -233,7 +239,7 @@ static function name FindUpgradeItemTemplateName(name TemplateName)
 		return UpgradeTemplate.DataName;
 	}
 
-	// No upgrade found
+	// Upgrade not available in HQ
 	return TemplateName;
 }
 
@@ -273,13 +279,13 @@ static function XComGameState_Lucu_CombatEngineer_Effect_TransientUtilityItem Ge
     return none;
 }
 
-static function XComGameState_Item GetItemOfTemplateName(XComGameState_Unit UnitState, name TemplateName)
+static function XComGameState_Item GetItemOfTemplateName(XComGameState_Unit UnitState, name TemplateName, XComGameState NewGameState)
 {
 	local array<XComGameState_Item> ItemStates;
 	local XComGameState_Item ItemState;
 	local int i;
 
-	ItemStates = UnitState.GetAllInventoryItems();
+	ItemStates = UnitState.GetAllInventoryItems(NewGameState);
 
 	for (i = 0; i < ItemStates.Length; ++i)
 	{

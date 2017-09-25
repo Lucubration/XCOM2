@@ -21,6 +21,7 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(Detonate());
     Templates.AddItem(SIMON());
     Templates.AddItem(LaunchSIMON());
+    Templates.AddItem(SIMONFuse());
 	
 	return Templates;
 }
@@ -324,9 +325,10 @@ function name GatherDetonateAbilityTargets(const XComGameState_Ability Ability, 
 
 static function X2AbilityTemplate SIMON()
 {
-	local X2AbilityTemplate									Template;
-	local X2Effect_PersistentStatChange						StatChangeEffect;
-	local X2Effect_Lucu_CombatEngineer_TransientUtilityItem	TransientItemEffect;
+	local X2AbilityTemplate									        Template;
+	local X2Effect_PersistentStatChange						        StatChangeEffect;
+	local X2Effect_Lucu_CombatEngineer_TransientUtilityItem	        TransientItemEffect;
+    local X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech   WeaponTechCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, default.SIMONAbilityTemplateName);
 
@@ -350,15 +352,93 @@ static function X2AbilityTemplate SIMON()
 	StatChangeEffect.AddPersistentStatChange(eStat_UtilityItems, 1); // Can't think of any clever way to make this value based on the item template, so I'll just hardcode the item size for now
 	Template.AddTargetEffect(StatChangeEffect);
 
+    // Two of these effects, to add two ammo. It's either this or change the template's clip size
+
+    // Conventional
 	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
-	TransientItemEffect.EffectName = 'Beags_Escalation_TransientExtraHERocket';
+	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_CV';
 	TransientItemEffect.BuildPersistentEffect(1, true, false);
 	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
 	TransientItemEffect.DuplicateResponse = eDupe_Allow;
 	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
-	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONItemName;
+	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONCVItemName;
 	TransientItemEffect.UseItemAsAmmo = true;
+    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
+    WeaponTechCondition.WeaponTech.AddItem('conventional');
+    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
 	Template.AddTargetEffect(TransientItemEffect);
+
+	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_CV';
+	TransientItemEffect.BuildPersistentEffect(1, true, false);
+	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONCVItemName;
+	TransientItemEffect.UseItemAsAmmo = true;
+    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
+    WeaponTechCondition.WeaponTech.AddItem('conventional');
+    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
+	Template.AddTargetEffect(TransientItemEffect);
+
+
+    // Magnetic
+	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_MG';
+	TransientItemEffect.BuildPersistentEffect(1, true, false);
+	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONMGItemName;
+	TransientItemEffect.UseItemAsAmmo = true;
+    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
+    WeaponTechCondition.WeaponTech.AddItem('magnetic');
+    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
+	Template.AddTargetEffect(TransientItemEffect);
+
+	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_MG';
+	TransientItemEffect.BuildPersistentEffect(1, true, false);
+	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONMGItemName;
+	TransientItemEffect.UseItemAsAmmo = true;
+    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
+    WeaponTechCondition.WeaponTech.AddItem('magnetic');
+    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
+	Template.AddTargetEffect(TransientItemEffect);
+
+
+    // Beam
+	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_BM';
+	TransientItemEffect.BuildPersistentEffect(1, true, false);
+	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONBMItemName;
+	TransientItemEffect.UseItemAsAmmo = true;
+    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
+    WeaponTechCondition.WeaponTech.AddItem('beam');
+    WeaponTechCondition.WeaponTech.AddItem('alien');
+    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
+	Template.AddTargetEffect(TransientItemEffect);
+
+	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_BM';
+	TransientItemEffect.BuildPersistentEffect(1, true, false);
+	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONBMItemName;
+	TransientItemEffect.UseItemAsAmmo = true;
+    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
+    WeaponTechCondition.WeaponTech.AddItem('beam');
+    WeaponTechCondition.WeaponTech.AddItem('alien');
+    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
+	Template.AddTargetEffect(TransientItemEffect);
+
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	//  NOTE: No visualization on purpose!
@@ -368,14 +448,14 @@ static function X2AbilityTemplate SIMON()
 
 static function X2AbilityTemplate LaunchSIMON()
 {
-	local X2AbilityTemplate					Template;
-	local X2AbilityCost_Ammo				AmmoCost;
-	local X2AbilityCost_ActionPoints        ActionPointCost;
-	local X2AbilityToHitCalc_StandardAim    StandardAim;
-	local X2AbilityTarget_Cursor            CursorTarget;
-	local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
-	local X2Condition_UnitProperty          UnitPropertyCondition;
-	local X2Condition_AbilitySourceWeapon	GrenadeCondition;
+	local X2AbilityTemplate					                Template;
+	local X2AbilityCost_Ammo				                AmmoCost;
+	local X2AbilityCost_ActionPoints                        ActionPointCost;
+	local X2AbilityToHitCalc_StandardAim                    StandardAim;
+	local X2AbilityTarget_Cursor                            CursorTarget;
+	local X2AbilityMultiTarget_Lucu_CombatEngineer_SIMON    SIMONMultiTarget;
+	local X2Condition_UnitProperty                          UnitPropertyCondition;
+	local X2Condition_AbilitySourceWeapon	                GrenadeCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, default.LaunchSIMONAbilityTemplateName);
 
@@ -383,6 +463,7 @@ static function X2AbilityTemplate LaunchSIMON()
 
 	AmmoCost = new class'X2AbilityCost_Ammo';
 	AmmoCost.iAmmo = 1;
+	AmmoCost.UseLoadedAmmo = true;
 	Template.AbilityCosts.AddItem(AmmoCost);
     
 	ActionPointCost = new class'X2AbilityCost_ActionPoints';
@@ -403,10 +484,10 @@ static function X2AbilityTemplate LaunchSIMON()
 	CursorTarget.bRestrictToWeaponRange = true;
 	Template.AbilityTargetStyle = CursorTarget;
     
-	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
-	RadiusMultiTarget.bUseWeaponRadius = true;
-	RadiusMultiTarget.bUseWeaponBlockingCoverFlag = true;
-	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+	SIMONMultiTarget = new class'X2AbilityMultiTarget_Lucu_CombatEngineer_SIMON';
+	SIMONMultiTarget.bUseWeaponRadius = true;
+	SIMONMultiTarget.bUseWeaponBlockingCoverFlag = true;
+	Template.AbilityMultiTargetStyle = SIMONMultiTarget;
     
 	UnitPropertyCondition = new class'X2Condition_UnitProperty';
 	UnitPropertyCondition.ExcludeDead = true;
@@ -442,13 +523,13 @@ static function X2AbilityTemplate LaunchSIMON()
     
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-	Template.TargetingMethod = class'X2TargetingMethod_Grenade';
-	//Template.TargetingMethod = class'X2TargetingMethod_RocketLauncher';
+	Template.TargetingMethod = class'X2TargetingMethod_Lucu_CombatEngineer_SIMON';
 	Template.CinescriptCameraType = "Grenadier_GrenadeLauncher";
     
 	// This action is considered 'hostile' and can be interrupted!
 	Template.Hostility = eHostility_Offensive;
 	Template.BuildInterruptGameStateFn = TypicalAbility_BuildInterruptGameState;
+	Template.ActionFireClass = class'X2Action_Lucu_CombatEngineer_FireOnce';
 
 	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
@@ -461,13 +542,12 @@ static function X2AbilityTemplate LaunchSIMON()
 
 static function X2AbilityTemplate SIMONFuse()
 {
-	local X2AbilityTemplate                 Template;	
-	local X2AbilityCost_Ammo                AmmoCost;
-	local X2Effect_ApplyWeaponDamage        WeaponDamageEffect;
-	local X2AbilityMultiTarget_Radius       RadiusMultiTarget;
-	local X2Condition_UnitProperty          UnitPropertyCondition;
-	local X2AbilityTrigger_EventListener    EventListener;
-	local X2AbilityToHitCalc_StandardAim    StandardAim;
+	local X2AbilityTemplate                             Template;
+	local X2AbilityCost_Ammo                            AmmoCost;
+	local X2AbilityMultiTarget_Radius                   RadiusMultiTarget;
+	local X2Condition_UnitProperty                      UnitPropertyCondition;
+	local X2AbilityTrigger_EventListener                EventListener;
+	local X2AbilityToHitCalc_StandardAim                StandardAim;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, default.SIMONFuseAbilityTemplateName);
 	
@@ -479,10 +559,6 @@ static function X2AbilityTemplate SIMONFuse()
 	StandardAim.bGuaranteedHit = true;
 	Template.AbilityToHitCalc = StandardAim;
 
-	WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
-	WeaponDamageEffect.bExplosiveDamage = true;
-	Template.AddMultiTargetEffect(WeaponDamageEffect);
-	
 	Template.AbilityTargetStyle = default.SelfTarget;
 
 	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';

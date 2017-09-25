@@ -27,16 +27,6 @@ simulated function GetMultiTargetsForLocation(const XComGameState_Ability Abilit
 
     GetTilesToCheckForLocation(Ability, Location, TileExtent, Tiles);
 
-    // Can't really tell how the destructibles get highlighted. These ones don't seem to be associated with their object states.
-    // Right now, destructibles don't show up with damage preview highlights
-    //`XWORLD.CollectDestructiblesInTiles(Tiles, DestructibleActors);
-
-    //foreach DestructibleActors(DestructibleActor)
-    //{
-        //DestructibleState = DestructibleActor.GetState();
-        //Target.AdditionalTargets.AddItem(DestructibleState.GetReference());
-    //}
-
     foreach Tiles(Tile)
     {
         UnitRefs = `XWORLD.GetUnitsOnTile(Tile.Tile);

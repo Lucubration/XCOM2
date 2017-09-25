@@ -22,11 +22,35 @@ var config int SIMON_CV_Points;
 var config int SIMON_CV_ClipSize;
 var config float SIMON_CV_Range;
 var config float SIMON_CV_Radius;
-var config int SIMON_CV_Angle;
+var config float SIMON_CV_Angle;
+
+var config WeaponDamageValue SIMON_MG_BaseDamage;
+var config int SIMON_MG_SoundRange;
+var config int SIMON_MG_EnvironmentDamage;
+var config int SIMON_MG_Supplies;
+var config int SIMON_MG_TradingPostValue;
+var config int SIMON_MG_Points;
+var config int SIMON_MG_ClipSize;
+var config float SIMON_MG_Range;
+var config float SIMON_MG_Radius;
+var config float SIMON_MG_Angle;
+
+var config WeaponDamageValue SIMON_BM_BaseDamage;
+var config int SIMON_BM_SoundRange;
+var config int SIMON_BM_EnvironmentDamage;
+var config int SIMON_BM_Supplies;
+var config int SIMON_BM_TradingPostValue;
+var config int SIMON_BM_Points;
+var config int SIMON_BM_ClipSize;
+var config float SIMON_BM_Range;
+var config float SIMON_BM_Radius;
+var config float SIMON_BM_Angle;
 
 var name DetpackCVItemName;
 var name DetpackBMItemName;
-var name SIMONItemName;
+var name SIMONCVItemName;
+var name SIMONMGItemName;
+var name SIMONBMItemName;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -35,9 +59,15 @@ static function array<X2DataTemplate> CreateTemplates()
 	Weapons.AddItem(DetPack_CV());
 	Weapons.AddItem(DetPack_BM());
 	Weapons.AddItem(SIMON_CV());
+	Weapons.AddItem(SIMON_MG());
+	Weapons.AddItem(SIMON_BM());
 
 	return Weapons;
 }
+
+//---------------------------------------------------------------------------------------------------
+// Det Pack
+//---------------------------------------------------------------------------------------------------
 
 static function X2DataTemplate DetPack_CV()
 {
@@ -124,16 +154,16 @@ static function X2DataTemplate DetPack_BM()
 }
 
 //---------------------------------------------------------------------------------------------------
-// SIMON (Conventional)
+// SIMON
 //---------------------------------------------------------------------------------------------------
 
 static function X2DataTemplate SIMON_CV()
 {
 	local X2SIMONTemplate_Lucu_CombatEngineer Template;
-	local X2Effect_ApplyWeaponDamage WeaponDamageEffect;
+	local X2Effect_Lucu_CombatEngineer_ApplySIMONDamage SIMONDamageEffect;
 	local X2Effect_Knockback KnockbackEffect;
 
-	`CREATE_X2TEMPLATE(class'X2SIMONTemplate_Lucu_CombatEngineer', Template, default.SIMONItemName);
+	`CREATE_X2TEMPLATE(class'X2SIMONTemplate_Lucu_CombatEngineer', Template, default.SIMONCVItemName);
 
 	Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_Rocket_Launcher";
 	Template.EquipSound = "StrategyUI_Grenade_Equip";
@@ -146,7 +176,7 @@ static function X2DataTemplate SIMON_CV()
 	Template.iEnvironmentDamage = default.SIMON_CV_EnvironmentDamage;
 	Template.TradingPostValue = default.SIMON_CV_TradingPostValue;
 	Template.iClipSize = default.SIMON_CV_ClipSize;
-	Template.Angle = default.SIMON_CV_Angle;
+	Template.fAngle = default.SIMON_CV_Angle;
 	Template.DamageTypeTemplateName = 'Explosion';
 	Template.Tier = -3;
 
@@ -160,11 +190,11 @@ static function X2DataTemplate SIMON_CV()
 	Template.StartingItem = false;
 	Template.CanBeBuilt = false;
 	Template.bInfiniteItem = false;
-
-	WeaponDamageEffect = new class'X2Effect_ApplyWeaponDamage';
-	WeaponDamageEffect.bExplosiveDamage = true;
-	Template.ThrownGrenadeEffects.AddItem(WeaponDamageEffect);
-	Template.LaunchedGrenadeEffects.AddItem(WeaponDamageEffect);
+    
+	SIMONDamageEffect = new class'X2Effect_Lucu_CombatEngineer_ApplySIMONDamage';
+	SIMONDamageEffect.bExplosiveDamage = true;
+	Template.ThrownGrenadeEffects.AddItem(SIMONDamageEffect);
+	Template.LaunchedGrenadeEffects.AddItem(SIMONDamageEffect);
 
     // Hide for higher-tier SIMON rounds?
 	//Template.HideIfResearched = 'AdvancedGrenades';
@@ -173,6 +203,119 @@ static function X2DataTemplate SIMON_CV()
 
 	KnockbackEffect = new class'X2Effect_Knockback';
 	KnockbackEffect.KnockbackDistance = 4;
+	Template.ThrownGrenadeEffects.AddItem(KnockbackEffect);
+	Template.LaunchedGrenadeEffects.AddItem(KnockbackEffect);
+	
+	Template.WeaponPrecomputedPathData.InitialPathTime = 0.4f;
+	Template.WeaponPrecomputedPathData.MaxPathTime = 0.8f;
+	Template.WeaponPrecomputedPathData.MaxNumberOfBounces = 0;
+    
+	return Template;
+}
+
+static function X2DataTemplate SIMON_MG()
+{
+	local X2SIMONTemplate_Lucu_CombatEngineer Template;
+	local X2Effect_Lucu_CombatEngineer_ApplySIMONDamage SIMONDamageEffect;
+	local X2Effect_Knockback KnockbackEffect;
+
+	`CREATE_X2TEMPLATE(class'X2SIMONTemplate_Lucu_CombatEngineer', Template, default.SIMONMGItemName);
+
+	Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_Rocket_Launcher";
+	Template.EquipSound = "StrategyUI_Grenade_Equip";
+	Template.AddAbilityIconOverride(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName, "img:///UILibrary_PerkIcons.UIPerk_firerocket");
+
+	Template.iRange = default.SIMON_MG_Range;
+	Template.iRadius = default.SIMON_MG_Radius;
+	Template.BaseDamage = default.SIMON_MG_BaseDamage;
+	Template.iSoundRange = default.SIMON_MG_SoundRange;
+	Template.iEnvironmentDamage = default.SIMON_MG_EnvironmentDamage;
+	Template.TradingPostValue = default.SIMON_MG_TradingPostValue;
+	Template.iClipSize = default.SIMON_MG_ClipSize;
+	Template.fAngle = default.SIMON_MG_Angle;
+	Template.DamageTypeTemplateName = 'Explosion';
+	Template.Tier = -3;
+
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
+	
+	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_SIMON_MG";
+
+	Template.iPhysicsImpulse = 10;
+
+	Template.StartingItem = false;
+	Template.CanBeBuilt = false;
+	Template.bInfiniteItem = false;
+    
+	SIMONDamageEffect = new class'X2Effect_Lucu_CombatEngineer_ApplySIMONDamage';
+	SIMONDamageEffect.bExplosiveDamage = true;
+	Template.ThrownGrenadeEffects.AddItem(SIMONDamageEffect);
+	Template.LaunchedGrenadeEffects.AddItem(SIMONDamageEffect);
+
+    // Hide for higher-tier SIMON rounds?
+	//Template.HideIfResearched = 'AdvancedGrenades';
+
+	Template.OnThrowBarkSoundCue = 'ThrowGrenade';
+
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 4;
+	Template.ThrownGrenadeEffects.AddItem(KnockbackEffect);
+	Template.LaunchedGrenadeEffects.AddItem(KnockbackEffect);
+	
+	Template.WeaponPrecomputedPathData.InitialPathTime = 0.4f;
+	Template.WeaponPrecomputedPathData.MaxPathTime = 0.8f;
+	Template.WeaponPrecomputedPathData.MaxNumberOfBounces = 0;
+    
+	return Template;
+}
+
+static function X2DataTemplate SIMON_BM()
+{
+	local X2SIMONTemplate_Lucu_CombatEngineer Template;
+	local X2Effect_Lucu_CombatEngineer_ApplySIMONDamage SIMONDamageEffect;
+	local X2Effect_Knockback KnockbackEffect;
+
+	`CREATE_X2TEMPLATE(class'X2SIMONTemplate_Lucu_CombatEngineer', Template, default.SIMONBMItemName);
+
+	Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_Rocket_Launcher";
+	Template.EquipSound = "StrategyUI_Grenade_Equip";
+	Template.AddAbilityIconOverride(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName, "img:///UILibrary_PerkIcons.UIPerk_firerocket");
+
+	Template.iRange = default.SIMON_BM_Range;
+	Template.iRadius = default.SIMON_BM_Radius;
+	Template.BaseDamage = default.SIMON_BM_BaseDamage;
+	Template.iSoundRange = default.SIMON_BM_SoundRange;
+	Template.iEnvironmentDamage = default.SIMON_BM_EnvironmentDamage;
+	Template.TradingPostValue = default.SIMON_BM_TradingPostValue;
+	Template.iClipSize = default.SIMON_BM_ClipSize;
+	Template.fAngle = default.SIMON_BM_Angle;
+	Template.DamageTypeTemplateName = 'Explosion';
+	Template.Tier = -3;
+
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
+	
+	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_SIMON_BM";
+
+	Template.iPhysicsImpulse = 10;
+
+	Template.StartingItem = false;
+	Template.CanBeBuilt = false;
+	Template.bInfiniteItem = false;
+    
+	SIMONDamageEffect = new class'X2Effect_Lucu_CombatEngineer_ApplySIMONDamage';
+	SIMONDamageEffect.bExplosiveDamage = true;
+	Template.ThrownGrenadeEffects.AddItem(SIMONDamageEffect);
+	Template.LaunchedGrenadeEffects.AddItem(SIMONDamageEffect);
+
+    // Hide for higher-tier SIMON rounds?
+	//Template.HideIfResearched = 'AdvancedGrenades';
+
+	Template.OnThrowBarkSoundCue = 'ThrowGrenade';
+
+	KnockbackEffect = new class'X2Effect_Knockback';
+	KnockbackEffect.KnockbackDistance = 4;
+	Template.ThrownGrenadeEffects.AddItem(KnockbackEffect);
 	Template.LaunchedGrenadeEffects.AddItem(KnockbackEffect);
 	
 	Template.WeaponPrecomputedPathData.InitialPathTime = 0.4f;
@@ -186,5 +329,7 @@ DefaultProperties
 {
 	DetpackCVItemName="Lucu_CombatEngineer_DetPack_CV"
     DetpackBMItemName="Lucu_CombatEngineer_DetPack_BM"
-    SIMONItemName="Lucu_CombatEngineer_SIMON"
+    SIMONCVItemName="Lucu_CombatEngineer_SIMON_CV"
+    SIMONMGItemName="Lucu_CombatEngineer_SIMON_MG"
+    SIMONBMItemName="Lucu_CombatEngineer_SIMON_BM"
 }

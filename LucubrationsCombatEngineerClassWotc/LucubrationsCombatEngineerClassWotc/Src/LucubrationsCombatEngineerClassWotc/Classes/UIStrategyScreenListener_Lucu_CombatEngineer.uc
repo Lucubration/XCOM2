@@ -14,12 +14,12 @@ event OnInit(UIScreen Screen)
 		if (CurrentScreen.IsA('UIArmory'))
         {
             // Try to add the Combat Engineer's starting weapons to the XCom HQ inventory
-            AddStartingItemToXComHQ('Bullpup_CV');
             AddStartingItemToXComHQ(class'X2Item_Lucu_CombatEngineer_Weapons'.default.DetpackCVItemName);
         }
 
         if (CurrentScreen.IsA('UIFacility_ProvingGround'))
         {
+            // Try to add the Combat Engineer's Plasma Pack tech to the game history
             AddTechToHistory(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.PlasmaPackTechTemplateName);
         }
 	}

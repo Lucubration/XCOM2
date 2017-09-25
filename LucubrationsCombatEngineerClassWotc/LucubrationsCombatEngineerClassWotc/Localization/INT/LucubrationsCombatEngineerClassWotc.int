@@ -13,3 +13,34 @@ FriendlyName="Plasma Pack"
 FriendlyNamePlural="Plasma Packs"
 BriefSummary="An improved version of the Det Pack, the Plasma Pack may be deployed and remotely detonated to level obstacles and spread flames on the battlefield."
 TacticalText="An improved version of the Det Pack, the Plasma Pack may be deployed and remotely detonated to level obstacles and spread flames on the battlefield."
+
+
+[Lucu_CombatEngineer_SIMON_CV X2SIMONTemplate_Lucu_CombatEngineer]
+FriendlyName="SIMON"
+FriendlyNamePlural="SIMON"
+BriefSummary="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
+TacticalText="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
+ThrownAbilityName="Launch SIMON"
+ThrownAbilityHelpText="Fires a SIMON breaching grenade at the target."
+LaunchedAbilityName="Launch SIMON"
+LaunchedAbilityHelpText="Fires a SIMON breaching grenade at the target."
+
+[Lucu_CombatEngineer_SIMON_MG X2SIMONTemplate_Lucu_CombatEngineer]
+FriendlyName="SIMON MK II"
+FriendlyNamePlural="SIMON MK II"
+BriefSummary="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors, walls and other barriers."
+TacticalText="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors, walls and other barriers."
+ThrownAbilityName="Launch SIMON MK II"
+ThrownAbilityHelpText="Fires a SIMON MK II breaching grenade at the target."
+LaunchedAbilityName="Launch SIMON MK II"
+LaunchedAbilityHelpText="Fires a SIMON MK II breaching grenade at the target."
+
+[Lucu_CombatEngineer_SIMON_BM X2SIMONTemplate_Lucu_CombatEngineer]
+FriendlyName="SIMON MK III"
+FriendlyNamePlural="SIMON MK III"
+BriefSummary="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach most barriers and obstacles."
+TacticalText="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach most barriers and obstacles."
+ThrownAbilityName="Launch SIMON MK III"
+ThrownAbilityHelpText="Fires a SIMON MK III breaching grenade at the target."
+LaunchedAbilityName="Launch SIMON MK III"
+LaunchedAbilityHelpText="Fires a SIMON MK III breaching grenade at the target."

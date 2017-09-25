@@ -1,3 +1,9 @@
 class X2SIMONTemplate_Lucu_CombatEngineer extends X2GrenadeTemplate;
 
-var int Angle;
+var float fAngle;
+
+DefaultProperties
+{
+	WeaponCat="lucu_combatengineer_simon"
+	ItemCat="lucu_combatengineer_simon"
+}

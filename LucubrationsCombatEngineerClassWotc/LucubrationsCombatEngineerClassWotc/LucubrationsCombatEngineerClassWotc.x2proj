@@ -62,7 +62,16 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_DetPackRadius.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_SIMON.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Action_Lucu_CombatEngineer_FireOnce.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_HasActiveDetPack.uc">
@@ -75,6 +84,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2DownloadableContentInfo_LucubrationsCombatEngineerClassWotc.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_ApplySIMONDamage.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_DetPack.uc">
@@ -99,6 +111,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\Lucu_CombatEngineer_Utilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2TargetingMethod_Lucu_CombatEngineer_SIMON.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\XComGameState_Lucu_CombatEngineer_Effect_TransientUtilityItem.uc">
