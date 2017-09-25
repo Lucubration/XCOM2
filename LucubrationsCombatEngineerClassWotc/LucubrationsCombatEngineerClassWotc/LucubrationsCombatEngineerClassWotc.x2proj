@@ -40,6 +40,12 @@
     <Content Include="Config\XComLucu_CombatEngineer_Tech.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\Lucu_CombatEngineer_DetPack.upk">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Content\Lucu_CombatEngineer_SIMON.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\UILibrary_Lucu_CombatEngineer.upk">
       <SubType>Content</SubType>
     </Content>

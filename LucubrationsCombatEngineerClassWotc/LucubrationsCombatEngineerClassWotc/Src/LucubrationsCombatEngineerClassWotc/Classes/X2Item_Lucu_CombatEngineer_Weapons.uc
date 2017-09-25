@@ -90,7 +90,7 @@ static function X2DataTemplate DetPack_CV()
 	Template.iEnvironmentDamage = default.DetPackEnvironmentalDamage; // For preview
     Template.Tier = 1;
 	
-	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_DetPack";
+	Template.GameArchetype = "Lucu_CombatEngineer_DetPack.WP_Grenade_DetPack";
     Template.SpawnedDestructibleArchetype = default.DetPackDestructibleArchetype;
 
 	Template.iPhysicsImpulse = 10;
@@ -132,7 +132,7 @@ static function X2DataTemplate DetPack_BM()
 	Template.iEnvironmentDamage = default.PlasmaPackEnvironmentalDamage; // For preview
 	Template.Tier = 2;
 	
-	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_PlasmaPack";
+	Template.GameArchetype = "Lucu_CombatEngineer_DetPack.WP_Grenade_PlasmaPack";
     Template.SpawnedDestructibleArchetype = default.PlasmaPackDestructibleArchetype;
 
 	Template.iPhysicsImpulse = 10;
@@ -183,7 +183,7 @@ static function X2DataTemplate SIMON_CV()
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
 	
-	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_SIMON_CV";
+	Template.GameArchetype = "Lucu_CombatEngineer_SIMON.WP_Grenade_SIMON_CV";
 
 	Template.iPhysicsImpulse = 10;
 
@@ -239,7 +239,7 @@ static function X2DataTemplate SIMON_MG()
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
 	
-	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_SIMON_MG";
+	Template.GameArchetype = "Lucu_CombatEngineer_SIMON.WP_Grenade_SIMON_MG";
 
 	Template.iPhysicsImpulse = 10;
 
@@ -295,7 +295,7 @@ static function X2DataTemplate SIMON_BM()
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
 	
-	Template.GameArchetype = "UILibrary_Lucu_CombatEngineer.WP_Grenade_SIMON_BM";
+	Template.GameArchetype = "Lucu_CombatEngineer_SIMON.WP_Grenade_SIMON_BM";
 
 	Template.iPhysicsImpulse = 10;
 
