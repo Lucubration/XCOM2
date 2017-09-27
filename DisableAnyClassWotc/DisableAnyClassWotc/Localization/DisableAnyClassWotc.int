@@ -1,0 +1,4 @@
+[DisableAnyClassWotc_MCMScreen]
++MCMPageLabel="Disable Any Class"
++MCMPageTitle="Disable Any Class"
++EnabledClassesGroupTitle="Enabled Classes"
