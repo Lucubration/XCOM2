@@ -1,0 +1,1 @@
+class UIModOptionsMenu_MPLobbyModOptionsMenu extends UIModOptionsMenu_ModOptionsMenu;

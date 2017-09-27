@@ -1,0 +1,1 @@
+class UIModOptionsMenu_HQModOptionsMenu extends UIModOptionsMenu_ModOptionsMenu;
