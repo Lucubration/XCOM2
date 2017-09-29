@@ -28,7 +28,14 @@ LocFriendlyName="Launch SIMON"
 LocLongDescription="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
 LocHelpText="Fires a SIMON breaching grenade at the target."
 LocFlyOverText="Launch SIMON"
-LocPromotionPopupText="Fires a SIMON breaching grenade at the target.<Bullet/> Destroys cover.</br><Bullet/> Deals no damage, but may disorient organic enemies.</br><Bullet/> Effect improves with higher-tier rifles."
+LocPromotionPopupText="Fires a SIMON breaching grenade at the target.<Bullet/> Destroys cover.<br/><Bullet/> Deals no damage, but may disorient organic enemies.<br/><Bullet/> Effect improves with higher-tier rifles."
+
+[Lucu_CombatEngineer_DeployableCover X2AbilityTemplate]
+LocFriendlyName="Deployable Cover"
+LocLongDescription="Places a barrier on the battlefield that may be used as cover by units.<Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
+LocHelpText="Places a barrier on the battlefield that may be used as cover by units."
+LocFlyOverText="Deployable Cover"
+LocPromotionPopupText="Places a barrier on the battlefield that may be used as cover by units.<Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
 
 ;-------------------------------------------------------------------------------------------
 ; Techs

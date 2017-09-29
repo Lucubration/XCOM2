@@ -34,6 +34,8 @@ var config int SIMON_MG_ClipSize;
 var config float SIMON_MG_Range;
 var config float SIMON_MG_Radius;
 var config float SIMON_MG_Angle;
+var config int SIMON_MG_StunLevel;
+var config int SIMON_MG_StunChance;
 
 var config WeaponDamageValue SIMON_BM_BaseDamage;
 var config int SIMON_BM_SoundRange;
@@ -217,6 +219,7 @@ static function X2DataTemplate SIMON_MG()
 {
 	local X2SIMONTemplate_Lucu_CombatEngineer Template;
 	local X2Effect_Lucu_CombatEngineer_ApplySIMONDamage SIMONDamageEffect;
+    local X2Effect_Stunned StunnedEffect;
 	local X2Effect_Knockback KnockbackEffect;
 
 	`CREATE_X2TEMPLATE(class'X2SIMONTemplate_Lucu_CombatEngineer', Template, default.SIMONMGItemName);
@@ -251,6 +254,11 @@ static function X2DataTemplate SIMON_MG()
 	SIMONDamageEffect.bExplosiveDamage = true;
 	Template.ThrownGrenadeEffects.AddItem(SIMONDamageEffect);
 	Template.LaunchedGrenadeEffects.AddItem(SIMONDamageEffect);
+    
+	StunnedEffect = class'X2StatusEffects'.static.CreateStunnedStatusEffect(default.SIMON_MG_StunLevel, default.SIMON_MG_StunChance, false);
+	StunnedEffect.bRemoveWhenSourceDies = false;
+	Template.ThrownGrenadeEffects.AddItem(StunnedEffect);
+	Template.LaunchedGrenadeEffects.AddItem(StunnedEffect);
 
     // Hide for higher-tier SIMON rounds?
 	//Template.HideIfResearched = 'AdvancedGrenades';

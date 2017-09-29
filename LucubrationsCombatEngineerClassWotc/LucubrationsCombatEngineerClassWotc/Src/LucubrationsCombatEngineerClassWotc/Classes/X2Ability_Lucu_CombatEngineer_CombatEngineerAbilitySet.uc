@@ -11,6 +11,8 @@ var name DetonateAbilityTemplateName;
 var name SIMONAbilityTemplateName;
 var name LaunchSIMONAbilityTemplateName;
 var name SIMONFuseAbilityTemplateName;
+var string DeployableCoverLoArchetype;
+var string DeployableCoverHiArchetype;
 var name PackmasterAbilityName;
     
 static function array<X2DataTemplate> CreateTemplates()
@@ -22,6 +24,7 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(SIMON());
     Templates.AddItem(LaunchSIMON());
     Templates.AddItem(SIMONFuse());
+    Templates.AddItem(DeployableCover());
 	
 	return Templates;
 }
@@ -605,6 +608,104 @@ static function X2AbilityTemplate SIMONFuse()
 	return Template;	
 }
 
+static function X2AbilityTemplate DeployableCover()
+{
+	local X2AbilityTemplate                                         Template;
+	local X2AbilityTarget_Lucu_CombatEngineer_DeployableCover	    Cursor;
+	local X2AbilityMultiTarget_Lucu_CombatEngineer_DeployableCover  RadiusMultiTarget;
+	local X2AbilityCost_ActionPoints                                ActionPointCost;
+	local X2Effect_SpawnDestructible                                SpawnCoverEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'Lucu_CombatEngineer_DeployableCover')
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
+	Template.TargetingMethod = class'X2TargetingMethod_Pillar';
+
+	Cursor = new class'X2AbilityTarget_Lucu_CombatEngineer_DeployableCover';
+    Cursor.FixedAbilityRange = 1;
+	Template.AbilityTargetStyle = Cursor;
+
+	RadiusMultiTarget = new class'X2AbilityMultiTarget_Lucu_CombatEngineer_DeployableCover';
+	RadiusMultiTarget.fTargetRadius = 0.25; // small amount so it just grabs one tile
+	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+
+	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+	Template.AbilityCosts.AddItem(ActionPointCost);
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+    
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_AlwaysShow;
+	Template.Hostility = eHostility_Defensive;
+	Template.IconImage = "img:///UILibrary_Lucu_CombatEngineer.UIPerk_deployablecover";
+	Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
+	Template.ConcealmentRule = eConceal_Always;
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	Template.AddShooterEffectExclusions();
+
+	SpawnCoverEffect = new class'X2Effect_SpawnDestructible';
+    SpawnCoverEffect.EffectName = 'Lucu_CombatEngineer_DeployableCover';
+	SpawnCoverEffect.DuplicateResponse = eDupe_Allow;
+    SpawnCoverEffect.BuildPersistentEffect(1, true, false, false);
+	SpawnCoverEffect.DestructibleArchetype = default.DeployableCoverLoArchetype;
+	Template.AddShooterEffect(SpawnCoverEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = DeployableCover_BuildVisualization;
+	
+	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.NonAggressiveChosenActivationIncreasePerUse;
+    
+	Template.CinescriptCameraType = "Loot";
+
+	return Template;
+}
+
+function DeployableCover_BuildVisualization(XComGameState VisualizeGameState)
+{
+	local XComGameStateHistory History;
+	local VisualizationActionMetadata ActionMetadata;
+	local XComGameStateContext_Ability AbilityContext;
+	local XComGameState_Unit SourceUnit;
+	local X2Action_PlayAnimation PlayAnimAction;
+	local XComGameState_Destructible DestructibleState;
+	local VisualizationActionMetadata BuildTrack;
+    
+	History = `XCOMHISTORY;
+	AbilityContext = XComGameStateContext_Ability(VisualizeGameState.GetContext());
+	SourceUnit = XComGameState_Unit(History.GetGameStateForObjectID(AbilityContext.InputContext.SourceObject.ObjectID,,VisualizeGameState.HistoryIndex));
+
+	ActionMetadata.StateObject_OldState = History.GetGameStateForObjectID(SourceUnit.ObjectID,, VisualizeGameState.HistoryIndex - 1);
+	ActionMetadata.StateObject_NewState = SourceUnit;
+	ActionMetadata.VisualizeActor = SourceUnit.GetVisualizer();
+
+	class'X2Action_ExitCover'.static.AddToVisualizationTree(ActionMetadata, AbilityContext);
+
+	PlayAnimAction = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTree(ActionMetadata, AbilityContext));
+	PlayAnimAction.bFinishAnimationWait = true;
+	PlayAnimAction.Params.AnimName = 'HL_LootBodyStart';
+
+	PlayAnimAction = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTree(ActionMetadata, AbilityContext));
+	PlayAnimAction.bFinishAnimationWait = true;
+	PlayAnimAction.Params.AnimName = 'HL_LootStop';
+
+	class'X2Action_EnterCover'.static.AddToVisualizationTree(ActionMetadata, AbilityContext);
+
+	foreach VisualizeGameState.IterateByClassType(class'XComGameState_Destructible', DestructibleState)
+	{
+		break;
+	}
+	`assert(DestructibleState != none);
+
+	BuildTrack.StateObject_NewState = DestructibleState;
+	BuildTrack.StateObject_OldState = DestructibleState;
+	BuildTrack.VisualizeActor = `XCOMHISTORY.GetVisualizer(DestructibleState.ObjectID);
+
+	class'X2Action_ShowSpawnedDestructible'.static.AddToVisualizationTree(BuildTrack, VisualizeGameState.GetContext());
+}
+
 DefaultProperties
 {
 	ThrowDetPackAbilityTemplateName="Lucu_CombatEngineer_ThrowDetPack"
@@ -613,5 +714,7 @@ DefaultProperties
     SIMONAbilityTemplateName="Lucu_CombatEngineer_SIMON"
     LaunchSIMONAbilityTemplateName="Lucu_CombatEngineer_LaunchSIMON"
     SIMONFuseAbilityTemplateName="Lucu_CombatEngineer_SIMONFuse"
+    DeployableCoverLoArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_Lucu_CombatEngineer_DeployableCover_1_Lo"
+    DeployableCoverHiArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_Lucu_CombatEngineer_DeployableCover_1_Hi"
     PackmasterAbilityName="Lucu_CombatEngineer_Packmaster"
 }

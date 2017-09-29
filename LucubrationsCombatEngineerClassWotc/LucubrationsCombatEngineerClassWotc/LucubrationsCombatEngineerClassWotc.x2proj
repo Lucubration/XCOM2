@@ -65,10 +65,16 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_AllOwnDetPacks.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_DeployableCover.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_DetPackRadius.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_SIMON.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityTarget_Lucu_CombatEngineer_DeployableCover.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet.uc">
