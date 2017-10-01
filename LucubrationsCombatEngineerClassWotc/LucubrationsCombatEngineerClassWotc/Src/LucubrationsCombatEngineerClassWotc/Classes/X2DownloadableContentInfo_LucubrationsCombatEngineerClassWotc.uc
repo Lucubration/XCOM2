@@ -16,21 +16,127 @@ class X2DownloadableContentInfo_LucubrationsCombatEngineerClassWotc extends X2Do
 /// create without the content installed. Subsequent saves will record that the content was installed.
 /// </summary>
 static event OnLoadedSavedGame()
-{}
+{
+    Initialize();
+}
+
+/// <summary>
+/// This method is run when the player loads a saved game directly into Strategy while this DLC is installed
+/// </summary>
+static event OnLoadedSavedGameToStrategy()
+{
+    Initialize();
+}
 
 /// <summary>
 /// Called when the player starts a new campaign while this DLC / Mod is installed
 /// </summary>
 static event InstallNewCampaign(XComGameState StartState)
-{}
+{
+    Initialize();
+}
 
 /// <summary>
 /// Called after the Templates have been created (but before they are validated) while this DLC / Mod is installed.
 /// </summary>
 static event OnPostTemplatesCreated()
 {
-	// Update the conventional bullpup template to make it starting equipment
-    MakeStartingItemTemplate('Bullpup_CV');
+}
+
+static function Initialize()
+{
+	// Try to add the Combat Engineer's GTS perk
+	//AddSoldierUnlockTemplate('OfficerTrainingSchool', '');
+
+    // Try to add the Combat Engineer's starting weapons to the XCom HQ inventory
+    AddStartingItemToXComHQ(class'X2Item_Lucu_CombatEngineer_Weapons'.default.DetpackCVItemName);
+
+    // Try to add the Combat Engineer's Plasma Pack tech to the game history
+    AddTechToHistory(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.PlasmaPackTechTemplateName);
+    AddTechToHistory(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.SIMONMKIITechTemplateName);
+    AddTechToHistory(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.DeployableCoverMKIITechTemplateName);
+}
+
+static function AddSoldierUnlockTemplate(name FacilityName, name UnlockName)
+{
+	local X2FacilityTemplate FacilityTemplate;
+
+	// Find the GTS facility template
+	FacilityTemplate = X2FacilityTemplate(class'X2StrategyElementTemplateManager'.static.GetStrategyElementTemplateManager().FindStrategyElementTemplate(FacilityName));
+	if (FacilityTemplate == none)
+		return;
+
+	if (FacilityTemplate.SoldierUnlockTemplates.Find(UnlockName) != INDEX_NONE)
+		return;
+
+	// Update the GTS template with the specified soldier unlock
+	FacilityTemplate.SoldierUnlockTemplates.AddItem(UnlockName);
+
+	`LOG("Lucubration Combat Engineer Class: Updated [" @ FacilityName @ "] template with [" @ UnlockName @ "].");
+}
+
+static function AddStartingItemToXComHQ(name TemplateName)
+{
+    local XComGameState_HeadquartersXCom XComHQ;
+    local XComGameStateHistory History;
+    local X2ItemTemplate ItemTemplate;
+    local XComGameState NewGameState;
+    local XComGameState_Item NewItemState;
+    
+    History = `XCOMHISTORY;
+    
+    XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+    
+    if (XComHQ.GetNumItemInInventory(TemplateName) == 0)
+    {
+        ItemTemplate = class'X2ItemTemplateManager'.static.GetItemTemplateManager().FindItemTemplate(TemplateName);
+    
+        if (ItemTemplate != none)
+        {
+            NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Updating HQ Storage to add [" @ string(TemplateName) @ "].");
+            XComHQ = XComGameState_HeadquartersXCom(NewGameState.CreateStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
+            NewGameState.AddStateObject(XComHQ);
+        
+            NewItemState = ItemTemplate.CreateInstanceFromTemplate(NewGameState);
+            NewGameState.AddStateObject(NewItemState);
+            XComHQ.AddItemToHQInventory(NewItemState);
+        
+		    `GAMERULES.SubmitGameState(NewGameState);
+        
+            `Log("Lucubration Combat Engineer Class: Item [" @ TemplateName @ "] added to HQ.");
+        }
+    }
+}
+
+static function AddTechToHistory(name TemplateName)
+{
+    local XComGameStateHistory History;
+    local X2TechTemplate TechTemplate;
+    local XComGameState NewGameState;
+    local XComGameState_Tech TechState;
+    
+    History = `XCOMHISTORY;
+    
+	foreach History.IterateByClassType(class'XComGameState_Tech', TechState)
+    {
+        if (TechState.GetMyTemplateName() == TemplateName)
+        {
+            return;
+        }
+    }
+    
+    TechTemplate = X2TechTemplate(class'XComGameState_Tech'.static.GetMyTemplateManager().FindStrategyElementTemplate(TemplateName));
+    
+    if (TechTemplate != none)
+    {
+        NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("Adding tech [" @ string(TemplateName) @ "] to history.");
+        TechState = XComGameState_Tech(NewGameState.CreateNewStateObject(class'XComGameState_Tech', TechTemplate));
+        NewGameState.AddStateObject(TechState);
+        
+		`GAMERULES.SubmitGameState(NewGameState);
+        
+        `Log("Lucubration Combat Engineer Class: Tech [" @ TemplateName @ "] added to history.");
+    }
 }
 
 static function MakeStartingItemTemplate(name TemplateName)
@@ -48,31 +154,4 @@ static function MakeStartingItemTemplate(name TemplateName)
             `Log("Lucubration Combat Engineer Class: Item template [" @ TemplateName @ "] set to starting equipment.");
         }
     }
-}
-
-// TODO: Remove during finalization
-static function PreventTargetingDetPacks()
-{
-    local X2DataTemplate DataTemplate;
-    local X2AbilityTemplate AbilityTemplate;
-    local X2AbilityToHitCalc_StandardAim StandardAim;
-    local X2Condition_Lucu_CombatEngineer_IsActiveDetPack IsDetPackCondition;
-
-	foreach class'X2AbilityTemplateManager'.static.GetAbilityTemplateManager().IterateTemplates(DataTemplate, none)
-	{
-		AbilityTemplate = X2AbilityTemplate(DataTemplate);
-		if (AbilityTemplate != none &&
-            AbilityTemplate.DataName != class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.DetonateAbilityTemplateName)
-		{
-			StandardAim = X2AbilityToHitCalc_StandardAim(AbilityTemplate.AbilityToHitCalc);
-			if (StandardAim != none)
-            {
-                IsDetPackCondition = new class'X2Condition_Lucu_CombatEngineer_IsActiveDetPack';
-                IsDetPackCondition.IsDetPack = false;
-                AbilityTemplate.AbilityTargetConditions.AddItem(IsDetPackCondition);
-    			
-                `LOG("Lucubration Combat Engineer Class: Applied Det Pack protection to ability template " @ string(AbilityTemplate.DataName) @ ".");
-            }
-		}
-	}
 }

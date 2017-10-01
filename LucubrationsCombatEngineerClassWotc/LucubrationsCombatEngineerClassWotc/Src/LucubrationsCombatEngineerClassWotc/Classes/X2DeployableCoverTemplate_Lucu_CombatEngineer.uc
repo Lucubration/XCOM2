@@ -1,0 +1,6 @@
+class X2DeployableCoverTemplate_Lucu_CombatEngineer extends X2DeployableTemplate_Lucu_CombatEngineer;
+
+DefaultProperties
+{
+	WeaponCat="lucu_combatengineer_deployablecover"
+}

@@ -28,14 +28,28 @@ LocFriendlyName="Launch SIMON"
 LocLongDescription="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
 LocHelpText="Fires a SIMON breaching grenade at the target."
 LocFlyOverText="Launch SIMON"
-LocPromotionPopupText="Fires a SIMON breaching grenade at the target.<Bullet/> Destroys cover.<br/><Bullet/> Deals no damage, but may disorient organic enemies.<br/><Bullet/> Effect improves with higher-tier rifles."
+LocPromotionPopupText="Fires a SIMON breaching grenade at the target.<br/><Bullet/> Minor damage to enemies, but high environment damage.<br/><Bullet/> High chance to disorient organic enemies."
 
 [Lucu_CombatEngineer_DeployableCover X2AbilityTemplate]
 LocFriendlyName="Deployable Cover"
-LocLongDescription="Places a barrier on the battlefield that may be used as cover by units.<Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
+LocLongDescription="Places a barrier on the battlefield that may be used as cover by units.<br/><Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
 LocHelpText="Places a barrier on the battlefield that may be used as cover by units."
 LocFlyOverText="Deployable Cover"
-LocPromotionPopupText="Places a barrier on the battlefield that may be used as cover by units.<Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
+LocPromotionPopupText="Places a barrier on the battlefield that may be used as cover by units.<br/><Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
+
+[Lucu_CombatEngineer_PlaceDeployableCover X2AbilityTemplate]
+LocFriendlyName="Place Deployable Cover"
+LocLongDescription="Places a barrier on the battlefield that may be used as cover by units.<br/><Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
+LocHelpText="Places a barrier on the battlefield that may be used as cover by units."
+LocFlyOverText="Place Deployable Cover"
+LocPromotionPopupText="Places a barrier on the battlefield that may be used as cover by units.<br/><Bullet/> Counts as low cover.<br/><Bullet/> 1 use per mission."
+
+[Lucu_CombatEngineer_RapidDeployment X2AbilityTemplate]
+LocFriendlyName="Rapid Deployment"
+LocLongDescription="Deploying most engineering devices no longer costs an action. Slightly increases the deployment range for these devices.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."
+LocHelpText="Deploying most engineering devices no longer costs an action. Slightly increases the deployment range for these devices."
+LocFlyOverText="Rapid Deployment"
+LocPromotionPopupText="Deploying most engineering devices no longer costs an action. Slightly increases the deployment range for these devices.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."
 
 ;-------------------------------------------------------------------------------------------
 ; Techs
@@ -44,6 +58,14 @@ LocPromotionPopupText="Places a barrier on the battlefield that may be used as c
 [Lucu_CombatEngineer_PlasmaPack X2TechTemplate]
 DisplayName="Plasma Pack"
 Summary="In studying the aliens' more complex explosive ordinance, we concluded that the best means of advancing our own Det Pack designs was to scrap the conventional composition entirely. In its place, we have theorized that an Elerium-based detonator could be the key to assembling a more effective demolition charge for our own troops." 
+
+[Lucu_CombatEngineer_SIMONMKII X2TechTemplate]
+DisplayName="SIMON MK II"
+Summary="In studying the aliens' more complex explosive ordinance, we concluded that the best means of advancing our own breaching grenade designs was to scrap the conventional composition entirely. In its place, we have theorized that an Elerium-based detonator could be the key to assembling a more effective breaching ordnance for our own troops." 
+
+[Lucu_CombatEngineer_DeployableCoverMKII X2TechTemplate]
+DisplayName="Deployable Cover MK II"
+Summary="Twice the box, twice the cover! The Deployable Cover MK II is bigger and tougher than the original, counting as high cover for soldiers. Purpose-built rifle rests and firing ports provide +10 aim for soldiers firing from behind its cover."
 
 ;-------------------------------------------------------------------------------------------
 ; Class

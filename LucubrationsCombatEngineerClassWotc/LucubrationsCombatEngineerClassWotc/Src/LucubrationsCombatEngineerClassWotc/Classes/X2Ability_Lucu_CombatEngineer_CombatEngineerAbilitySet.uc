@@ -3,6 +3,7 @@ class X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet extends X2Ability
 
 var config int DetPackCharges;
 var config int SIMONCharges;
+var config int DeployableCoverCharges;
 var config int PackmasterCharges;
 
 var name ThrowDetPackAbilityTemplateName;
@@ -11,8 +12,12 @@ var name DetonateAbilityTemplateName;
 var name SIMONAbilityTemplateName;
 var name LaunchSIMONAbilityTemplateName;
 var name SIMONFuseAbilityTemplateName;
+var name DeployableCoverTemplateName;
+var name PlaceDeployableCoverTemplateName;
+var name ThrowDeployableCoverTemplateName;
 var string DeployableCoverLoArchetype;
 var string DeployableCoverHiArchetype;
+var name RapidDeploymentTemplateName;
 var name PackmasterAbilityName;
     
 static function array<X2DataTemplate> CreateTemplates()
@@ -23,8 +28,10 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(Detonate());
     Templates.AddItem(SIMON());
     Templates.AddItem(LaunchSIMON());
-    Templates.AddItem(SIMONFuse());
+    //Templates.AddItem(SIMONFuse());
     Templates.AddItem(DeployableCover());
+    Templates.AddItem(PlaceDeployableCover());
+	Templates.AddItem(PurePassive(default.RapidDeploymentTemplateName, "img:///UILibrary_Lucu_CombatEngineer.UIPerk_rapidDeployment", true));
 	
 	return Templates;
 }
@@ -36,8 +43,8 @@ static function array<X2DataTemplate> CreateTemplates()
 static function X2AbilityTemplate ThrowDetPack()
 {
 	local X2AbilityTemplate						                    Template;	
-	local X2AbilityCost_ActionPoints			                    ActionPointCost;
-	local X2AbilityTarget_Cursor				                    CursorTarget;
+	local X2AbilityCost_Lucu_CombatEngineer_ActionPoints            ActionPointCost;
+	local X2AbilityTarget_Lucu_CombatEngineer_Deployable            AbilityTarget;
 	local X2AbilityMultiTarget_Lucu_CombatEngineer_DetPackRadius    RadiusMultiTarget;
 	local X2Effect_Lucu_CombatEngineer_DetPack                      DetPackEffect;
 	local X2AbilityCharges						                    Charges;
@@ -45,8 +52,9 @@ static function X2AbilityTemplate ThrowDetPack()
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, default.ThrowDetPackAbilityTemplateName);	
 	
-	ActionPointCost = new class'X2AbilityCost_ActionPoints';
+	ActionPointCost = new class'X2AbilityCost_Lucu_CombatEngineer_ActionPoints';
 	ActionPointCost.iNumPoints = 1;
+    ActionPointCost.DoNotConsumeAbilities.AddItem(default.RapidDeploymentTemplateName);
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
 	ChargeCost = new class'X2AbilityCost_Charges';
@@ -61,9 +69,8 @@ static function X2AbilityTemplate ThrowDetPack()
 
     Template.bHideAmmoWeaponDuringFire = true;
 	
-	CursorTarget = new class'X2AbilityTarget_Cursor';
-	CursorTarget.bRestrictToWeaponRange = true;
-	Template.AbilityTargetStyle = CursorTarget;
+	AbilityTarget = new class'X2AbilityTarget_Lucu_CombatEngineer_Deployable';
+	Template.AbilityTargetStyle = AbilityTarget;
 
 	RadiusMultiTarget = new class'X2AbilityMultiTarget_Lucu_CombatEngineer_DetPackRadius';
 	RadiusMultiTarget.bUseWeaponRadius = true;
@@ -236,8 +243,7 @@ static function X2AbilityTemplate Detonate()
     
 	Template.IconImage = "img:///UILibrary_XPACK_Common.PerkIcons.UIPerk_remotestart";
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
-	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_HideSpecificErrors;
-    Template.HideErrors.AddItem('AA_NoTargets');
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_ShowIfAvailable;
 	Template.Hostility = eHostility_Offensive;
 	Template.ShotHUDPriority = class'UIUtilities_Tactical'.const.CLASS_COLONEL_PRIORITY;
 	Template.TargetingMethod = class'X2TargetingMethod_Lucu_CombatEngineer_Detonate';
@@ -331,7 +337,8 @@ static function X2AbilityTemplate SIMON()
 	local X2AbilityTemplate									        Template;
 	local X2Effect_PersistentStatChange						        StatChangeEffect;
 	local X2Effect_Lucu_CombatEngineer_TransientUtilityItem	        TransientItemEffect;
-    local X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech   WeaponTechCondition;
+    local X2Condition_Lucu_CombatEngineer_HasTech                   TechCondition;
+    local int i;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, default.SIMONAbilityTemplateName);
 
@@ -352,96 +359,41 @@ static function X2AbilityTemplate SIMON()
 	StatChangeEffect.BuildPersistentEffect(1, true, false);
 	StatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
 	StatChangeEffect.DuplicateResponse = eDupe_Allow;
-	StatChangeEffect.AddPersistentStatChange(eStat_UtilityItems, 1); // Can't think of any clever way to make this value based on the item template, so I'll just hardcode the item size for now
+	StatChangeEffect.AddPersistentStatChange(eStat_UtilityItems, 1);
 	Template.AddTargetEffect(StatChangeEffect);
 
-    // Two of these effects, to add two ammo. It's either this or change the template's clip size
+    // Add one effect per charge
+    for (i = 0; i < default.SIMONCharges; i++)
+    {
+        // Conventional
+	    TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	    TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_CV';
+	    TransientItemEffect.BuildPersistentEffect(1, true, false);
+	    TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	    TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	    TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	    TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONCVItemName;
+	    TransientItemEffect.UseItemAsAmmo = true;
+        TechCondition = new class'X2Condition_Lucu_CombatEngineer_HasTech';
+        TechCondition.TechNames.AddItem(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.SIMONMKIITechTemplateName);
+        TechCondition.HasTech = false;
+        TransientItemEffect.TargetConditions.AddItem(TechCondition);
+	    Template.AddTargetEffect(TransientItemEffect);
 
-    // Conventional
-	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
-	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_CV';
-	TransientItemEffect.BuildPersistentEffect(1, true, false);
-	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
-	TransientItemEffect.DuplicateResponse = eDupe_Allow;
-	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
-	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONCVItemName;
-	TransientItemEffect.UseItemAsAmmo = true;
-    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
-    WeaponTechCondition.WeaponTech.AddItem('conventional');
-    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
-	Template.AddTargetEffect(TransientItemEffect);
-
-	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
-	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_CV';
-	TransientItemEffect.BuildPersistentEffect(1, true, false);
-	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
-	TransientItemEffect.DuplicateResponse = eDupe_Allow;
-	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
-	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONCVItemName;
-	TransientItemEffect.UseItemAsAmmo = true;
-    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
-    WeaponTechCondition.WeaponTech.AddItem('conventional');
-    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
-	Template.AddTargetEffect(TransientItemEffect);
-
-
-    // Magnetic
-	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
-	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_MG';
-	TransientItemEffect.BuildPersistentEffect(1, true, false);
-	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
-	TransientItemEffect.DuplicateResponse = eDupe_Allow;
-	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
-	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONMGItemName;
-	TransientItemEffect.UseItemAsAmmo = true;
-    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
-    WeaponTechCondition.WeaponTech.AddItem('magnetic');
-    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
-	Template.AddTargetEffect(TransientItemEffect);
-
-	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
-	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_MG';
-	TransientItemEffect.BuildPersistentEffect(1, true, false);
-	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
-	TransientItemEffect.DuplicateResponse = eDupe_Allow;
-	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
-	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONMGItemName;
-	TransientItemEffect.UseItemAsAmmo = true;
-    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
-    WeaponTechCondition.WeaponTech.AddItem('magnetic');
-    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
-	Template.AddTargetEffect(TransientItemEffect);
-
-
-    // Beam
-	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
-	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_BM';
-	TransientItemEffect.BuildPersistentEffect(1, true, false);
-	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
-	TransientItemEffect.DuplicateResponse = eDupe_Allow;
-	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
-	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONBMItemName;
-	TransientItemEffect.UseItemAsAmmo = true;
-    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
-    WeaponTechCondition.WeaponTech.AddItem('beam');
-    WeaponTechCondition.WeaponTech.AddItem('alien');
-    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
-	Template.AddTargetEffect(TransientItemEffect);
-
-	TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
-	TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_BM';
-	TransientItemEffect.BuildPersistentEffect(1, true, false);
-	TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
-	TransientItemEffect.DuplicateResponse = eDupe_Allow;
-	TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
-	TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONBMItemName;
-	TransientItemEffect.UseItemAsAmmo = true;
-    WeaponTechCondition = new class'X2Condition_Lucu_CombatEngineer_AbilitySourceWeaponTech';
-    WeaponTechCondition.WeaponTech.AddItem('beam');
-    WeaponTechCondition.WeaponTech.AddItem('alien');
-    TransientItemEffect.TargetConditions.AddItem(WeaponTechCondition);
-	Template.AddTargetEffect(TransientItemEffect);
-
+        // Magnetic
+	    TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	    TransientItemEffect.EffectName = 'Lucu_CombatEngineer_SIMON_MG';
+	    TransientItemEffect.BuildPersistentEffect(1, true, false);
+	    TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	    TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	    TransientItemEffect.AbilityTemplateName = default.LaunchSIMONAbilityTemplateName;
+	    TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.SIMONMGItemName;
+	    TransientItemEffect.UseItemAsAmmo = true;
+        TechCondition = new class'X2Condition_Lucu_CombatEngineer_HasTech';
+        TechCondition.TechNames.AddItem(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.SIMONMKIITechTemplateName);
+        TransientItemEffect.TargetConditions.AddItem(TechCondition);
+	    Template.AddTargetEffect(TransientItemEffect);
+    }
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	//  NOTE: No visualization on purpose!
@@ -461,8 +413,6 @@ static function X2AbilityTemplate LaunchSIMON()
 	local X2Condition_AbilitySourceWeapon	                GrenadeCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, default.LaunchSIMONAbilityTemplateName);
-
-	Template.AbilityCosts.AddItem(default.WeaponActionTurnEnding);
 
 	AmmoCost = new class'X2AbilityCost_Ammo';
 	AmmoCost.iAmmo = 1;
@@ -543,96 +493,168 @@ static function X2AbilityTemplate LaunchSIMON()
 	return Template;
 }
 
-static function X2AbilityTemplate SIMONFuse()
-{
-	local X2AbilityTemplate                             Template;
-	local X2AbilityCost_Ammo                            AmmoCost;
-	local X2AbilityMultiTarget_Radius                   RadiusMultiTarget;
-	local X2Condition_UnitProperty                      UnitPropertyCondition;
-	local X2AbilityTrigger_EventListener                EventListener;
-	local X2AbilityToHitCalc_StandardAim                StandardAim;
-
-	`CREATE_X2ABILITY_TEMPLATE(Template, default.SIMONFuseAbilityTemplateName);
-	
-	AmmoCost = new class'X2AbilityCost_Ammo';	
-	AmmoCost.iAmmo = 1;
-	Template.AbilityCosts.AddItem(AmmoCost);
-		
-	StandardAim = new class'X2AbilityToHitCalc_StandardAim';
-	StandardAim.bGuaranteedHit = true;
-	Template.AbilityToHitCalc = StandardAim;
-
-	Template.AbilityTargetStyle = default.SelfTarget;
-
-	RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
-	RadiusMultiTarget.bAddPrimaryTargetAsMultiTarget = true;
-	RadiusMultiTarget.bUseWeaponRadius = true;
-	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
-
-	UnitPropertyCondition = new class'X2Condition_UnitProperty';
-	UnitPropertyCondition.ExcludeDead = true;
-	UnitPropertyCondition.ExcludeFriendlyToSource = false;
-	UnitPropertyCondition.ExcludeHostileToSource = false;
-	UnitPropertyCondition.FailOnNonUnits = false; 
-	Template.AbilityMultiTargetConditions.AddItem(UnitPropertyCondition);
-
-	EventListener = new class'X2AbilityTrigger_EventListener';
-	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
-	EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.FuseListener;
-	EventListener.ListenerData.EventID = class'X2Ability_PsiOperativeAbilitySet'.default.FuseEventName;
-	EventListener.ListenerData.Filter = eFilter_None;
-	Template.AbilityTriggers.AddItem(EventListener);
-	
-	Template.AbilitySourceName = 'eAbilitySource_Standard';
-	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
-	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_firerocket";
-	Template.bUseAmmoAsChargesForHUD = true;
-	Template.bDisplayInUITooltip = false;
-	Template.bDisplayInUITacticalText = false;
-
-	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
-	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
-	Template.MergeVisualizationFn = FuseMergeVisualization;
-	Template.bShowActivation = true;
-	Template.bSkipExitCoverWhenFiring = true;
-	Template.ActionFireClass = class'X2Action_Fire_IgniteFuse';
-	Template.bHideWeaponDuringFire = true;
-	Template.Hostility = eHostility_Offensive;
-
-	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
-	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
-	Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
-
-	Template.bFrameEvenWhenUnitIsHidden = true;
-
-	return Template;	
-}
+//static function X2AbilityTemplate SIMONFuse()
+//{
+	//local X2AbilityTemplate                             Template;
+	//local X2AbilityCost_Ammo                            AmmoCost;
+	//local X2AbilityMultiTarget_Radius                   RadiusMultiTarget;
+	//local X2Condition_UnitProperty                      UnitPropertyCondition;
+	//local X2AbilityTrigger_EventListener                EventListener;
+	//local X2AbilityToHitCalc_StandardAim                StandardAim;
+//
+	//`CREATE_X2ABILITY_TEMPLATE(Template, default.SIMONFuseAbilityTemplateName);
+	//
+	//AmmoCost = new class'X2AbilityCost_Ammo';	
+	//AmmoCost.iAmmo = 1;
+	//Template.AbilityCosts.AddItem(AmmoCost);
+		//
+	//StandardAim = new class'X2AbilityToHitCalc_StandardAim';
+	//StandardAim.bGuaranteedHit = true;
+	//Template.AbilityToHitCalc = StandardAim;
+//
+	//Template.AbilityTargetStyle = default.SelfTarget;
+//
+	//RadiusMultiTarget = new class'X2AbilityMultiTarget_Radius';
+	//RadiusMultiTarget.bAddPrimaryTargetAsMultiTarget = true;
+	//RadiusMultiTarget.bUseWeaponRadius = true;
+	//Template.AbilityMultiTargetStyle = RadiusMultiTarget;
+//
+	//UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	//UnitPropertyCondition.ExcludeDead = true;
+	//UnitPropertyCondition.ExcludeFriendlyToSource = false;
+	//UnitPropertyCondition.ExcludeHostileToSource = false;
+	//UnitPropertyCondition.FailOnNonUnits = false; 
+	//Template.AbilityMultiTargetConditions.AddItem(UnitPropertyCondition);
+//
+	//EventListener = new class'X2AbilityTrigger_EventListener';
+	//EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
+	//EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.FuseListener;
+	//EventListener.ListenerData.EventID = class'X2Ability_PsiOperativeAbilitySet'.default.FuseEventName;
+	//EventListener.ListenerData.Filter = eFilter_None;
+	//Template.AbilityTriggers.AddItem(EventListener);
+	//
+	//Template.AbilitySourceName = 'eAbilitySource_Standard';
+	//Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	//Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_firerocket";
+	//Template.bUseAmmoAsChargesForHUD = true;
+	//Template.bDisplayInUITooltip = false;
+	//Template.bDisplayInUITacticalText = false;
+//
+	//Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+	//Template.MergeVisualizationFn = FuseMergeVisualization;
+	//Template.bShowActivation = true;
+	//Template.bSkipExitCoverWhenFiring = true;
+	//Template.ActionFireClass = class'X2Action_Fire_IgniteFuse';
+	//Template.bHideWeaponDuringFire = true;
+	//Template.Hostility = eHostility_Offensive;
+//
+	//Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
+	//Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.StandardShotChosenActivationIncreasePerUse;
+	//Template.LostSpawnIncreasePerUse = class'X2AbilityTemplateManager'.default.GrenadeLostSpawnIncreasePerUse;
+//
+	//Template.bFrameEvenWhenUnitIsHidden = true;
+//
+	//return Template;	
+//}
 
 static function X2AbilityTemplate DeployableCover()
 {
-	local X2AbilityTemplate                                         Template;
-	local X2AbilityTarget_Lucu_CombatEngineer_DeployableCover	    Cursor;
-	local X2AbilityMultiTarget_Lucu_CombatEngineer_DeployableCover  RadiusMultiTarget;
-	local X2AbilityCost_ActionPoints                                ActionPointCost;
-	local X2Effect_SpawnDestructible                                SpawnCoverEffect;
+	local X2AbilityTemplate									        Template;
+	local X2Effect_PersistentStatChange						        StatChangeEffect;
+	local X2Effect_Lucu_CombatEngineer_TransientUtilityItem	        TransientItemEffect;
+    local X2Condition_Lucu_CombatEngineer_HasTech                   TechCondition;
+    local int i;
 
-	`CREATE_X2ABILITY_TEMPLATE(Template, 'Lucu_CombatEngineer_DeployableCover')
+	`CREATE_X2ABILITY_TEMPLATE(Template, default.DeployableCoverTemplateName);
+
+	Template.AdditionalAbilities.AddItem(default.PlaceDeployableCoverTemplateName);
+
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.IconImage = "img:///UILibrary_Lucu_CombatEngineer.UIPerk_deployablecover";
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+
+	// Expand the unit's utility items to allow the transient item. This goes before the transient item effect
+	StatChangeEffect = new class'X2Effect_PersistentStatChange';
+	StatChangeEffect.EffectName = 'Lucu_CombatEngineer_TransientDeployableCoverUtilitySlot';
+	StatChangeEffect.BuildPersistentEffect(1, true, false);
+	StatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	StatChangeEffect.DuplicateResponse = eDupe_Allow;
+	StatChangeEffect.AddPersistentStatChange(eStat_UtilityItems, 1);
+	Template.AddTargetEffect(StatChangeEffect);
+
+    // One effect per charge
+    for (i = 0; i < default.DeployableCoverCharges; i++)
+    {
+        // Lo Cover
+	    TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	    TransientItemEffect.EffectName = 'Lucu_CombatEngineer_DeployableCover_Lo';
+	    TransientItemEffect.BuildPersistentEffect(1, true, false);
+	    TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	    TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	    TransientItemEffect.AbilityTemplateName = default.PlaceDeployableCoverTemplateName;
+	    TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.DeployableCoverLoItemName;
+        TechCondition = new class'X2Condition_Lucu_CombatEngineer_HasTech';
+        TechCondition.TechNames.AddItem(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.DeployableCoverMKIITechTemplateName);
+        TechCondition.HasTech = false;
+        TransientItemEffect.TargetConditions.AddItem(TechCondition);
+	    Template.AddTargetEffect(TransientItemEffect);
+
+        // Hi Cover
+	    TransientItemEffect = new class'X2Effect_Lucu_CombatEngineer_TransientUtilityItem';
+	    TransientItemEffect.EffectName = 'Lucu_CombatEngineer_DeployableCover_Hi';
+	    TransientItemEffect.BuildPersistentEffect(1, true, false);
+	    TransientItemEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage, false,,Template.AbilitySourceName);
+	    TransientItemEffect.DuplicateResponse = eDupe_Allow;
+	    TransientItemEffect.AbilityTemplateName = default.PlaceDeployableCoverTemplateName;
+	    TransientItemEffect.ItemTemplateName = class'X2Item_Lucu_CombatEngineer_Weapons'.default.DeployableCoverHiItemName;
+        TechCondition = new class'X2Condition_Lucu_CombatEngineer_HasTech';
+        TechCondition.TechNames.AddItem(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.DeployableCoverMKIITechTemplateName);
+        TransientItemEffect.TargetConditions.AddItem(TechCondition);
+	    Template.AddTargetEffect(TransientItemEffect);
+    }
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	//  NOTE: No visualization on purpose!
+	
+	return Template;
+}
+
+static function X2AbilityTemplate PlaceDeployableCover()
+{
+	local X2AbilityTemplate                                         Template;
+	local X2AbilityCost_Ammo				                        AmmoCost;
+	local X2AbilityCost_Lucu_CombatEngineer_ActionPoints            ActionPointCost;
+	local X2AbilityTarget_Lucu_CombatEngineer_Deployable    	    AbilityTarget;
+	local X2AbilityMultiTarget_Lucu_CombatEngineer_DeployableCover  RadiusMultiTarget;
+	local X2Effect_Lucu_CombatEngineer_SpawnDeployable              SpawnDeployableEffect;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, default.PlaceDeployableCoverTemplateName);
+    
+	AmmoCost = new class'X2AbilityCost_Ammo';
+	AmmoCost.iAmmo = 1;
+	Template.AbilityCosts.AddItem(AmmoCost);
+    
+	ActionPointCost = new class'X2AbilityCost_Lucu_CombatEngineer_ActionPoints';
+	ActionPointCost.iNumPoints = 1;
+    ActionPointCost.DoNotConsumeAbilities.AddItem(default.RapidDeploymentTemplateName);
+	Template.AbilityCosts.AddItem(ActionPointCost);
 
 	Template.AbilityToHitCalc = default.DeadEye;
 	Template.AbilityTriggers.AddItem(default.PlayerInputTrigger);
 	Template.TargetingMethod = class'X2TargetingMethod_Pillar';
 
-	Cursor = new class'X2AbilityTarget_Lucu_CombatEngineer_DeployableCover';
-    Cursor.FixedAbilityRange = 1;
-	Template.AbilityTargetStyle = Cursor;
+	AbilityTarget = new class'X2AbilityTarget_Lucu_CombatEngineer_Deployable';
+	Template.AbilityTargetStyle = AbilityTarget;
 
 	RadiusMultiTarget = new class'X2AbilityMultiTarget_Lucu_CombatEngineer_DeployableCover';
 	RadiusMultiTarget.fTargetRadius = 0.25; // small amount so it just grabs one tile
 	Template.AbilityMultiTargetStyle = RadiusMultiTarget;
-
-	ActionPointCost = new class'X2AbilityCost_ActionPoints';
-	ActionPointCost.iNumPoints = 1;
-	Template.AbilityCosts.AddItem(ActionPointCost);
 
 	Template.AbilitySourceName = 'eAbilitySource_Perk';
     
@@ -641,57 +663,38 @@ static function X2AbilityTemplate DeployableCover()
 	Template.IconImage = "img:///UILibrary_Lucu_CombatEngineer.UIPerk_deployablecover";
 	Template.AbilityConfirmSound = "TacticalUI_ActivateAbility";
 	Template.ConcealmentRule = eConceal_Always;
+	Template.bUseAmmoAsChargesForHUD = true;
+	Template.bDisplayInUITooltip = false;
+	Template.bDisplayInUITacticalText = false;
+    Template.bSkipExitCoverWhenFiring = true;
 
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
 	Template.AddShooterEffectExclusions();
 
-	SpawnCoverEffect = new class'X2Effect_SpawnDestructible';
-    SpawnCoverEffect.EffectName = 'Lucu_CombatEngineer_DeployableCover';
-	SpawnCoverEffect.DuplicateResponse = eDupe_Allow;
-    SpawnCoverEffect.BuildPersistentEffect(1, true, false, false);
-	SpawnCoverEffect.DestructibleArchetype = default.DeployableCoverLoArchetype;
-	Template.AddShooterEffect(SpawnCoverEffect);
+	SpawnDeployableEffect = new class'X2Effect_Lucu_CombatEngineer_SpawnDeployable';
+    SpawnDeployableEffect.EffectName = 'Lucu_CombatEngineer_DeployableCover';
+	SpawnDeployableEffect.DuplicateResponse = eDupe_Allow;
+    SpawnDeployableEffect.BuildPersistentEffect(1, true, false, false);
+	Template.AddShooterEffect(SpawnDeployableEffect);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = DeployableCover_BuildVisualization;
+	Template.CustomFireAnim = 'HL_LootBodyStart';
 	
 	Template.SuperConcealmentLoss = class'X2AbilityTemplateManager'.default.SuperConcealmentStandardShotLoss;
 	Template.ChosenActivationIncreasePerUse = class'X2AbilityTemplateManager'.default.NonAggressiveChosenActivationIncreasePerUse;
     
-	Template.CinescriptCameraType = "Loot";
+	Template.CinescriptCameraType = "StandardGrenadeFiring";
 
 	return Template;
 }
 
 function DeployableCover_BuildVisualization(XComGameState VisualizeGameState)
 {
-	local XComGameStateHistory History;
-	local VisualizationActionMetadata ActionMetadata;
-	local XComGameStateContext_Ability AbilityContext;
-	local XComGameState_Unit SourceUnit;
-	local X2Action_PlayAnimation PlayAnimAction;
 	local XComGameState_Destructible DestructibleState;
 	local VisualizationActionMetadata BuildTrack;
-    
-	History = `XCOMHISTORY;
-	AbilityContext = XComGameStateContext_Ability(VisualizeGameState.GetContext());
-	SourceUnit = XComGameState_Unit(History.GetGameStateForObjectID(AbilityContext.InputContext.SourceObject.ObjectID,,VisualizeGameState.HistoryIndex));
 
-	ActionMetadata.StateObject_OldState = History.GetGameStateForObjectID(SourceUnit.ObjectID,, VisualizeGameState.HistoryIndex - 1);
-	ActionMetadata.StateObject_NewState = SourceUnit;
-	ActionMetadata.VisualizeActor = SourceUnit.GetVisualizer();
-
-	class'X2Action_ExitCover'.static.AddToVisualizationTree(ActionMetadata, AbilityContext);
-
-	PlayAnimAction = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTree(ActionMetadata, AbilityContext));
-	PlayAnimAction.bFinishAnimationWait = true;
-	PlayAnimAction.Params.AnimName = 'HL_LootBodyStart';
-
-	PlayAnimAction = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTree(ActionMetadata, AbilityContext));
-	PlayAnimAction.bFinishAnimationWait = true;
-	PlayAnimAction.Params.AnimName = 'HL_LootStop';
-
-	class'X2Action_EnterCover'.static.AddToVisualizationTree(ActionMetadata, AbilityContext);
+	TypicalAbility_BuildVisualization(VisualizeGameState);
 
 	foreach VisualizeGameState.IterateByClassType(class'XComGameState_Destructible', DestructibleState)
 	{
@@ -714,7 +717,10 @@ DefaultProperties
     SIMONAbilityTemplateName="Lucu_CombatEngineer_SIMON"
     LaunchSIMONAbilityTemplateName="Lucu_CombatEngineer_LaunchSIMON"
     SIMONFuseAbilityTemplateName="Lucu_CombatEngineer_SIMONFuse"
-    DeployableCoverLoArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_Lucu_CombatEngineer_DeployableCover_1_Lo"
-    DeployableCoverHiArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_Lucu_CombatEngineer_DeployableCover_1_Hi"
+    DeployableCoverTemplateName="Lucu_CombatEngineer_DeployableCover"
+    PlaceDeployableCoverTemplateName="Lucu_CombatEngineer_PlaceDeployableCover"
+    DeployableCoverLoArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_DeployableCover_1_Lo"
+    DeployableCoverHiArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_DeployableCover_1_Hi"
+    RapidDeploymentTemplateName="Lucu_CombatEngineer_RapidDeployment"
     PackmasterAbilityName="Lucu_CombatEngineer_Packmaster"
 }

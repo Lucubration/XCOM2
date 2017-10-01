@@ -18,8 +18,8 @@ TacticalText="An improved version of the Det Pack, the Plasma Pack may be deploy
 [Lucu_CombatEngineer_SIMON_CV X2SIMONTemplate_Lucu_CombatEngineer]
 FriendlyName="SIMON"
 FriendlyNamePlural="SIMON"
-BriefSummary="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
-TacticalText="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers."
+BriefSummary="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers. Organic units hit by the SIMON are disoriented."
+TacticalText="This bullet-trap, rocket-propelled grenade delivers a directed blast designed to breach doors and other barriers. Organic units hit by the SIMON are disoriented."
 ThrownAbilityName="Launch SIMON"
 ThrownAbilityHelpText="Fires a SIMON breaching grenade at the target."
 LaunchedAbilityName="Launch SIMON"
@@ -44,3 +44,16 @@ ThrownAbilityName="Launch SIMON MK III"
 ThrownAbilityHelpText="Fires a SIMON MK III breaching grenade at the target."
 LaunchedAbilityName="Launch SIMON MK III"
 LaunchedAbilityHelpText="Fires a SIMON MK III breaching grenade at the target."
+
+
+[Lucu_CombatEngineer_DeployableCover_Lo X2SIMONTemplate_Lucu_CombatEngineer]
+FriendlyName="Deployable Cover"
+FriendlyNamePlural="Deployable Cover"
+BriefSummary="It's exactly what it sounds like: an collapsable, armor-plated box."
+TacticalText="It's exactly what it sounds like: an collapsable, armor-plated box."
+
+[Lucu_CombatEngineer_DeployableCover_Hi X2SIMONTemplate_Lucu_CombatEngineer]
+FriendlyName="Deployable Cover MK II"
+FriendlyNamePlural="Deployable Cover MK II"
+BriefSummary="The MK II Deployable Cover is twice the box for twice the coverage."
+TacticalText="The MK II Deployable Cover is twice the box for twice the coverage."

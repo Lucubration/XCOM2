@@ -18,7 +18,10 @@ simulated function GetMultiTargetsForLocation(const XComGameState_Ability Abilit
 
         foreach UnitRefs(UnitRef)
         {
-            Target.AdditionalTargets.AddItem(UnitRef);
+            if (Target.AdditionalTargets.Find('ObjectId', UnitRef.ObjectId) == INDEX_NONE)
+            {
+                Target.AdditionalTargets.AddItem(UnitRef);
+            }
         }
     }
 }

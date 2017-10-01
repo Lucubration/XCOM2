@@ -40,6 +40,9 @@
     <Content Include="Config\XComLucu_CombatEngineer_Tech.ini">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Content\Lucu_CombatEngineer_DeployableCover.upk">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Content\Lucu_CombatEngineer_DetPack.upk">
       <SubType>Content</SubType>
     </Content>
@@ -62,6 +65,9 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\UIStrategyScreenListener_Lucu_CombatEngineer.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityCost_Lucu_CombatEngineer_ActionPoints.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_AllOwnDetPacks.uc">
       <SubType>Content</SubType>
     </Content>
@@ -74,7 +80,7 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_SIMON.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityTarget_Lucu_CombatEngineer_DeployableCover.uc">
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityTarget_Lucu_CombatEngineer_Deployable.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet.uc">
@@ -89,7 +95,19 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_HasActiveDetPack.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_HasTech.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_IsActiveDetPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Condition_Lucu_CombatEngineer_TargetHasAbility.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2DeployableCoverTemplate_Lucu_CombatEngineer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2DeployableTemplate_Lucu_CombatEngineer.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2DetPackTemplate_Lucu_CombatEngineer.uc">
@@ -102,6 +120,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_DetPack.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_SpawnDeployable.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_TransientUtilityItem.uc">

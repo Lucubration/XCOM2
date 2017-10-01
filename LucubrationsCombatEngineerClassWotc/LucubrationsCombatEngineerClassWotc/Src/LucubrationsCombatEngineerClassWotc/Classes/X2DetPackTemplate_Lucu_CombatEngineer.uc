@@ -1,6 +1,4 @@
-class X2DetPackTemplate_Lucu_CombatEngineer extends X2WeaponTemplate;
-
-var string SpawnedDestructibleArchetype;
+class X2DetPackTemplate_Lucu_CombatEngineer extends X2DeployableTemplate_Lucu_CombatEngineer;
 
 DefaultProperties
 {

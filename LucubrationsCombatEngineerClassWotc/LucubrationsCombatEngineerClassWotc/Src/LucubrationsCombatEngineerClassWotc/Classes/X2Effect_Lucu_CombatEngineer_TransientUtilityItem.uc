@@ -254,19 +254,22 @@ static function StateObjectReference FindAbility(XComGameState_Unit UnitState, n
 	foreach UnitState.Abilities(ObjRef)
 	{
 		AbilityState = XComGameState_Ability(History.GetGameStateForObjectID(ObjRef.ObjectID));
-		if (AbilityState.GetMyTemplateName() == TemplateName)
-		{
-			// If MatchSourceWeapon is set, we find either an ability matching the source weapon reference or matching NO source weapon
-			if (MatchSourceWeapon.ObjectID > 0 && AbilityState.SourceWeapon.ObjectID > 0 &&
-				MatchSourceWeapon.ObjectID != AbilityState.SourceWeapon.ObjectID)
-				continue;
-			// If MatchSourceAmmo is set, we find either an ability matching the source ammo reference or matching NO source ammo
-			if (MatchSourceAmmo.ObjectID > 0 && AbilityState.SourceAmmo.ObjectID > 0 &&
-				MatchSourceAmmo.ObjectID != AbilityState.SourceAmmo.ObjectID)
-				continue;
+        if (AbilityState != none)
+        {
+		    if (AbilityState.GetMyTemplateName() == TemplateName)
+		    {
+			    // If MatchSourceWeapon is set, we find either an ability matching the source weapon reference or matching NO source weapon
+			    if (MatchSourceWeapon.ObjectID > 0 && AbilityState.SourceWeapon.ObjectID > 0 &&
+				    MatchSourceWeapon.ObjectID != AbilityState.SourceWeapon.ObjectID)
+				    continue;
+			    // If MatchSourceAmmo is set, we find either an ability matching the source ammo reference or matching NO source ammo
+			    if (MatchSourceAmmo.ObjectID > 0 && AbilityState.SourceAmmo.ObjectID > 0 &&
+				    MatchSourceAmmo.ObjectID != AbilityState.SourceAmmo.ObjectID)
+				    continue;
 
-			return ObjRef;
-		}
+			    return ObjRef;
+		    }
+        }
 	}
 
 	return EmptyRef;
