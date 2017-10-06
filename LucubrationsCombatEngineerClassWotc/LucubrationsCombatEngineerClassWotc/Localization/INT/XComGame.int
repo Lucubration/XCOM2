@@ -2,6 +2,20 @@
 ; Abilities
 ;-------------------------------------------------------------------------------------------
 
+[Lucu_CombatEngineer_MovingMelee X2AbilityTemplate]
+LocFriendlyName="Rake"
+LocLongDescription="Make a crippling melee attack against an adjacent target. A successful hit will reduce the target's mobility by 4 for their next turn."
+LocHelpText="Make a crippling melee attack against an adjacent target. A successful hit will reduce the target's mobility by 4 for their next turn."
+LocFlyOverText="Rake"
+LocPromotionPopupText="Make a crippling melee attack against an adjacent target. A successful hit will reduce the target's mobility for their next turn.<br/><Bullet/>-4 Mobility."
+
+[Lucu_CombatEngineer_DetPack X2AbilityTemplate]
+LocFriendlyName="Det Pack"
+LocLongDescription="Originally intended as a demolition charge for detroying structures and other obstacles, the Det Pack nonetheless makes a reasonably effective weaponized explosive. The Det Pack may be throw into position on the battlefield and remotely detonated by the Combat Engineer."
+LocHelpText="The Combat Engineer packs one Det Pack as standard equipment."
+LocFlyOverText="Det Pack"
+LocPromotionPopupText="<Bullet/> +1 Det Pack per mission."
+
 [Lucu_CombatEngineer_ThrowDetPack X2AbilityTemplate]
 LocFriendlyName="Throw Det Pack"
 LocLongDescription="Throw a Det Pack. Det Packs may be remotely detonated by the Combat Engineer."
@@ -51,6 +65,51 @@ LocHelpText="Deploying most engineering devices no longer costs an action. Sligh
 LocFlyOverText="Rapid Deployment"
 LocPromotionPopupText="Deploying most engineering devices no longer costs an action. Slightly increases the deployment range for these devices.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."
 
+[Lucu_CombatEngineer_AcceptableTolerances X2AbilityTemplate]
+LocFriendlyName="Acceptable Tolerances"
+LocLongDescription="Increase the range at which deployables may be placed.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."
+LocHelpText="Increase the range at which deployables may be placed.<br/><Bullet/> +3 tile deployment range."
+LocFlyOverText="Acceptable Tolerances"
+LocPromotionPopupText="Increase the range at which deployables may be placed.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."
+
+[Lucu_CombatEngineer_AcceptableTolerancesUnlock X2SoldierAbilityUnlockTemplate]
+DisplayName="Combat Engineer: Acceptable Tolerances"
+Summary="The Combat Engineer learns to be more flexible in the deployment of their equipment. Increases the range at which deployables may be placed.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."
+
+;-------------------------------------------------------------------------------------------
+; Weapons
+;-------------------------------------------------------------------------------------------
+
+[Lucu_CombatEngineer_FellingAxe_CV X2WeaponTemplate]
+FriendlyName="Felling Axe"
+FriendlyNamePlural="Felling Axes"
+BriefSummary="The traditional weapon of pioneers, the Felling Axe is both a diverse and useful tool and a solid wedge of metal for hacking at your foes."
+TacticalText="The traditional weapon of pioneers, the Felling Axe is both a diverse and useful tool and a solid wedge of metal for hacking at your foes."
+AbilityDescName="axe"
+
+[Lucu_CombatEngineer_FellingAxe_MG X2WeaponTemplate]
+FriendlyName="Vibro Axe"
+FriendlyNamePlural="Vibro Axes"
+BriefSummary="This refinement of the Felling Axe uses powerful electromagnetic fields to induce an incredibly fast vibration in the weapon, allowing it to cleave obstacles and enemies with ease."
+TacticalText="This refinement of the Felling Axe uses powerful electromagnetic fields to induce an incredibly fast vibration in the weapon, allowing it to cleave obstacles and enemies with ease."
+AbilityDescName="axe"
+
+[Lucu_CombatEngineer_FellingAxe_BM X2WeaponTemplate]
+FriendlyName="Power Axe"
+FriendlyNamePlural="Power Axes"
+BriefSummary="This powerful weapon boasts a heavy alloy head and a rocket-assisted swing. It strikes to devastating effect."
+TacticalText="This powerful weapon boasts a heavy alloy head and a rocket-assisted swing. It strikes to devastating effect."
+AbilityDescName="axe"
+
+;-------------------------------------------------------------------------------------------
+; Schematics
+;-------------------------------------------------------------------------------------------
+
+[Lucu_CombatEngineer_FellingAxe_MG X2SchematicTemplate]
+m_strClassLabel="ENGINEER"
+[Lucu_CombatEngineer_FellingAxe_BM X2SchematicTemplate]
+m_strClassLabel="ENGINEER"
+
 ;-------------------------------------------------------------------------------------------
 ; Techs
 ;-------------------------------------------------------------------------------------------
@@ -73,9 +132,8 @@ Summary="Twice the box, twice the cover! The Deployable Cover MK II is bigger an
 
 [Lucu_CombatEngineer X2SoldierClassTemplate]
 DisplayName="Engineer"
-ClassSummary="The Combat Engineer is the grease in the wheels of the XCOM machine. Their role involves various specializations in the field of logistics, including pathfinding, deployable equipment and cover destruction."
-LeftAbilityTreeTitle="Sapper"
-RightAbilityTreeTitle="Pioneer"
+ClassSummary="The Combat Engineer is the grease in the wheels of the XCOM machine. While capable combatants in their own right, the Combat Engineer's role also involves various specializations in the field of logistics, including pathfinding, deployable equipment and cover destruction."
 AbilityTreeTitles[0]="Sapper"
-AbilityTreeTitles[1]="Pioneer"
-AbilityTreeTitles[2]="XCOM"
+AbilityTreeTitles[1]="Field Engineer"
+AbilityTreeTitles[2]="Pioneer"
+AbilityTreeTitles[3]="XCOM"

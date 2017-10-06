@@ -1,6 +1,27 @@
 class X2Item_Lucu_CombatEngineer_Weapons extends X2Item
     config(Lucu_CombatEngineer_Item);
 
+var config WeaponDamageValue FellingAxe_CV_BaseDamage;
+var config int FellingAxe_CV_Aim;
+var config int FellingAxe_CV_CritChance;
+var config int FellingAxe_CV_iClipSize;
+var config int FellingAxe_CV_iSoundRange;
+var config int FellingAxe_CV_iEnvironmentDamage;
+
+var config WeaponDamageValue FellingAxe_MG_BaseDamage;
+var config int FellingAxe_MG_Aim;
+var config int FellingAxe_MG_CritChance;
+var config int FellingAxe_MG_iClipSize;
+var config int FellingAxe_MG_iSoundRange;
+var config int FellingAxe_MG_iEnvironmentDamage;
+
+var config WeaponDamageValue FellingAxe_BM_BaseDamage;
+var config int FellingAxe_BM_Aim;
+var config int FellingAxe_BM_CritChance;
+var config int FellingAxe_BM_iClipSize;
+var config int FellingAxe_BM_iSoundRange;
+var config int FellingAxe_BM_iEnvironmentDamage;
+
 var config float DetPackRange;
 var config int DetPackRadius;
 var config WeaponDamageValue DetPackDamage;
@@ -37,28 +58,19 @@ var config float SIMON_MG_Angle;
 var config int SIMON_MG_StunLevel;
 var config int SIMON_MG_StunChance;
 
-//var config WeaponDamageValue SIMON_BM_BaseDamage;
-//var config int SIMON_BM_SoundRange;
-//var config int SIMON_BM_EnvironmentDamage;
-//var config int SIMON_BM_Supplies;
-//var config int SIMON_BM_TradingPostValue;
-//var config int SIMON_BM_Points;
-//var config int SIMON_BM_ClipSize;
-//var config float SIMON_BM_Range;
-//var config float SIMON_BM_Radius;
-//var config float SIMON_BM_Angle;
-
 var config int DeployableCover_Lo_Range;
 var config string DeployableCover_Lo_DestructibleArchetype;
 
 var config int DeployableCover_Hi_Range;
 var config string DeployableCover_Hi_DestructibleArchetype;
 
+var name FellingAxeCVItemName;
+var name FellingAxeMGItemName;
+var name FellingAxeBMItemName;
 var name DetpackCVItemName;
 var name DetpackBMItemName;
 var name SIMONCVItemName;
 var name SIMONMGItemName;
-//var name SIMONBMItemName;
 var name DeployableCoverLoItemName;
 var name DeployableCoverHiItemName;
 
@@ -66,15 +78,145 @@ static function array<X2DataTemplate> CreateTemplates()
 {
 	local array<X2DataTemplate> Weapons;
 
+    Weapons.AddItem(FellingAxe_CV());
+    Weapons.AddItem(FellingAxe_MG());
+    Weapons.AddItem(FellingAxe_BM());
 	Weapons.AddItem(DetPack_CV());
 	Weapons.AddItem(DetPack_BM());
 	Weapons.AddItem(SIMON_CV());
 	Weapons.AddItem(SIMON_MG());
-	//Weapons.AddItem(SIMON_BM());
     Weapons.AddItem(DeployableCover_Lo());
     Weapons.AddItem(DeployableCover_Hi());
 
 	return Weapons;
+}
+
+//---------------------------------------------------------------------------------------------------
+// Felling Axe
+//---------------------------------------------------------------------------------------------------
+
+static function X2DataTemplate FellingAxe_CV()
+{
+	local X2WeaponTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2WeaponTemplate', Template, default.FellingAxeCVItemName);
+	Template.WeaponPanelImage = "_HuntsmansAxe";                       // used by the UI. Probably determines iconview of the weapon.
+
+	Template.ItemCat = 'weapon';
+	Template.WeaponCat = 'lucu_combatengineer_fellingaxe';
+	Template.WeaponTech = 'conventional';
+	Template.strImage = "img:///UILibrary_DLC2Images.ConvHuntmansAxe";
+	Template.EquipSound = "Sword_Equip_Conventional";
+	Template.InventorySlot = eInvSlot_SecondaryWeapon;
+	Template.StowedLocation = eSlot_RightBack;
+	// This all the resources; sounds, animations, models, physics, the works.
+	Template.GameArchetype = "DLC_60_WP_HunterAxe_CV.WP_HunterAxe_CV";
+	Template.Tier = 0;
+
+	Template.iRadius = 1;
+	Template.NumUpgradeSlots = 1;
+	Template.InfiniteAmmo = true;
+	Template.iPhysicsImpulse = 5;
+
+	Template.iRange = 0;
+	Template.BaseDamage = default.FellingAxe_CV_BaseDamage;
+	Template.Aim = default.FellingAxe_CV_Aim;
+	Template.CritChance = default.FellingAxe_CV_CritChance;
+	Template.iSoundRange = default.FellingAxe_CV_iSoundRange;
+	Template.iEnvironmentDamage = default.FellingAxe_CV_IEnvironmentDamage;
+	Template.BaseDamage.DamageType = 'Melee';
+	
+	Template.StartingItem = true;
+	Template.CanBeBuilt = false;
+	Template.bInfiniteItem = true;
+
+	Template.DamageTypeTemplateName = 'Melee';
+
+	return Template;
+}
+
+static function X2DataTemplate FellingAxe_MG()
+{
+	local X2WeaponTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2WeaponTemplate', Template, default.FellingAxeMGItemName);
+	Template.WeaponPanelImage = "_HuntsmansAxe";                       // used by the UI. Probably determines iconview of the weapon.
+
+	Template.ItemCat = 'weapon';
+	Template.WeaponCat = 'lucu_combatengineer_fellingaxe';
+	Template.WeaponTech = 'magnetic';
+	Template.strImage = "img:///UILibrary_DLC2Images.MagHuntmansAxe";
+	Template.EquipSound = "Sword_Equip_Magnetic";
+	Template.InventorySlot = eInvSlot_SecondaryWeapon;
+	Template.StowedLocation = eSlot_RightBack;
+	// This all the resources; sounds, animations, models, physics, the works.
+	Template.GameArchetype = "DLC60_WP_HunterAxe_MG.WP_HunterAxe_MG";
+	Template.Tier = 2;
+
+	Template.iRadius = 1;
+	Template.NumUpgradeSlots = 2;
+	Template.InfiniteAmmo = true;
+	Template.iPhysicsImpulse = 5;
+
+	Template.iRange = 0;
+	Template.BaseDamage = default.FellingAxe_MG_BaseDamage;
+	Template.Aim = default.FellingAxe_MG_Aim;
+	Template.CritChance = default.FellingAxe_MG_CritChance;
+	Template.iSoundRange = default.FellingAxe_MG_ISoundRange;
+	Template.iEnvironmentDamage = default.FellingAxe_MG_IEnvironmentDamage;
+	Template.BaseDamage.DamageType='Melee';
+
+	Template.CreatorTemplateName = class'X2Item_Lucu_CombatEngineer_Schematics'.default.FellingAxeMGSchematicTemplateName; // The schematic which creates this item
+	Template.BaseItem = default.FellingAxeCVItemName; // Which item this will be upgraded from
+	
+	Template.CanBeBuilt = false;
+	Template.bInfiniteItem = true;
+
+	Template.DamageTypeTemplateName = 'Melee';
+
+	return Template;
+}
+
+static function X2DataTemplate FellingAxe_BM()
+{
+	local X2WeaponTemplate Template;
+
+	`CREATE_X2TEMPLATE(class'X2WeaponTemplate', Template, default.FellingAxeBMItemName);
+	Template.WeaponPanelImage = "_HuntsmansAxe";                       // used by the UI. Probably determines iconview of the weapon.
+
+	Template.ItemCat = 'weapon';
+	Template.WeaponCat = 'lucu_combatengineer_fellingaxe';
+	Template.WeaponTech = 'beam';
+	Template.strImage = "img:///UILibrary_DLC2Images.BeamHuntmansAxe";
+	Template.EquipSound = "Sword_Equip_Beam";
+	Template.InventorySlot = eInvSlot_SecondaryWeapon;
+	Template.StowedLocation = eSlot_RightBack;
+	// This all the resources; sounds, animations, models, physics, the works.
+	Template.GameArchetype = "DLC60_WP_HunterAxe_BM.WP_HunterAxe_BM";
+	Template.Tier = 4;
+
+	Template.iRadius = 1;
+	Template.NumUpgradeSlots = 2;
+	Template.InfiniteAmmo = true;
+	Template.iPhysicsImpulse = 5;
+
+	Template.iRange = 0;
+	Template.BaseDamage = default.FellingAxe_BM_BaseDamage;
+	Template.Aim = default.FellingAxe_BM_Aim;
+	Template.CritChance = default.FellingAxe_BM_CritChance;
+	Template.iSoundRange = default.FellingAxe_BM_ISoundRange;
+	Template.iEnvironmentDamage = default.FellingAxe_BM_IEnvironmentDamage;
+	Template.BaseDamage.DamageType='Melee';
+
+	Template.CreatorTemplateName = class'X2Item_Lucu_CombatEngineer_Schematics'.default.FellingAxeBMSchematicTemplateName; // The schematic which creates this item
+	Template.BaseItem = default.FellingAxeMGItemName; // Which item this will be upgraded from
+
+	Template.CanBeBuilt = false;
+	Template.bInfiniteItem = true;
+
+	Template.DamageTypeTemplateName = 'Melee';
+	
+	return Template;
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -91,15 +233,17 @@ static function X2DataTemplate DetPack_CV()
 	Template.strImage = "img:///UILibrary_Lucu_CombatEngineer.X2InventoryIcons.Inv_X4";
 	Template.EquipSound = "StrategyUI_Grenade_Equip";
 	Template.WeaponTech = 'conventional';
-	Template.InventorySlot = eInvSlot_SecondaryWeapon;
+	Template.InventorySlot = eInvSlot_Utility;
     
     // These parameters give us proper target visualizations when throwing detpacks
 	Template.fRange = default.DetPackRange;
 	Template.iRadius = default.DetPackRadius;
 	Template.BaseDamage = default.DetPackDamage;
 	Template.iEnvironmentDamage = default.DetPackEnvironmentalDamage; // For preview
-    Template.Tier = 1;
+    Template.Tier = -3;
 	
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.ThrowDetPackAbilityTemplateName);
+
 	Template.GameArchetype = "Lucu_CombatEngineer_DetPack.WP_Grenade_DetPack";
     Template.SpawnedDestructibleArchetype = default.DetPackDestructibleArchetype;
 
@@ -131,15 +275,17 @@ static function X2DataTemplate DetPack_BM()
 	Template.strImage = "img:///UILibrary_Lucu_CombatEngineer.X2InventoryIcons.Inv_X4";
 	Template.EquipSound = "StrategyUI_Grenade_Equip";
 	Template.WeaponTech = 'beam';
-	Template.InventorySlot = eInvSlot_SecondaryWeapon;
+	Template.InventorySlot = eInvSlot_Utility;
     
     // These parameters give us proper target visualizations when throwing detpacks
 	Template.fRange = default.PlasmaPackRange;
 	Template.iRadius = default.PlasmaPackRadius;
 	Template.BaseDamage = default.PlasmaPackDamage;
 	Template.iEnvironmentDamage = default.PlasmaPackEnvironmentalDamage; // For preview
-	Template.Tier = 2;
+	Template.Tier = -2;
 	
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.ThrowDetPackAbilityTemplateName);
+
 	Template.GameArchetype = "Lucu_CombatEngineer_DetPack.WP_Grenade_PlasmaPack";
     Template.SpawnedDestructibleArchetype = default.PlasmaPackDestructibleArchetype;
 
@@ -190,7 +336,6 @@ static function X2DataTemplate SIMON_CV()
 	Template.Tier = -3;
 
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
-	//Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
 	
 	Template.GameArchetype = "Lucu_CombatEngineer_SIMON.WP_Grenade_SIMON_CV";
 
@@ -250,7 +395,6 @@ static function X2DataTemplate SIMON_MG()
 	Template.Tier = -3;
 
 	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
-	//Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
 	
 	Template.GameArchetype = "Lucu_CombatEngineer_SIMON.WP_Grenade_SIMON_MG";
 
@@ -288,60 +432,7 @@ static function X2DataTemplate SIMON_MG()
     
 	return Template;
 }
-/*
-static function X2DataTemplate SIMON_BM()
-{
-	local X2SIMONTemplate_Lucu_CombatEngineer Template;
-	local X2Effect_Lucu_CombatEngineer_ApplySIMONDamage DamageEffect;
-	local X2Effect_Knockback KnockbackEffect;
 
-	`CREATE_X2TEMPLATE(class'X2SIMONTemplate_Lucu_CombatEngineer', Template, default.SIMONBMItemName);
-
-	Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_Rocket_Launcher";
-	Template.EquipSound = "StrategyUI_Grenade_Equip";
-	Template.AddAbilityIconOverride(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName, "img:///UILibrary_PerkIcons.UIPerk_firerocket");
-
-	Template.iRange = default.SIMON_BM_Range;
-	Template.iRadius = default.SIMON_BM_Radius;
-	Template.BaseDamage = default.SIMON_BM_BaseDamage;
-	Template.iSoundRange = default.SIMON_BM_SoundRange;
-	Template.iEnvironmentDamage = default.SIMON_BM_EnvironmentDamage;
-	Template.TradingPostValue = default.SIMON_BM_TradingPostValue;
-	Template.iClipSize = default.SIMON_BM_ClipSize;
-	Template.fAngle = default.SIMON_BM_Angle;
-	Template.DamageTypeTemplateName = 'Explosion';
-	Template.Tier = -3;
-
-	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.LaunchSIMONAbilityTemplateName);
-	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.SIMONFuseAbilityTemplateName);
-	
-	Template.GameArchetype = "Lucu_CombatEngineer_SIMON.WP_Grenade_SIMON_BM";
-
-	Template.iPhysicsImpulse = 10;
-
-	Template.StartingItem = false;
-	Template.CanBeBuilt = false;
-	Template.bInfiniteItem = false;
-    
-	DamageEffect = new class'X2Effect_Lucu_CombatEngineer_ApplySIMONDamage';
-	DamageEffect.bExplosiveDamage = true;
-	Template.ThrownGrenadeEffects.AddItem(DamageEffect);
-	Template.LaunchedGrenadeEffects.AddItem(DamageEffect);
-    
-	Template.OnThrowBarkSoundCue = 'ThrowGrenade';
-
-	KnockbackEffect = new class'X2Effect_Knockback';
-	KnockbackEffect.KnockbackDistance = 4;
-	Template.ThrownGrenadeEffects.AddItem(KnockbackEffect);
-	Template.LaunchedGrenadeEffects.AddItem(KnockbackEffect);
-	
-	Template.WeaponPrecomputedPathData.InitialPathTime = 0.4f;
-	Template.WeaponPrecomputedPathData.MaxPathTime = 0.8f;
-	Template.WeaponPrecomputedPathData.MaxNumberOfBounces = 0;
-    
-	return Template;
-}
-*/
 static function X2DataTemplate DeployableCover_Lo()
 {
 	local X2DeployableCoverTemplate_Lucu_CombatEngineer Template;
@@ -350,7 +441,7 @@ static function X2DataTemplate DeployableCover_Lo()
 
 	Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_Storage_Module";
 	Template.EquipSound = "StrategyUI_Grenade_Equip";
-	Template.AddAbilityIconOverride(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverTemplateName, "img:///UILibrary_Lucu_CombatEngineer.UIPerk_deployablecover");
+	Template.AddAbilityIconOverride(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverAbilityTemplateName, "img:///UILibrary_Lucu_CombatEngineer.UIPerk_deployablecover");
 
 	Template.WeaponTech = 'conventional';
 	Template.InventorySlot = eInvSlot_Utility;
@@ -359,7 +450,7 @@ static function X2DataTemplate DeployableCover_Lo()
 	Template.iClipSize = 1;
 	Template.Tier = -3;
     
-	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverTemplateName);
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverAbilityTemplateName);
     
 	Template.iPhysicsImpulse = 10;
 
@@ -384,7 +475,7 @@ static function X2DataTemplate DeployableCover_Hi()
     
 	Template.strImage = "img:///UILibrary_StrategyImages.X2InventoryIcons.Inv_Storage_Module";
 	Template.EquipSound = "StrategyUI_Grenade_Equip";
-	Template.AddAbilityIconOverride(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverTemplateName, "img:///UILibrary_Lucu_CombatEngineer.UIPerk_deployablecover");
+	Template.AddAbilityIconOverride(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverAbilityTemplateName, "img:///UILibrary_Lucu_CombatEngineer.UIPerk_deployablecover");
     
 	Template.WeaponTech = 'conventional';
 	Template.InventorySlot = eInvSlot_Utility;
@@ -393,7 +484,7 @@ static function X2DataTemplate DeployableCover_Hi()
 	Template.iClipSize = 1;
 	Template.Tier = -2;
 
-	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverTemplateName);
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.PlaceDeployableCoverAbilityTemplateName);
 
 	Template.GameArchetype = "Lucu_CombatEngineer_DeployableCover.WP_Grenade_DeployableCover_Hi";
     Template.SpawnedDestructibleArchetype = default.DeployableCover_Hi_DestructibleArchetype;
@@ -412,11 +503,13 @@ static function X2DataTemplate DeployableCover_Hi()
 
 DefaultProperties
 {
+    FellingAxeCVItemName="Lucu_CombatEngineer_FellingAxe_CV"
+    FellingAxeMGItemName="Lucu_CombatEngineer_FellingAxe_MG"
+    FellingAxeBMItemName="Lucu_CombatEngineer_FellingAxe_BM"
 	DetpackCVItemName="Lucu_CombatEngineer_DetPack_CV"
     DetpackBMItemName="Lucu_CombatEngineer_DetPack_BM"
     SIMONCVItemName="Lucu_CombatEngineer_SIMON_CV"
     SIMONMGItemName="Lucu_CombatEngineer_SIMON_MG"
-    //SIMONBMItemName="Lucu_CombatEngineer_SIMON_BM"
     DeployableCoverLoItemName="Lucu_CombatEngineer_DeployableCover_Lo"
     DeployableCoverHiItemName="Lucu_CombatEngineer_DeployableCover_Hi"
 }

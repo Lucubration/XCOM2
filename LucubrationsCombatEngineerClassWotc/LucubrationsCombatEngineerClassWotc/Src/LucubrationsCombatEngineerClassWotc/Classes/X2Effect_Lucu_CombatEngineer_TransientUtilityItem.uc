@@ -6,6 +6,7 @@ var int ClipSize;						// If set > 0, override the template clip size
 var bool LookForItemUpgrades;			// If set, effect will look for upgrades to item template
 
 var bool UseItemAsAmmo;					// Item is used as ammo source for ability, not weapon
+var array<name> BonusAmmoAbilityNames;  // Each ability in this array will give 1 bonus ammo on item creation/marge
 
 simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffectParameters, XComGameState_BaseObject kNewTargetState, XComGameState NewGameState, XComGameState_Effect NewEffectState)
 {
@@ -19,6 +20,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	local XComGameState_Lucu_CombatEngineer_Effect_TransientUtilityItem	TransientItemEffectState;
 	local XGInventoryItem												TransientItemVisualizer;
 	local XComWeapon													TransientItemWeapon;
+    local int                                                           StartingAmmo;
 	local StateObjectReference											AbilityRef, SourceWeaponRef, SourceAmmoRef, ItemSetAbilityRef;
 	local X2AbilityTemplate												AbilityTemplate;
 	local XComGameState_Ability											ItemSetAbilityState, AbilityState;
@@ -39,6 +41,9 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 			TransientItemTemplate = X2WeaponTemplate(class'X2ItemTemplateManager'.static.GetItemTemplateManager().FindItemTemplate(TransientItemTemplateName));
 			if (TransientItemTemplate != none && TransientItemTemplate.InventorySlot == eInvSlot_Utility)
 			{
+                // Get the starting ammo count for the item
+                StartingAmmo = GetStartingAmmo(UnitState, TransientItemTemplate);
+
 				// Check for whether the unit has this item already
 				TransientItemState = GetItemOfTemplateName(UnitState, TransientItemTemplateName, NewGameState);
 
@@ -49,6 +54,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 
 					// Create an instance of the item
 					TransientItemState = TransientItemTemplate.CreateInstanceFromTemplate(NewGameState);
+                    TransientItemState.Ammo = StartingAmmo;
 					NewGameState.AddStateObject(TransientItemState);
 
 					CreatedNewItem = true;
@@ -154,12 +160,9 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 					// The unit has this item already, so we'll just add ammo to it
 					if (TransientItemTemplate != none && TransientItemTemplate.bMergeAmmo)
 					{
-						if (ClipSize == 0)
-							ClipSize = TransientItemTemplate.iClipSize;
+						TransientItemState.Ammo += StartingAmmo;
 
-						TransientItemState.Ammo += ClipSize;
-
-						`LOG("Lucubration Combat Engineer Class: Transient Item " @ TransientItemState.GetMyTemplateName() @ " merged " @ string(TransientItemTemplate.iClipSize) @ " ammo into unit " @ UnitState.GetFullName() @ " inventory.");
+						`LOG("Lucubration Combat Engineer Class: Transient Item " @ TransientItemState.GetMyTemplateName() @ " merged " @ string(StartingAmmo) @ " ammo into unit " @ UnitState.GetFullName() @ " inventory.");
 					}
 					else
 						`LOG("Lucubration Combat Engineer Class: Transient Item " @ TransientItemState.GetMyTemplateName() @ " not added to unit " @ UnitState.GetFullName() @ " inventory (duplicate item).");
@@ -204,6 +207,31 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	}
 
 	super.OnEffectAdded(ApplyEffectParameters, kNewTargetState, NewGameState, NewEffectState);
+}
+
+function int GetStartingAmmo(XComGameState_Unit UnitState, X2WeaponTemplate TransientItemTemplate)
+{
+    local name BonusAmmoAbilityName;
+    local int StartingAmmo;
+
+    if (ClipSize > 0)
+    {
+        StartingAmmo = ClipSize;
+    }
+    else
+    {
+        StartingAmmo = TransientItemTemplate.iClipSize;
+    }
+
+    foreach BonusAmmoAbilityNames(BonusAmmoAbilityName)
+    {
+        if (UnitState.HasSoldierAbility(BonusAmmoAbilityName))
+        {
+            StartingAmmo++;
+        }
+    }
+
+    return StartingAmmo;
 }
 
 static function name FindUpgradeItemTemplateName(name TemplateName)

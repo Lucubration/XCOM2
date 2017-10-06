@@ -46,12 +46,12 @@ static event OnPostTemplatesCreated()
 static function Initialize()
 {
 	// Try to add the Combat Engineer's GTS perk
-	//AddSoldierUnlockTemplate('OfficerTrainingSchool', '');
+	AddSoldierUnlockTemplate('OfficerTrainingSchool', class'X2StrategyElement_Lucu_CombatEngineer_AcademyUnlocks'.default.AcceptableTolerancesUnlockName);
 
     // Try to add the Combat Engineer's starting weapons to the XCom HQ inventory
-    AddStartingItemToXComHQ(class'X2Item_Lucu_CombatEngineer_Weapons'.default.DetpackCVItemName);
+    AddStartingItemToXComHQ(class'X2Item_Lucu_CombatEngineer_Weapons'.default.FellingAxeCVItemName);
 
-    // Try to add the Combat Engineer's Plasma Pack tech to the game history
+    // Try to add the Combat Engineer's techs to the game history
     AddTechToHistory(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.PlasmaPackTechTemplateName);
     AddTechToHistory(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.SIMONMKIITechTemplateName);
     AddTechToHistory(class'X2StrategyElement_Lucu_CombatEngineer_Techs'.default.DeployableCoverMKIITechTemplateName);

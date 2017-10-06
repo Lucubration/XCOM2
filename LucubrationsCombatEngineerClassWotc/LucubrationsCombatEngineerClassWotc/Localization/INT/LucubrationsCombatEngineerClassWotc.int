@@ -57,3 +57,11 @@ FriendlyName="Deployable Cover MK II"
 FriendlyNamePlural="Deployable Cover MK II"
 BriefSummary="The MK II Deployable Cover is twice the box for twice the coverage."
 TacticalText="The MK II Deployable Cover is twice the box for twice the coverage."
+
+
+;-------------------------------------------------------------------------------------------
+; Effects
+;-------------------------------------------------------------------------------------------
+[X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet]
++CrippledEffectFriendlyName="Crippled"
++CrippledEffectFriendlyDesc="<Bullet/> -4 mobility."

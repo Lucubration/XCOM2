@@ -5,5 +5,4 @@ var float fAngle;
 DefaultProperties
 {
 	WeaponCat="lucu_combatengineer_simon"
-	ItemCat="lucu_combatengineer_simon"
 }

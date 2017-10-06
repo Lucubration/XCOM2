@@ -1,7 +1,7 @@
 class X2AbilityTarget_Lucu_CombatEngineer_Deployable extends X2AbilityTarget_Cursor
 	config(Lucu_CombatEngineer_Ability);
 
-var config float RapidDeploymentBonusRange;
+var config float AcceptableTolerancesBonusRange;
 
 simulated function float GetCursorRangeMeters(XComGameState_Ability AbilityState)
 {
@@ -18,9 +18,9 @@ simulated function float GetCursorRangeMeters(XComGameState_Ability AbilityState
     TargetRange = WeaponTemplate.fRange;
 	Shooter = XComGameState_Unit(History.GetGameStateForObjectID(SourceWeapon.OwnerStateObject.ObjectID));
 
-    if (Shooter.FindAbility(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.RapidDeploymentTemplateName).ObjectID > 0)
+    if (Shooter.FindAbility(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.AcceptableTolerancesAbilityTemplateName).ObjectID > 0)
     {
-        TargetRange += default.RapidDeploymentBonusRange;
+        TargetRange += default.AcceptableTolerancesBonusRange;
     }
 
     return `UNITSTOMETERS(TargetRange);

@@ -65,7 +65,7 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\UIStrategyScreenListener_Lucu_CombatEngineer.uc">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityCost_Lucu_CombatEngineer_ActionPoints.uc">
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityCost_Lucu_CombatEngineer_FreeAbilityEffect.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2AbilityMultiTarget_Lucu_CombatEngineer_AllOwnDetPacks.uc">
@@ -132,6 +132,12 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2SIMONTemplate_Lucu_CombatEngineer.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2StrategyElement_Lucu_CombatEngineer_AcademyUnlocks.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Item_Lucu_CombatEngineer_Schematics.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2StrategyElement_Lucu_CombatEngineer_Techs.uc">

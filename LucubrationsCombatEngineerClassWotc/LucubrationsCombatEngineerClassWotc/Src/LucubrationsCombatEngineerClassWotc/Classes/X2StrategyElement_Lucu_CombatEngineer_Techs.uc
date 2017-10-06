@@ -1,6 +1,6 @@
 class X2StrategyElement_Lucu_CombatEngineer_Techs extends X2StrategyElement
     config(Lucu_CombatEngineer_Tech);
-
+    
 var config int PlasmaPack_PointsToComplete;
 var config int PlasmaPack_SuppliesQuantity;
 var config int PlasmaPack_EleriumCoreQuantity;
