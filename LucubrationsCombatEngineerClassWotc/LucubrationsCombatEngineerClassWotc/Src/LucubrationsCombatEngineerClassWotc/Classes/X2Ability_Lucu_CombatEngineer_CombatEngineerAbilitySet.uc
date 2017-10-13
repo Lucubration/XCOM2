@@ -6,8 +6,10 @@ var config int RakeCrippledDuration;
 var config int DetPackCharges;
 var config int SIMONCharges;
 var config int DeployableCoverCharges;
+var config int SentryCameraCharges;
 var config int RapidDeploymentCooldown;
 var config int PackmasterCharges;
+var config float AcceptableTolerancesBonusRange;
 
 var localized string CrippledEffectFriendlyName;
 var localized string CrippledEffectFriendlyDesc;
@@ -24,9 +26,12 @@ var name DeployableCoverAbilityTemplateName;
 var name PlaceDeployableCoverAbilityTemplateName;
 var string DeployableCoverLoArchetype;
 var string DeployableCoverHiArchetype;
+var name SentryCameraAbilityTemplateName;
+var name ThrowSentryCameraAbilityTemplateName;
 var name RapidDeploymentAbilityTemplateName;
 var name RapidDeploymentEffectName;
 var name PackmasterAbilityTemplateName;
+var name SkirmisherAbilityTemplateName;
 var name AcceptableTolerancesAbilityTemplateName;
     
 static function array<X2DataTemplate> CreateTemplates()
@@ -42,6 +47,7 @@ static function array<X2DataTemplate> CreateTemplates()
     Templates.AddItem(DeployableCover());
     Templates.AddItem(PlaceDeployableCover());
 	Templates.AddItem(RapidDeployment());
+    Templates.AddItem(Skirmisher());
 	Templates.AddItem(PurePassive(default.AcceptableTolerancesAbilityTemplateName, "img:///UILibrary_CombatEngineerClass.UIPerk_acceptableTolerances"));
 	
 	return Templates;
@@ -791,6 +797,12 @@ function DeployableCover_BuildVisualization(XComGameState VisualizeGameState)
 	class'X2Action_ShowSpawnedDestructible'.static.AddToVisualizationTree(BuildTrack, VisualizeGameState.GetContext());
 }
 
+//---------------------------------------------------------------------------------------------------
+// Rapid Deployment
+//---------------------------------------------------------------------------------------------------
+
+// TODO: Update to apply to all utility items and heavy weapons
+
 static function X2AbilityTemplate RapidDeployment()
 {
 	local X2AbilityTemplate				Template;
@@ -840,6 +852,43 @@ static function X2AbilityTemplate RapidDeployment()
 	return Template;
 }
 
+static function X2AbilityTemplate Skirmisher()
+{
+	local X2AbilityTemplate Template;
+    local X2Effect_Lucu_CombatEngineer_Skirmisher SkirmisherEffect;
+    
+	`CREATE_X2ABILITY_TEMPLATE(Template, default.SkirmisherAbilityTemplateName);
+
+	Template.IconImage = "img:///UILibrary_XPACK_Common.PerkIcons.UIPerk_Momentum";
+	Template.AbilitySourceName = 'eAbilitySource_Perk';
+	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+	Template.bIsPassive = true;
+    
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+	Template.AbilityTriggers.AddItem(default.UnitPostBeginPlayTrigger);
+    
+	SkirmisherEffect = new class'X2Effect_Lucu_CombatEngineer_Skirmisher';
+	SkirmisherEffect.BuildPersistentEffect(1, true, false);
+	SkirmisherEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.LocLongDescription, Template.IconImage, true,, Template.AbilitySourceName);
+	Template.AddTargetEffect(SkirmisherEffect);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	// Note: no visualization on purpose!
+
+	Template.bCrossClassEligible = true;
+
+	return Template;
+}
+
+//---------------------------------------------------------------------------------------------------
+// Sentry Camera
+//---------------------------------------------------------------------------------------------------
+
+// TODO: Add Sentry Camera item and throw abilities
+// TODO: Add Sentry Camera destructible archetype
+
 DefaultProperties
 {
     MovingMeleeAbilityTemplateName="Lucu_CombatEngineer_MovingMelee"
@@ -854,8 +903,11 @@ DefaultProperties
     PlaceDeployableCoverAbilityTemplateName="Lucu_CombatEngineer_PlaceDeployableCover"
     DeployableCoverLoArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_DeployableCover_1_Lo"
     DeployableCoverHiArchetype="Lucu_CombatEngineer_DeployableCover.Archetypes.ARC_DeployableCover_1_Hi"
+    SentryCameraAbilityTemplateName="Lucu_CombatEngineer_SentryCamera"
+    ThrowSentryCameraAbilityTemplateName="Lucu_CombatEngineer_ThrowSentryCamera"
     RapidDeploymentAbilityTemplateName="Lucu_CombatEngineer_RapidDeployment"
     RapidDeploymentEffectName="Lucu_CombatEngineer_RapidDeployment"
     PackmasterAbilityTemplateName="Lucu_CombatEngineer_Packmaster"
+    SkirmisherAbilityTemplateName="Lucu_CombatEngineer_Skirmisher"
     AcceptableTolerancesAbilityTemplateName="Lucu_CombatEngineer_AcceptableTolerances"
 }

@@ -65,6 +65,13 @@ LocHelpText="Deploying most engineering devices no longer costs an action. Sligh
 LocFlyOverText="Rapid Deployment"
 LocPromotionPopupText="Deploying most engineering devices no longer costs an action. Slightly increases the deployment range for these devices.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."
 
+[Lucu_CombatEngineer_Skirmisher X2AbilityTemplate]
+LocFriendlyName="Skirmisher"
+LocLongDescription="Your first attack against a flanked or uncovered enemy each turn grants 1 bonus movement point.<br/><Bullet/> Applies to attacks by primary and secondary weapons."
+LocHelpText="Your first attack against a flanked or uncovered enemy each turn grants 1 bonus movement point.<br/><Bullet/> Applies to attacks by primary and secondary weapons."
+LocFlyOverText="Skirmisher"
+LocPromotionPopupText="Your first attack against a flanked or uncovered enemy each turn grants 1 bonus movement point.<br/><Bullet/> Applies to attacks by primary and secondary weapons."
+
 [Lucu_CombatEngineer_AcceptableTolerances X2AbilityTemplate]
 LocFriendlyName="Acceptable Tolerances"
 LocLongDescription="Increase the range at which deployables may be placed.<br/><Bullet/> +3 tile deployment range.<br/><Bullet/> Affects: Det Pack, Deployable Cover, Caltrops, Telescoping Ladder, Autoturret."

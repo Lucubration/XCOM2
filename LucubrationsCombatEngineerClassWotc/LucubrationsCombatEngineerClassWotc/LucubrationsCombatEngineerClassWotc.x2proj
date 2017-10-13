@@ -122,6 +122,9 @@
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_DetPack.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_Skirmisher.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\X2Effect_Lucu_CombatEngineer_SpawnDeployable.uc">
       <SubType>Content</SubType>
     </Content>
@@ -156,6 +159,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\XComGameState_Lucu_CombatEngineer_Effect_TransientUtilityItem.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LucubrationsCombatEngineerClassWotc\Classes\XComGameState_Lucu_CombatEngineer_SentryCamera.uc">
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>

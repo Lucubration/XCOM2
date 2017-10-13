@@ -64,6 +64,10 @@ var config string DeployableCover_Lo_DestructibleArchetype;
 var config int DeployableCover_Hi_Range;
 var config string DeployableCover_Hi_DestructibleArchetype;
 
+var config float SentryCameraRange;
+var config float SentryCameraSightRadius;
+var config string SentryCameraDestructibleArchetype;
+
 var name FellingAxeCVItemName;
 var name FellingAxeMGItemName;
 var name FellingAxeBMItemName;
@@ -73,6 +77,7 @@ var name SIMONCVItemName;
 var name SIMONMGItemName;
 var name DeployableCoverLoItemName;
 var name DeployableCoverHiItemName;
+var name SentryCameraItemName;
 
 static function array<X2DataTemplate> CreateTemplates()
 {
@@ -87,6 +92,7 @@ static function array<X2DataTemplate> CreateTemplates()
 	Weapons.AddItem(SIMON_MG());
     Weapons.AddItem(DeployableCover_Lo());
     Weapons.AddItem(DeployableCover_Hi());
+    Weapons.AddItem(SentryCamera());
 
 	return Weapons;
 }
@@ -228,7 +234,6 @@ static function X2DataTemplate DetPack_CV()
 	local X2DetPackTemplate_Lucu_CombatEngineer Template;
 
 	`CREATE_X2TEMPLATE(class'X2DetPackTemplate_Lucu_CombatEngineer', Template, default.DetpackCVItemName);
-	Template.RemoveTemplateAvailablility(Template.BITFIELD_GAMEAREA_Multiplayer); //invalidates multiplayer availability
 
 	Template.strImage = "img:///UILibrary_Lucu_CombatEngineer.X2InventoryIcons.Inv_X4";
 	Template.EquipSound = "StrategyUI_Grenade_Equip";
@@ -270,7 +275,6 @@ static function X2DataTemplate DetPack_BM()
 	local X2DetPackTemplate_Lucu_CombatEngineer Template;
 
 	`CREATE_X2TEMPLATE(class'X2DetPackTemplate_Lucu_CombatEngineer', Template, default.DetpackBMItemName);
-	Template.RemoveTemplateAvailablility(Template.BITFIELD_GAMEAREA_Multiplayer); //invalidates multiplayer availability
 
 	Template.strImage = "img:///UILibrary_Lucu_CombatEngineer.X2InventoryIcons.Inv_X4";
 	Template.EquipSound = "StrategyUI_Grenade_Equip";
@@ -433,6 +437,10 @@ static function X2DataTemplate SIMON_MG()
 	return Template;
 }
 
+//---------------------------------------------------------------------------------------------------
+// Deployable Cover
+//---------------------------------------------------------------------------------------------------
+
 static function X2DataTemplate DeployableCover_Lo()
 {
 	local X2DeployableCoverTemplate_Lucu_CombatEngineer Template;
@@ -501,6 +509,44 @@ static function X2DataTemplate DeployableCover_Hi()
 	return Template;
 }
 
+//---------------------------------------------------------------------------------------------------
+// Sentry Camera
+//---------------------------------------------------------------------------------------------------
+
+static function X2DataTemplate SentryCamera()
+{
+	local X2DeployableTemplate_Lucu_CombatEngineer Template;
+
+	`CREATE_X2TEMPLATE(class'X2DeployableTemplate_Lucu_CombatEngineer', Template, default.SentryCameraItemName);
+
+	Template.strImage = "img:///UILibrary_Lucu_CombatEngineer.X2InventoryIcons.Inv_X4";
+	Template.EquipSound = "StrategyUI_Grenade_Equip";
+	Template.WeaponTech = 'beam';
+	Template.InventorySlot = eInvSlot_Utility;
+    
+    // These parameters give us proper target visualizations when throwing detpacks
+	Template.fRange = default.SentryCameraRange;
+	Template.iRadius = default.SentryCameraSightRadius;
+	Template.Tier = -3;
+	
+	Template.Abilities.AddItem(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.ThrowSentryCameraAbilityTemplateName);
+
+	Template.GameArchetype = "Lucu_CombatEngineer_SentryCamera.WP_Grenade_SentryCamera";
+    Template.SpawnedDestructibleArchetype = default.SentryCameraDestructibleArchetype;
+
+	Template.iPhysicsImpulse = 10;
+    
+	Template.CanBeBuilt = false;
+	Template.bInfiniteItem = true;
+    
+	Template.WeaponPrecomputedPathData.MaxNumberOfBounces = 0;
+    
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.RangeLabel, , default.PlasmaPackRange);
+	Template.SetUIStatMarkup(class'XLocalizedData'.default.RadiusLabel, , default.PlasmaPackRadius);
+
+	return Template;
+}
+
 DefaultProperties
 {
     FellingAxeCVItemName="Lucu_CombatEngineer_FellingAxe_CV"
@@ -512,4 +558,5 @@ DefaultProperties
     SIMONMGItemName="Lucu_CombatEngineer_SIMON_MG"
     DeployableCoverLoItemName="Lucu_CombatEngineer_DeployableCover_Lo"
     DeployableCoverHiItemName="Lucu_CombatEngineer_DeployableCover_Hi"
+    SentryCameraItemName="Lucu_CombatEngineer_SentryCamera"
 }

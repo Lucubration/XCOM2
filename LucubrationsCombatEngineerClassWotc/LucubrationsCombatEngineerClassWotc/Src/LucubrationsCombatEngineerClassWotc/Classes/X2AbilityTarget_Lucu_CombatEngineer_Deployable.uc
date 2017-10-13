@@ -1,7 +1,4 @@
-class X2AbilityTarget_Lucu_CombatEngineer_Deployable extends X2AbilityTarget_Cursor
-	config(Lucu_CombatEngineer_Ability);
-
-var config float AcceptableTolerancesBonusRange;
+class X2AbilityTarget_Lucu_CombatEngineer_Deployable extends X2AbilityTarget_Cursor;
 
 simulated function float GetCursorRangeMeters(XComGameState_Ability AbilityState)
 {
@@ -20,7 +17,7 @@ simulated function float GetCursorRangeMeters(XComGameState_Ability AbilityState
 
     if (Shooter.FindAbility(class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.AcceptableTolerancesAbilityTemplateName).ObjectID > 0)
     {
-        TargetRange += default.AcceptableTolerancesBonusRange;
+        TargetRange += class'X2Ability_Lucu_CombatEngineer_CombatEngineerAbilitySet'.default.AcceptableTolerancesBonusRange;
     }
 
     return `UNITSTOMETERS(TargetRange);
