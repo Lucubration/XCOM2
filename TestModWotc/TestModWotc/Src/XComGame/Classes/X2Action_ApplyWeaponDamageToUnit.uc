@@ -855,7 +855,7 @@ simulated state Executing
 			{				
 				for( i = 0; i < HitResults.Length; ++i )
 				{
-					if( HitResults[i] == eHit_Miss )
+					if( class'XComGameStateContext_Ability'.static.IsHitResultMiss(HitResults[i]))
 					{
 						DamageResults.Insert(i, 1);
 					}

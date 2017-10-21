@@ -33,8 +33,12 @@ static function RecoverChests(const out array<string> InRecoveredChestTypes)
 {
 	local XComGameStateHistory History; 
 	local XComGameState_BattleData BattleData;
+	local XComGameState_HeadquartersXCom XComHQ;
 	local XComGameState NewGameState;
+	local XComGameState_Item LootItemState;
 	local X2LootTableManager LootTableManager;
+	local X2ItemTemplateManager ItemTemplateManager;
+	local X2ItemTemplate ItemTemplate;
 	local ChestDefinition RecoveredChestDef;
 	local string RecoveredChestType;
 	local array<name> RolledLootTemplates;
@@ -48,10 +52,15 @@ static function RecoverChests(const out array<string> InRecoveredChestTypes)
 
 	History = `XCOMHISTORY;
 	LootTableManager = class'X2LootTableManager'.static.GetLootTableManager();
+	ItemTemplateManager = class'X2ItemTemplateManager'.static.GetItemTemplateManager();
 
-	BattleData = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 	NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("NotifyRecoveredSupplyChests");
+	
+	BattleData = XComGameState_BattleData(History.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
 	BattleData = XComGameState_BattleData(NewGameState.ModifyStateObject(class'XComGameState_BattleData', BattleData.ObjectID));
+	
+	XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+	XComHQ = XComGameState_HeadquartersXCom(NewGameState.ModifyStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
 	
 	// loop through each created chest and add it's loot to the battle data state
 	foreach InRecoveredChestTypes(RecoveredChestType)
@@ -65,7 +74,19 @@ static function RecoverChests(const out array<string> InRecoveredChestTypes)
 
 			foreach RolledLootTemplates(LootTemplate)
 			{
-				BattleData.AutoLootBucket.AddItem(LootTemplate);
+				ItemTemplate = ItemTemplateManager.FindItemTemplate(LootTemplate);
+				if (ItemTemplate != none)
+				{
+					// Create the item state for the recovered loot
+					LootItemState = ItemTemplate.CreateInstanceFromTemplate(NewGameState);
+					LootItemState.OwnerStateObject = XComHQ.GetReference();
+
+					// Add it to the inventory as loot, so it will be processed when the mission ends
+					XComHQ.PutItemInInventory(NewGameState, LootItemState, true);
+
+					// Add it to the carry out bucket so it displays on the Loot Recovered screen
+					BattleData.CarriedOutLootBucket.AddItem(LootTemplate);
+				}
 			}
 		}
 	}

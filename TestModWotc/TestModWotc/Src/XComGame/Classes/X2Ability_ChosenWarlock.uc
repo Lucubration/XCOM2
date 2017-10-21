@@ -739,6 +739,8 @@ static function X2DataTemplate CreateTeleportAlly()
 	UnitPropertyCondition.ExcludeHostileToSource = true;
 	UnitPropertyCondition.FailOnNonUnits = true;
 	UnitPropertyCondition.ExcludeLargeUnits = true;
+	UnitPropertyCondition.ExcludeTurret = true;
+	UnitPropertyCondition.RequireSquadmates = true;
 	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
 
 	Template.ModifyNewContextFn = TeleportAlly_ModifyActivatedAbilityContext;

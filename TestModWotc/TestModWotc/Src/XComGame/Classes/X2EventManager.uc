@@ -249,6 +249,8 @@ native function UnRegisterFromEvent( const ref Object SourceObj,
 									delegate<OnEventDelegate> NewDelegate = none);
 native function UnRegisterFromAllEvents(const ref Object SourceObj);
 
+native function bool IsRegistered( const ref Object SourceObject, Name EventID, EventListenerDeferral Deferral, delegate<OnEventDelegate> Delegate );
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // Triggered Event Processing

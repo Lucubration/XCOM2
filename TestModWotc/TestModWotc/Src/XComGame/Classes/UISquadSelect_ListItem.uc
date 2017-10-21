@@ -382,11 +382,13 @@ simulated function UpdateData(optional int Index = -1, optional bool bDisableEdi
 
 		if(!Unit.GetSoldierClassTemplate().bCanHaveBonds)
 		{
+			BondIcon.AnimateCohesion(false);
 			BondIcon.SetBondLevel(-1);
 			BondIcon.RemoveTooltip();
 		}
 		else if( Unit.HasSoldierBond(BondmateRef, BondData) )
 		{
+			BondIcon.AnimateCohesion(false);
 			BondIcon.SetBondLevel(BondData.BondLevel, UISquadSelect(Screen).IsUnitOnSquad(BondmateRef));
 			if( Index == 5 )
 				BondIcon.SetBondmateTooltip(BondmateRef, class'UIUtilities'.const.ANCHOR_TOP_RIGHT);

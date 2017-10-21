@@ -5742,7 +5742,7 @@ static function bool LostAndAbandonedCompleted()
 	local XComGameState_CampaignSettings CampaignState;
 
 	CampaignState = XComGameState_CampaignSettings(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_CampaignSettings'));
-	return (!CampaignState.bXPackNarrativeEnabled || IsObjectiveCompleted('XP0_M1_LostAndAbandonedComplete'));
+	return (!CampaignState.bXPackNarrativeEnabled || IsObjectiveCompleted('XP0_M1_LostAndAbandonedComplete') || IsObjectiveCompleted('XP0_M1_TutorialLostAndAbandonedComplete'));
 }
 
 static function array<StateObjectReference> GetCompletedAndActiveStrategyObjectives()
@@ -5767,6 +5767,11 @@ static function array<StateObjectReference> GetCompletedAndActiveStrategyObjecti
 static function bool NeedsToEquipMedikitTutorial()
 {
 	return static.GetObjectiveStatus('T0_M5_EquipMedikit') == eObjectiveState_InProgress;
+}
+
+static function bool IsWelcomeToLabsInProgressTutorial()
+{
+	return static.GetObjectiveStatus('T0_M1_WelcomeToLabs') == eObjectiveState_InProgress;
 }
 
 //#############################################################################################

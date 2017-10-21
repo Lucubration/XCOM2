@@ -350,6 +350,8 @@ struct native PhotoboothDefaultSettings
 
 	var Photobooth_TextLayoutState		TextLayoutState;
 
+	var bool							bInitialized;
+	var bool							bBackgroundTinting;
 };
 
 /** A fence to track when ReadPixels has completed on the rendering thread. */
@@ -1076,6 +1078,16 @@ function SetupCaptureBounds()
 
 native function GetFinalPosterSize(out int SizeX, out int SizeY);
 
+simulated function Tick(float DeltaTime)
+{
+	if (m_kAutoGenCaptureState == eAGCS_Idle)
+	{
+	SetupCaptureBounds();
+	ResizeRenderTargets();
+	ResizeFinalRenderTarget(false);
+}
+}
+
 function InitializeTextures()
 {
 	local int FinalSizeX, FinalSizeY;
@@ -1085,10 +1097,7 @@ function InitializeTextures()
 
 	if (m_kPreviewPosterTexture == none)
 	{
-		m_kPreviewPosterTexture = class'TextureRenderTarget2D'.static.Create(m_iOnScreenSizeX, m_iOnScreenSizeY, PF_A8R8G8B8, MakeLinearColor(0, 0, 0, 0), false, false, true, self);
-		m_kPreviewPosterTexture.SRGB = false;
-		m_kPreviewPosterTexture.Filter = TF_Linear;
-		m_kPreviewPosterTexture.bNeedsTwoCopies = true;
+		m_kPreviewPosterTexture = `XENGINE.m_kPhotoboothSoldierTexture;
 	}
 
 	if (m_kFinalPosterTexture == none)
@@ -2007,9 +2016,9 @@ function bool GetCapturedAnimation(int LocationIndex, out AnimationPoses OutAnim
 
 function bool PosterElementsHidden()
 {
-	if (m_kPhotoboothShowEffect != none)
+	if (m_kPhotoboothEffect != none)
 	{
-		return !m_kPhotoboothShowEffect.bShowInGame;
+		return !m_kPhotoboothEffect.bShowInGame;
 	}
 
 	return false;
@@ -2382,6 +2391,23 @@ function int GetTotalMissions()
 	}
 
 	return TotalMissions;
+}
+
+function int GetTotalActivePawns()
+{
+	local int TotalPawns, i;
+
+	TotalPawns = 0;
+
+	for (i = 0; i < m_arrUnits.Length; ++i)
+	{
+		if (m_arrUnits[i].ActorPawn != none)
+		{
+			TotalPawns += 1;
+		}
+	}
+
+	return TotalPawns;
 }
 
 function SetAutoTextStrings(Photobooth_AutoTextUsage Usage, optional Photobooth_TextLayoutState textLayoutState = ePBTLS_NONE, optional out PhotoboothDefaultSettings defaultSettings, optional bool bUseDefaultText = false)

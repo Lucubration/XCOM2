@@ -132,6 +132,7 @@ simulated function OnInit()
 	}
 	else
 	{
+		if( bIsFocused )
 		UpdateNavHelp();
 	}
 
@@ -1124,10 +1125,10 @@ simulated function SelectNextCard()
 		if( idx >= Hand.GetMaxCardsOnCurrentPage() )
 		{
 			if( Hand.CanNavNext() )
-			idx = 0;
+				idx = 0;
 			else
 				idx = m_iHandIndex;
-	}
+		}
 	}
 
 	SelectCardInDeck(idx);
@@ -1151,10 +1152,10 @@ simulated function SelectPrevCard()
 	}
 	else
 	{
-		if( idx < 0 ) 
+		if( idx < 0 )
 		{
 			if( Hand.CanNavPrev() )
-			idx += class'UIStrategyPolicy_DeckList'.const.CARDS_PER_PAGE;
+				idx += class'UIStrategyPolicy_DeckList'.const.CARDS_PER_PAGE;
 			else
 				idx = m_iHandIndex;
 		}
@@ -1232,6 +1233,8 @@ function RefreshPageArrows()
 simulated function bool OnUnrealCommand(int cmd, int arg)
 {
 	local bool bHandled;
+	local XComGameState_StrategyCard CardState;
+	local UIStrategyPolicy_Card TargetCard;
 
 	if( !CheckInputIsReleaseOrDirectionRepeat(cmd, arg) )
 		return false;
@@ -1299,7 +1302,18 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 		if( bResistanceReport && !m_bSelectingHand )
 		{
 			ClearInspector();
-			RemoveCardFromSlot(UIStrategyPolicy_Card(Columns[m_iColumnIndex].GetItem(m_iSlotIndex)));
+
+			TargetCard = UIStrategyPolicy_Card(Columns[m_iColumnIndex].GetItem(m_iSlotIndex));
+			CardState = GetCardState(TargetCard.CardRef);
+			// Put back in the deck
+			if( CardState != none && CardState.CanBeRemoved() )
+			{
+				RemoveCardFromSlot(TargetCard);
+			}
+			else
+			{
+				`SOUNDMGR.PlaySoundEvent("Play_MenuClickNegative"); //TODO: @sound : better card sounds! 
+			}
 			RefreshAllDecks();
 		}
 													 break;
@@ -1629,10 +1643,10 @@ function SelectCard(UIStrategyPolicy_Card TargetCard)
 			}
 			else
 			{
-				if( TargetCard.CanDragCard() )
+				if( IsAllowedToPlay(InspectingCard, TargetCard) && (TargetCard.CanDragCard() || TargetCard.eFaction == eUIStrategyPolicyCardFaction_Blank) )
 				{
 					PlayCard(InspectingCard, TargetCard);
-					DropCardBackInToHand(InspectingCard);
+					RemoveCardFromSlot(InspectingCard);
 				}
 			}
 

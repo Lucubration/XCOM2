@@ -13,6 +13,8 @@ var(XComDestructibleActor_Action) class<X2Effect_World> TileEffect;
 var(XComDestructibleActor_Action) float EffectCoverage;
 var(XComDestructibleActor_Action) int LostActivationSoundIncrease;
 
+var array<StateObjectReference> CachedUnits;
+
 cpptext
 {
 public:
@@ -21,14 +23,29 @@ public:
 
 
 native function GetBlastExtents(out TTile Min, out TTile Max);
-native function NativePreActivate();
+native function NativePreActivateResponse();
 native function GetUnitsInBlastRadius(out array<XComGameState_Unit> Units);
+
+event PreActivate()
+{
+	local array<XComGameState_Unit> Units;
+	local XComGameState_Unit It;
+
+	super.PreActivate();
+
+	GetUnitsInBlastRadius( Units );
+
+	foreach Units(It)
+	{
+		CachedUnits.AddItem( It.GetReference() );
+	}
+}
 
 event PreActivateResponse( )
 {
 	super.PreActivateResponse();
 
-	NativePreActivate();
+	NativePreActivateResponse();
 }
 
 defaultproperties

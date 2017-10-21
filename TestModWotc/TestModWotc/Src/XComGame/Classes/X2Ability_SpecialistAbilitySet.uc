@@ -445,7 +445,7 @@ static simulated function GremlinSingleTarget_BuildVisualization(XComGameState V
 		TargetCameraAction.bRemoveTaggedCamera = true;
 	}
 
-		//****************************************************************************************
+	//****************************************************************************************
 }
 
 static function X2Effect_AidProtocol AidProtocolEffect()
@@ -848,6 +848,7 @@ static function X2AbilityTemplate CancelIntrusion(Name TemplateName = 'CancelInt
 	Template.bOverrideWeapon = true;
 
 	Template.bDontDisplayInAbilitySummary = true;
+	Template.ConcealmentRule = eConceal_AlwaysEvenWithObjective;
 
 	return Template;
 }
@@ -942,6 +943,8 @@ static function X2AbilityTemplate ConstructIntrusionProtocol(name TemplateName, 
 	Template.bOverrideWeapon = true;
 
 	Template.bDontDisplayInAbilitySummary = true;
+
+	Template.ConcealmentRule = eConceal_AlwaysEvenWithObjective;
 
 	return Template;
 }

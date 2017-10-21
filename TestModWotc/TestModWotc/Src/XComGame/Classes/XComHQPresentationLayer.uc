@@ -706,7 +706,7 @@ private function StrategyMap_FinishTransitionEnter()
 		RegionState = XComGameState_WorldRegion(History.GetGameStateForObjectID(XComHQ.StartingRegion.ObjectID));
 		XComHQ.SetPendingPointOfTravel(RegionState, true);
 	}
-	else if (XComHQ.GetObjectiveStatus('XP0_M1_LostAndAbandonedComplete') == eObjectiveState_InProgress)
+	else if (XComHQ.GetObjectiveStatus('XP0_M1_LostAndAbandonedComplete') == eObjectiveState_InProgress || XComHQ.GetObjectiveStatus('XP0_M1_TutorialLostAndAbandonedComplete') == eObjectiveState_InProgress)
 	{
 		foreach History.IterateByClassType(class'XComGameState_MissionSite', MissionState)
 		{
@@ -4404,6 +4404,7 @@ simulated function UIActionCompleteRewards()
 	local XComGameState NewGameState;
 	local XComGameState_CovertAction ActionState;
 	local XComGameState_ResistanceFaction FactionState;
+	local XComGameState_HeadquartersXCom XComHQ;
 	
 	ActionState = XComGameState_CovertAction(`XCOMHISTORY.GetGameStateForObjectID(CovertActionCompleteRef.ObjectID));
 
@@ -4431,6 +4432,10 @@ simulated function UIActionCompleteRewards()
 
 			// This is the end of the Action Complete sequence, so clear the Action ref
 			CovertActionCompleteRef.ObjectID = 0;
+
+			// Handle any HQ staffing updates for the soldiers returning from the Action (Ex: Psi Ops)
+			XComHQ = class'UIUtilities_Strategy'.static.GetXComHQ();
+			XComHQ.HandlePowerOrStaffingChange();
 		}
 	}
 }

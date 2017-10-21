@@ -158,6 +158,14 @@ simulated function X2Action AddX2ActionsForVisualization_Death(out Visualization
 	return AddAction;
 }
 
+function TriggerSpawnEvent(const out EffectAppliedData ApplyEffectParameters, XComGameState_Unit EffectTargetUnit, XComGameState NewGameState, XComGameState_Effect EffectGameState)
+{
+	if( !EffectTargetUnit.IsChosen() )
+	{
+		super.TriggerSpawnEvent(ApplyEffectParameters, EffectTargetUnit, NewGameState, EffectGameState);
+	}
+}
+
 function bool DoesEffectAllowUnitToBleedOut(XComGameState_Unit UnitState) {return false; }
 function bool DoesEffectAllowUnitToBeLooted(XComGameState NewGameState, XComGameState_Unit UnitState) {return false; }
 

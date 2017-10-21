@@ -34,14 +34,14 @@ simulated state Executing
 
 Begin:
 
-	if (ScoringType != CMPT_None && ScoringType != CMPT_TotalScore && AddedPoints > 0)
+	if (ScoringType != CMPT_None && ScoringType != CMPT_TotalScore && AddedPoints > 0 && !`REPLAY.bInReplay)
 	{
 		// Make sure that a banner isn't already in flight
-	while (ChallengeHUD.IsWaitingForBanner())
-	{
-		Sleep( 0.0f );
-	}
-	
+		while (ChallengeHUD.IsWaitingForBanner())
+		{
+			Sleep(0.0f);
+		}
+
 		ChallengeHUD.UpdateChallengeScore(ScoringType, AddedPoints);
 		Sleep(0.1f);
 		ChallengeHUD.TriggerChallengeBanner();

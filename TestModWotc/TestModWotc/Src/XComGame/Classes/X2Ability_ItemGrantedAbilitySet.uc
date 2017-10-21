@@ -1109,6 +1109,7 @@ static function X2AbilityTemplate SKULLMINEAbility()
 	local X2Condition_StasisLanceTarget StasisLanceCondition;
 	local X2Condition_UnitType			UnitTypeCondition;
 	local X2Effect_ApplyWeaponDamage        MissDamageEffect;
+	local array<name>                       SkipExclusions;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'SKULLMINEAbility');
 	Template.FinalizeAbilityName = 'FinalizeSKULLMINE';
@@ -1140,7 +1141,8 @@ static function X2AbilityTemplate SKULLMINEAbility()
 	UnitTypeCondition.ExcludeTypes.AddItem('ChosenSniper');
 	Template.AbilityTargetConditions.AddItem(UnitTypeCondition);
 
-	Template.AddShooterEffectExclusions();
+	SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
+	Template.AddShooterEffectExclusions(SkipExclusions);
 
 	MovingMeleeTarget = new class'X2AbilityTarget_MovingMelee';
 	Template.AbilityTargetStyle = MovingMeleeTarget;
@@ -1214,8 +1216,8 @@ static function X2AbilityTemplate FinalizeSKULLMINE()
 	HitDamageEffect.bApplyOnHit = true;
 	HitDamageEffect.bApplyOnMiss = false;
 	HitDamageEffect.bIgnoreBaseDamage = true;
-	HitDamageEffect.EffectDamageValue.Pierce = 20;	// 20 points of damage on a hit
-	HitDamageEffect.EffectDamageValue.Damage = 20;	// 20 points of damage on a hit
+	HitDamageEffect.EffectDamageValue.Pierce = 200;	// 20 points of damage on a hit
+	HitDamageEffect.EffectDamageValue.Damage = 200;	// 20 points of damage on a hit
 	HitDamageEffect.bBypassSustainEffects = true;
 	Template.AddTargetEffect(HitDamageEffect);
 
@@ -1245,6 +1247,7 @@ static function X2AbilityTemplate SKULLJACKAbility()
 	local X2Condition_StasisLanceTarget StasisLanceCondition;
 	local X2Condition_UnitType			UnitTypeCondition;
 	local X2Effect_ApplyWeaponDamage        MissDamageEffect;
+	local array<name>                       SkipExclusions;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'SKULLJACKAbility');
 	Template.FinalizeAbilityName = 'FinalizeSKULLJACK';
@@ -1277,7 +1280,8 @@ static function X2AbilityTemplate SKULLJACKAbility()
 	UnitTypeCondition.ExcludeTypes.AddItem('ChosenSniper');
 	Template.AbilityTargetConditions.AddItem(UnitTypeCondition);
 
-	Template.AddShooterEffectExclusions();
+	SkipExclusions.AddItem(class'X2StatusEffects'.default.BurningName);
+	Template.AddShooterEffectExclusions(SkipExclusions);
 
 	MovingMeleeTarget = new class'X2AbilityTarget_MovingMelee';
 	Template.AbilityTargetStyle = MovingMeleeTarget;
@@ -1408,8 +1412,8 @@ static function X2AbilityTemplate FinalizeSKULLJACK()
 	HitDamageEffect.bApplyOnHit = true;
 	HitDamageEffect.bApplyOnMiss = false;
 	HitDamageEffect.bIgnoreBaseDamage = true;
-	HitDamageEffect.EffectDamageValue.Pierce = 20;	// 20 points of damage on a hit
-	HitDamageEffect.EffectDamageValue.Damage = 20;	// 20 points of damage on a hit
+	HitDamageEffect.EffectDamageValue.Pierce = 200;	// 20 points of damage on a hit
+	HitDamageEffect.EffectDamageValue.Damage = 200;	// 20 points of damage on a hit
 	Template.AddTargetEffect(HitDamageEffect);
 
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_NeverShow;

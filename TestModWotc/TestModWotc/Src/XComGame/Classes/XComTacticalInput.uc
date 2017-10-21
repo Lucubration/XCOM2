@@ -2227,7 +2227,7 @@ state ActiveUnit_Moving
 	}
 	private function CloseShotHUD()
 	{
-		XComPresentationLayer(XComTacticalController(Outer).Pres).GetTacticalHUD().LowerTargetSystem();
+		XComPresentationLayer(XComTacticalController(Outer).Pres).GetTacticalHUD().LowerTargetSystem(true);
 	}
 	
 	function bool Key_P(int ActionMask)
@@ -2534,6 +2534,9 @@ state ActiveUnit_Moving
 					// See if we're trying to click on an interactive object
 					if( !bHandled ) 
 						bHandled = ClickInterativeLevelActor(MouseTarget);
+
+					if (!bHandled)
+						bHandled = ClickTargetingMethod(MouseTarget);
 			}
 		}
 
@@ -3182,6 +3185,18 @@ simulated function bool ClickInterativeLevelActor( IMouseInteractionInterface Mo
 	kInteractiveLevelActor = XComInteractiveLevelActor( MouseTarget );
 	if (kInteractiveLevelActor != none)
 		return kHud.m_kAbilityHUD.DirectTargetObjectWithDefaultTargetingAbility(kInteractiveLevelActor.ObjectID, true);
+
+	return false;
+}
+
+simulated function bool ClickTargetingMethod(IMouseInteractionInterface MouseTarget)
+{
+	local UITacticalHUD kHUD;
+
+	kHUD = XComPresentationLayer(XComTacticalController(Outer).Pres).GetTacticalHUD();
+
+	if(kHud.m_kAbilityHUD.IsTargetingMethodActivated())
+		return kHud.m_kAbilityHUD.OnAccept();
 
 	return false;
 }

@@ -13,9 +13,9 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	{
 		CurrentWill = TargetUnit.GetBaseStat(eStat_Will);
 		if (CurrentWill + WillMod <= 0)
-			TargetUnit.SetBaseMaxStat(eStat_Will, 1);
+			TargetUnit.SetCurrentStat(eStat_Will, 1);
 		else
-			TargetUnit.SetBaseMaxStat(eStat_Will, CurrentWill + WillMod);
+			TargetUnit.SetCurrentStat(eStat_Will, CurrentWill + WillMod);
 	}
 }
 

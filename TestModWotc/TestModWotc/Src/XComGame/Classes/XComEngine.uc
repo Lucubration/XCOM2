@@ -76,7 +76,6 @@ var private AnalyticsManager					m_AnalyticsManager;
 var private X2AchievementTracker				m_AchievementTracker;
 
 var private X2BodyPartTemplateManager		BodyPartTemplateManager;
-var private X2Photobooth					m_kPhotobooth;
 
 var private RedScreenManager                m_RedScreenManager;
 var private bool							m_RedScreensTemporarilyDisabled;
@@ -108,6 +107,8 @@ var private float m_autoTestDelay;
 
 var private float m_autoTestStart;
 
+var TextureRenderTarget2D   m_kPhotoboothUITexture;
+var TextureRenderTarget2D   m_kPhotoboothSoldierTexture;
 
 //=======================================================================================
 
@@ -250,6 +251,10 @@ cpptext
 	// resuse this function, rather than have to duplicate it both places and have a virtual on UEngine
 	static void CreateTemplateManagers(UEngine& Engine);
 	static void ValidateTemplates(UEngine& Engine);
+
+	void CreatePhotoboothTextures();
+
+	void SendInitialTelemetry();
 }
 
 /**

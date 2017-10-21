@@ -170,6 +170,8 @@ native final function CacheGameContent(const out string ContentTag, object Objec
 native final function object GetGameContent(coerce string ContentTag);
 simulated native function FlushArchetypeCache();
 
+native final function FlushContentLoading();
+
 cpptext
 {
 	void Init();

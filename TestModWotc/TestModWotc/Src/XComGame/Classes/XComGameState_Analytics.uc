@@ -2051,6 +2051,7 @@ protected function OtherKilledPlayer(XComGameState_Unit SourceUnit, XComGameStat
 
 	UnitRef.ObjectID = KilledUnit.ObjectID;
 
+	if (!KilledUnit.bMissionProvided) // mission provided unit don't count as a unit loss for the endgame analytics
 	AddValue("UNITS_LOST", 1);
 
 	TimeDiffHours = class'X2StrategyGameRulesetDataStructures'.static.DifferenceInHours( KilledUnit.m_KIADate, KilledUnit.m_RecruitDate );

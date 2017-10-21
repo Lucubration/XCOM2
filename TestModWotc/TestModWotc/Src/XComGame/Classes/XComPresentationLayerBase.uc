@@ -139,6 +139,8 @@ var localized string ChallengeObjectiveDecreaseNotice;
 var localized string ChallengeObjectiveDecreaseText;
 var localized string ChallengeEnemyDecreaseNotice;
 var localized string ChallengeEnemyDecreaseText;
+var localized string ChallengeScoringDecreaseNotice;
+var localized string ChallengeScoringDecreaseText;
 
 //--------------------------------------------------------------------------------
 
@@ -179,17 +181,15 @@ simulated function Init()
 	
 	// Load up Interface Manager
 	m_2DMovie = new(self) class'UIMovie_2D';
-	m_2DMovie.InitMovie(self);
+	m_2DMovie.InitMovie(self);	
 
-	if (m_kUIRenderTexture == none)
+	if(`XENGINE.m_kPhotoboothUITexture != none)
 	{
-		m_kUIRenderTexture = class'TextureRenderTarget2D'.static.Create(800, 1200, PF_A8R8G8B8, MakeLinearColor(0, 0, 0, 0), false, false, false, self);
-		m_kUIRenderTexture.SRGB = false;
-		m_kUIRenderTexture.Filter = TF_Nearest;
-		m_kUIRenderTexture.bNeedsTwoCopies = false;
+		class'TextureRenderTarget2D'.static.Resize(`XENGINE.m_kPhotoboothUITexture, 800, 1200);
 	}
+
 	m_PhotoboothMovie = new(self) class'UIPhotoboothMovie';
-	m_PhotoboothMovie.RenderTexture = m_kUIRenderTexture;
+	m_PhotoboothMovie.RenderTexture = `XENGINE.m_kPhotoboothUITexture;
 	m_PhotoboothMovie.InitMovie(self);
 
 	// Create a new manager that stores movies to be shown during loading sequences
@@ -633,6 +633,11 @@ private simulated function Cleanup()
 		{
 			PlayerInterface.ClearKeyboardInputDoneDelegate(OnVirtualKeyboardInputComplete);
 		}
+	}
+
+	if(`XENGINE.m_kPhotoboothUITexture != none)
+	{
+		class'TextureRenderTarget2D'.static.Resize(`XENGINE.m_kPhotoboothUITexture, 2, 2);
 	}
 }
 
@@ -2303,29 +2308,55 @@ simulated function UIChallengeModeEventNotify(optional bool bDataView=false)
 	}
 }
 
+simulated function UIChallengeCompletedBanner(int Turn, int NumPlayersPrior, int NumPlayersTotal)
+{
+	local string PriorPercentOfPlayersSeeingEvent;
+	local string Notice, ImagePath, Subtitle, Value;
+	local EUIState TextState;
+	local XGParamTag ParamTag;
+
+	PriorPercentOfPlayersSeeingEvent = (NumPlayersTotal > 0) ? string(int((float(NumPlayersPrior) / NumPlayersTotal) * 100.0)) : "0";
+
+	ParamTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
+	Notice = default.ChallengeEventLabels[ECME_CompletedMission];
+	ImagePath = "";
+	ParamTag.StrValue0 = string(Turn);
+	Value = `XEXPAND.ExpandString(default.ChallengeTurnLabel);
+
+	ParamTag.StrValue0 = PriorPercentOfPlayersSeeingEvent;
+	TextState = eUIState_Warning;
+	Subtitle = `XEXPAND.ExpandString(default.ChallengeEventDescriptions[ECME_CompletedMission]);
+
+	NotifyBanner(Notice, ImagePath, Subtitle, Value, TextState);
+}
+
 simulated function UIChallengeEventBanner()
 {
 	local X2TacticalChallengeModeManager ChallengeModeManager;
 	local PendingEventType PendingEvent;
 	local string Notice, ImagePath, Subtitle, Value;
 	local EUIState TextState;
+	local float TotalPlayersStarted;
 
 	foreach AllActors(class'X2TacticalChallengeModeManager', ChallengeModeManager)
 	{
 		break;
 	}
 
+	TotalPlayersStarted = ChallengeModeManager.GetTotalPlayersStarted();
+
 	while(ChallengeModeManager.GetCurrentEvent(PendingEvent))
 	{
-		GenerateChallengeEventStrings(PendingEvent, Notice, ImagePath, Subtitle, Value, TextState);
+		GenerateChallengeEventStrings(PendingEvent, TotalPlayersStarted, Notice, ImagePath, Subtitle, Value, TextState);
 		NotifyBanner(Notice, ImagePath, Subtitle, Value, TextState);
 		ChallengeModeManager.NextEvent(true);
 	}
 }
 
-private function GenerateChallengeEventStrings(PendingEventType PendingEvent, out string Notice, out string ImagePath, out string Subtitle, out string Value, out EUIState TextState)
+private function GenerateChallengeEventStrings(PendingEventType PendingEvent, float TotalPlayersStarted, out string Notice, out string ImagePath, out string Subtitle, out string Value, out EUIState TextState)
 {
 	local XGParamTag ParamTag;
+	local float TotalPlayersSeeingEvent, EventComparePlayers;
 
 	ParamTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
 	Notice = default.ChallengeEventLabels[PendingEvent.EventType];
@@ -2333,22 +2364,38 @@ private function GenerateChallengeEventStrings(PendingEventType PendingEvent, ou
 	ParamTag.StrValue0 = string(PendingEvent.Turn);
 	Value = `XEXPAND.ExpandString(default.ChallengeTurnLabel);
 	
+	
+	TotalPlayersSeeingEvent = PendingEvent.NumPlayersCurrent + PendingEvent.NumPlayersPrior + PendingEvent.NumPlayersSubsequent;
 	switch(PendingEvent.EventType)
 	{
 	case ECME_FirstXComKIA:
-		ParamTag.StrValue0 = string(PendingEvent.NumPlayersCurrent);
+	case ECME_FirstSoldierWounded:
+	case ECME_LostSectopodGatekeeper:
+		EventComparePlayers = PendingEvent.NumPlayersCurrent;
 		TextState = eUIState_Bad;
 		break;
 	case ECME_FirstAlienKill:
 	case ECME_MissionObjectiveComplete:
 	case ECME_10EnemiesKIA:
-		ParamTag.StrValue0 = string(PendingEvent.NumPlayersSubsequent);
+	case ECME_5EnemiesKIA:
+	case ECME_KilledSectopodGatekeeper:
+		EventComparePlayers = PendingEvent.NumPlayersSubsequent;
 		TextState = eUIState_Good;
+		break;
+	case ECME_ConcealmentBroken:
+		EventComparePlayers = PendingEvent.NumPlayersSubsequent;
+		TextState = eUIState_Warning;
+		break;
+	case ECME_CompletedMission:
+	case ECME_FailedMission:
+		EventComparePlayers = PendingEvent.NumPlayersCurrent;
+		TextState = eUIState_Warning;
 		break;
 	default:
 		TextState = eUIState_Good;
 	}
 
+	ParamTag.StrValue0 = (TotalPlayersSeeingEvent > 0) ? string(int((EventComparePlayers / TotalPlayersSeeingEvent) * 100.0)) : "0";
 	Subtitle = `XEXPAND.ExpandString(default.ChallengeEventDescriptions[PendingEvent.EventType]);
 }
 
@@ -2360,6 +2407,11 @@ simulated function ObjectiveScoringDecreaseBanner()
 simulated function EnemyScoringDecreaseBanner()
 {
 	NotifyBanner(ChallengeEnemyDecreaseNotice, "", ChallengeEnemyDecreaseText, "", eUIState_Bad);
+}
+
+simulated function ChallengeScoringDecreaseBanner()
+{
+	NotifyBanner(ChallengeScoringDecreaseNotice, "", ChallengeScoringDecreaseText, "", eUIState_Bad);
 }
 
 // ================================================================================================

@@ -715,7 +715,11 @@ simulated function BreakInteractActor(name SocketName)
 	}
 
 	// Doors can be closed after being kicked in so don't actually break them
-	if (!IsDoor())
+	if( !IsDoor() 
+	   && ObjectArchetype.Name != 'ARC_IA_PsionicNode'
+	   && ObjectArchetype.Name != 'ARC_RelayTransmitter_Anim_T1'
+	   && ObjectArchetype.Name != 'ARC_RelayTransmitter_Anim_T2'
+	   && ObjectArchetype.Name != 'ARC_RelayTransmitter_Anim_T3' )
 	{
 		GotoState('_Inactive');
 		SetTimer(1.0f, false, nameof(DeferredRebuildTileData));

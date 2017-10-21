@@ -331,6 +331,7 @@ function RemoveStaffedUnitsFromSquad(XComGameState NewGameState)
 	local XComGameState_StaffSlot StaffSlot;
 	local XComGameState_Unit UnitState;
 	local XComGameState_HeadquartersXCom XComHQ;
+	local XComGameState_HeadquartersProjectPsiTraining PsiProjectState;
 	local StateObjectReference EmptyRef;
 	local int i, SquadIndex;
 
@@ -358,9 +359,13 @@ function RemoveStaffedUnitsFromSquad(XComGameState NewGameState)
 			}
 
 			// Stop any in-progress Psi Training
-			if (UnitState.GetStatus() == eStatus_PsiTraining)
+			PsiProjectState = XComHQ.GetPsiTrainingProject(UnitState.GetReference());
+			if (PsiProjectState != none) // A Psi Training project was found for the unit
 			{
-				StaffSlot.EmptySlotStopProject();
+				// Pause the training project.
+				// Don't need to empty the psi slot, since the soldier is already staffed on the Action
+				PsiProjectState = XComGameState_HeadquartersProjectPsiTraining(NewGameState.ModifyStateObject(class'XComGameState_HeadquartersProjectPsiTraining', PsiProjectState.ObjectID));
+				PsiProjectState.bForcePaused = true;
 			}
 		}
 	}

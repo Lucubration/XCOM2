@@ -40,11 +40,6 @@ event Activated()
 			TargetDestructible.TotalHealth *= class'X2StrategyGameRulesetDataStructures'.default.SecondWaveBetaStrikeHealthMod;
 		}
 
-		if(!DoNotUpdateGamestate)
-		{
-			NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState( "SeqAct_SetDestructibleActorToughness" );
-			NewTargetState = XComGameState_InteractiveObject( NewGameState.ModifyStateObject( class'XComGameState_InteractiveObject', TargetObject.ObjectID ) );
-
 			if (PerserveHealthPercent)
 			{
 				TargetDestructible.Health = int(TargetDestructible.TotalHealth * fHealthPercentage);
@@ -59,6 +54,11 @@ event Activated()
 			{
 				TargetDestructible.Health = TargetDestructible.TotalHealth;
 			}
+
+		if(!DoNotUpdateGamestate)
+		{
+			NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState( "SeqAct_SetDestructibleActorToughness" );
+			NewTargetState = XComGameState_InteractiveObject( NewGameState.ModifyStateObject( class'XComGameState_InteractiveObject', TargetObject.ObjectID ) );
 
 			NewTargetState.Health = TargetDestructible.Health;
 

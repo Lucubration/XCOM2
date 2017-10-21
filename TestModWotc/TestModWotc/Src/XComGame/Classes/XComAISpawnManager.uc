@@ -205,6 +205,7 @@ var config float LOPSpawningSizeWeight;
 
 // The maximum number of living units permitted before reinforcements are disabled
 var config float UnitCap;
+var config float LostUnitCap;
 
 var array<TTile> CachedFireTiles;
 var bool bCachedFire;

@@ -389,6 +389,10 @@ private function bool DidPlayerRunOutOfPlayableUnits(XGPlayer InPlayer, XComGame
 			if( Unit.IsTurret() || Unit.GetMyTemplate().bNeverSelectable )
 				continue;
 
+			// Don't count immobile units of other kinds either (xcom team check limits this to single player/challenge mode only)
+			if( (InPlayer.m_eTeam == eTeam_XCom) && (( Unit.GetMyTemplateName() == 'ChryssalidCocoonMP' ) || ( Unit.GetMyTemplateName() == 'ChryssalidCocoonHumanMP' )))
+				continue;
+
 			PreviousUnit = XComGameState_Unit(History.GetGameStateForObjectID(Unit.ObjectID, , ExamineHistoryFrameIndex - 1));
 			if (PreviousUnit == none) // no previous state, probably a new psi-zombie, robot or faceless
 				continue;
@@ -435,6 +439,10 @@ private function bool DidPlayerRunOutOfPlayableUnits(XGPlayer InPlayer, XComGame
 	// the last unit was removed.
 	foreach History.IterateByClassType(class'XComGameState_Unit', Unit)
 	{
+		// Don't count immobile units of other kinds (xcom team check limits this to single player/challenge mode only)
+		if( (InPlayer.m_eTeam == eTeam_XCom) && (( Unit.GetMyTemplateName() == 'ChryssalidCocoonMP' ) || ( Unit.GetMyTemplateName() == 'ChryssalidCocoonHumanMP' )))
+			continue;
+
 		if( Unit.ControllingPlayer.ObjectID == InPlayer.ObjectID && !Unit.GetMyTemplate().bIsCosmetic && !Unit.IsTurret() && !Unit.GetMyTemplate().bNeverSelectable )
 		{
 			Unit = XComGameState_Unit(History.GetGameStateForObjectID(Unit.ObjectID, , ExamineHistoryFrameIndex));

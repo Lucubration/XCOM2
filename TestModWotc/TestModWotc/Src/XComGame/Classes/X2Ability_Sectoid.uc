@@ -680,6 +680,7 @@ static function X2AbilityTemplate AddKillLinkedUnits( Name AbilityName, Name Lin
 	local X2AbilityTemplate Template;
 	local X2AbilityTrigger_EventListener DeathEventListener;
 	local X2AbilityTrigger_EventListener ImpairedEventListener;
+	local X2AbilityTrigger_EventListener EventTrigger;
 	local X2Condition_UnitEffectsWithAbilitySource TargetEffectCondition;
 	local X2Effect_KillUnit KillUnitEffect;
 
@@ -701,6 +702,15 @@ static function X2AbilityTemplate AddKillLinkedUnits( Name AbilityName, Name Lin
 	DeathEventListener.ListenerData.Filter = eFilter_Unit;
 	DeathEventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.AbilityTriggerEventListener_SelfWithAdditionalTargets;
 	Template.AbilityTriggers.AddItem(DeathEventListener);
+
+	//	Trigger if the source is removed from play (e.g. evacs)
+	EventTrigger = new class'X2AbilityTrigger_EventListener';
+	EventTrigger.ListenerData.Deferral = ELD_OnStateSubmitted;
+	EventTrigger.ListenerData.EventID = 'UnitRemovedFromPlay';
+	EventTrigger.ListenerData.Filter = eFilter_Unit;
+	EventTrigger.ListenerData.EventFn = class'XComGameState_Ability'.static.AbilityTriggerEventListener_SelfIgnoreCache;
+	EventTrigger.ListenerData.Priority = 75;	// We need this to happen before the unit is actually removed from play
+	Template.AbilityTriggers.AddItem(EventTrigger);
 
 	if (ApplyOnImpair)
 	{

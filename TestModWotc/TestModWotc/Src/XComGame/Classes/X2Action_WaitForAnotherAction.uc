@@ -32,11 +32,6 @@ function EventListenerReturn OnEventFromActionToWaitFor(Object EventData, Object
 	return ELR_NoInterrupt;
 }
 
-function bool IsTimedOut()
-{
-	return false;
-}
-
 //------------------------------------------------------------------------------------------------
 simulated state Executing
 {
@@ -53,4 +48,5 @@ DefaultProperties
 {	
 	InputEventIDs.Add("Visualizer_AbilityHit")
 	InputEventIDs.Add("Visualizer_ProjectileHit")
+	TimeoutSeconds=60
 }

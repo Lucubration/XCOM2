@@ -86,6 +86,15 @@ struct TLeaderboardEntry
 	var int iDisconnects;
 	var int iScore;
 	var int iTime;
+	var int iPercentile;
+
+	var int UninjuredSoldiers;
+	var int SoldiersAlive;
+	var int KilledEnemies;
+	var int CompletedObjectives;
+	var int CiviliansSaved;
+	var int TimeBonus;
+
 	var UniqueNetId PlayerID;
 	var UniqueNetId PlatformID;
 };

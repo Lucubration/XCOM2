@@ -258,7 +258,7 @@ function GenerateRewards(XComGameState NewGameState)
 	local X2RewardTemplate RewardTemplate;
 	local array<name> RewardTypes;
 	local int RewardInstancesToGive, MinInstances, MaxInstances, idx, iInstance;
-	local float HQScalar;
+	local float HQScalar, BonusScalar;
 		
 	StratMgr = class'X2StrategyElementTemplateManager'.static.GetStrategyElementTemplateManager();
 	RewardTypes = GetMyTemplate().RewardTypes;
@@ -284,8 +284,11 @@ function GenerateRewards(XComGameState NewGameState)
 		{
 			RewardTemplate = X2RewardTemplate(StratMgr.FindStrategyElementTemplate(RewardTypes[idx]));
 
+			// If XComHQ Bonus POI scalar is active, apply it only if the reward is a resource
+			BonusScalar = (RewardTemplate.bResourceReward) ? HQScalar : 1.0f;
+
 			RewardState = RewardTemplate.CreateInstanceFromTemplate(NewGameState);
-			RewardState.GenerateReward(NewGameState, (`ScaleStrategyArrayFloat(GetMyTemplate().RewardScalar) * HQScalar), ResistanceRegion);
+			RewardState.GenerateReward(NewGameState, (`ScaleStrategyArrayFloat(GetMyTemplate().RewardScalar) * BonusScalar), ResistanceRegion);
 			RewardRefs.AddItem(RewardState.GetReference());
 		}
 	}

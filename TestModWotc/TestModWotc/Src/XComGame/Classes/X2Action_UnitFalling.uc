@@ -118,7 +118,7 @@ simulated state Executing
 
 	function CopyPose()
 	{
-		AnimParams.AnimName = 'Pose';
+		AnimParams.AnimName = 'FallingPose';
 		AnimParams.Looping = true;
 		AnimParams.BlendTime = 0.0f;
 		AnimParams.HasPoseOverride = true;

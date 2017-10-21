@@ -4,7 +4,7 @@ var Name OverrideStartAnimName;
 var Name OverrideStopAnimName;
 var bool RequireVisibleTile;
 
-static function bool IsTileValidForBind(const out TTile TileOption, const out TTile SourceTile)
+static function bool IsTileValidForBind(const out TTile TileOption, const out TTile SourceTile, const out Object PassedObject)
 {
 	local XComWorldData World;
 	local GameRulesCache_VisibilityInfo OutVisibilityInfo;
@@ -61,7 +61,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	PreferredDirection = Normal(World.GetPositionFromTileCoordinates(TargetUnitState.TileLocation) - World.GetPositionFromTileCoordinates(SourceUnitState.TileLocation));
 
 	// Prioritize selecting a tile that we can use the bind ability from.  (visible without peek, not high cover)
-	if( HasBindableNeighborTile(SourceUnitState, PreferredDirection, TeleportToTile)
+	if( HasBindableNeighborTile(SourceUnitState, PreferredDirection, TeleportToTile) 
 							// If that fails, select any valid neighbor tile.  Drop the validator.
 		   || (!RequireVisibleTile && SourceUnitState.FindAvailableNeighborTileWeighted(PreferredDirection, TeleportToTile)) )
 	{

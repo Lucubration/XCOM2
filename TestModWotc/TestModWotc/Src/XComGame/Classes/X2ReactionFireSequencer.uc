@@ -201,17 +201,23 @@ function PopReactionFire(XComGameStateContext_Ability FiringAbilityContext)
 
 		for( Index = 0; Index < ReactionFireInstances.Length; ++Index )
 		{
+			if (ReactionFireInstances[Index].bComplete)
+				continue;
+
 			if( ReactionFireInstances[Index].ShooterObjectID == FiringAbilityContext.InputContext.SourceObject.ObjectID &&
 			   ReactionFireInstances[Index].TargetObjectID == FiringAbilityContext.InputContext.PrimaryTarget.ObjectID )
 			{
 				ReactionFireInstances[Index].bStarted = true; //Mark as shown even though we were skipped. Maybe warn on this?
 				ReactionFireInstances[Index].bReadyForNext = true; //Mark as shown even though we were skipped. Maybe warn on this?
+				ReactionFireInstances[Index].bComplete = true;
 
 				//If we're the last reaction fire, then we can pop the camera. Otherwise wait for the next push
 				if( Index == (ReactionFireInstances.Length - 1) )
 				{
 					`CAMERASTACK.RemoveCamera(ReactionFireInstances[Index].ShooterCam);
 				}
+
+				break; // only pop
 			}
 		}
 
@@ -261,6 +267,14 @@ function MarkReactionFireInstanceDone(XComGameStateContext_Ability FiringAbility
 		if(ReactionFireInstances[Index].ShooterObjectID == FiringAbilityContext.InputContext.SourceObject.ObjectID &&
 		   ReactionFireInstances[Index].TargetObjectID == FiringAbilityContext.InputContext.PrimaryTarget.ObjectID)
 		{
+			// if the next shooter is the same as the current shooter (specialist ability guardian)
+			// ignore the completion and wait for the pop to occur on fire action completion.
+			if (Index + 1 < ReactionFireInstances.Length &&
+				ReactionFireInstances[Index + 1].ShooterObjectID == ReactionFireInstances[Index].ShooterObjectID)
+			{
+				return;
+			}
+
 			ReactionFireInstances[Index].bReadyForNext = true;
 
 			//Only do this if there is more reaction fire waiting

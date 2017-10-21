@@ -17,6 +17,10 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 
 	UnitState = XComGameState_Unit(NewGameState.ModifyStateObject(class'XComGameState_Unit', ApplyEffectParameters.TargetStateObjectRef.ObjectID));	
 
+	//If this is a War of the Chosen enemy, give some action points to run the behavior tree. Everyone else must use the ones they have already - fixes issues with
+	//regular enemies sometimes gaining extra moves.
+	if (UnitState.GetTeam() == eTeam_TheLost || UnitState.IsChosen())
+	{
 	for (Point = 0; Point < SetActionPointCount; ++Point)
 	{
 		if (Point < UnitState.ActionPoints.Length)
@@ -30,6 +34,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 		{
 			UnitState.ActionPoints.AddItem(class'X2CharacterTemplateManager'.default.StandardActionPoint);
 		}
+	}
 	}
 
 	// Kick off the behavior tree.

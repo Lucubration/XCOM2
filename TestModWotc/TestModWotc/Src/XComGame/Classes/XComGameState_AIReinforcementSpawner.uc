@@ -686,7 +686,7 @@ function BuildVisualizationForSpawnerDestruction(XComGameState VisualizeGameStat
 	}
 
 
-static function InitiateReinforcements(
+static function bool InitiateReinforcements(
 	Name EncounterID, 
 	optional int OverrideCountdown = -1, 
 	optional bool OverrideTargetLocation,
@@ -709,9 +709,9 @@ static function InitiateReinforcements(
 	local XComAISpawnManager SpawnManager;
 	local Vector DesiredSpawnLocation;
 
-	if( !bIgnoreUnitCap && LivingUnitCapReached() )
+	if( !bIgnoreUnitCap && LivingUnitCapReached(InSpawnVisualizationType == 'TheLostSwarm') )
 	{
-		return;
+		return false;
 	}
 
 	SpawnManager = `SPAWNMGR;
@@ -765,6 +765,8 @@ static function InitiateReinforcements(
 
 	if (IncomingGameState == none)
 		`TACTICALRULES.SubmitGameState(NewGameState);
+
+	return true;
 }
 
 // When called, the visualized object must create it's visualizer if needed, 
@@ -816,7 +818,7 @@ function AppendAdditionalSyncActions( out VisualizationActionMetadata ActionMeta
 	ReinforcementSpawnerEffectAction.bStopEffect = false;
 }
 
-static function bool LivingUnitCapReached()
+static function bool LivingUnitCapReached(bool bOnlyConsiderTheLost)
 {
 	local XComGameStateHistory History;
 	local XComGameState_Unit kUnitState;
@@ -829,12 +831,21 @@ static function bool LivingUnitCapReached()
 	{
 		if( kUnitState.IsAlive() && !kUnitState.bRemovedFromPlay )
 		{
-				++LivingUnitCount;
-			}
+			if( !bOnlyConsiderTheLost || kUnitState.GetTeam() == eTeam_TheLost )
+			{
+			++LivingUnitCount;
 		}
+	}
+	}
+
+	if( bOnlyConsiderTheLost )
+	{
+		return LivingUnitCount >= class'XComAISpawnManager'.default.LostUnitCap;  // max lost units permitted to be alive at one time; can only spawn additional lost if below this number
+	}
 
 	return LivingUnitCount >= class'XComAISpawnManager'.default.UnitCap;
 }
+
 
 cpptext
 {

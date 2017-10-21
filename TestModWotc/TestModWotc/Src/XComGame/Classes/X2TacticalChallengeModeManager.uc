@@ -30,6 +30,7 @@ var int									m_CurrentTurn;                  // The combined map should be ad
 var array<int>							m_TurnEventMap;                 // Entries of Event (index) and Turn (value) filled in when an event occurs.
 var array<int>							m_CurrentCombinedTurnEventMap;  // Entries of Event (index) and Number of players (value), cumulative update of all previous turns
 var array<int>							m_CurrentTotalTurnEventMap;     // Entries of Event (index) and Number of players (value), total number of players to have this event on any turn
+var int									m_TotalPlayersStarted;
 
 var int									m_EnemyBannerTurn;				// Last turn enemy score decrease banner was shown
 var int									m_ObjectiveBannerTurn;			// Last turn objective score decrease banner was shown
@@ -59,7 +60,9 @@ function Init()
 	EventManager.RegisterForEvent( ThisObj, 'UnitDied', OnUnitDied, ELD_OnStateSubmitted );
 	EventManager.RegisterForEvent( ThisObj, 'PlayerTurnEnded', OnPlayerTurnEnded, ELD_OnStateSubmitted );
 	EventManager.RegisterForEvent( ThisObj, 'MissionObjectiveMarkedCompleted', OnObjectiveCompleted, ELD_OnStateSubmitted );
-	EventManager.RegisterForEvent(ThisObj, 'PlayerTurnBegun', OnPlayerTurnBegun, ELD_OnStateSubmitted);
+	EventManager.RegisterForEvent( ThisObj, 'PlayerTurnBegun', OnPlayerTurnBegun, ELD_OnStateSubmitted );
+	EventManager.RegisterForEvent( ThisObj, 'SquadConcealmentBroken', OnSquadConcealmentBroken, ELD_OnStateSubmitted );
+	EventManager.RegisterForEvent( ThisObj, 'UnitTakeEffectDamage', OnUnitTookDamage, ELD_OnStateSubmitted );
 
 	//And subscribe to any future changes 
 	`XCOMVISUALIZATIONMGR.RegisterObserver(self);
@@ -76,7 +79,7 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 {
 	if (AssociatedGameState.HistoryIndex == History.GetCurrentHistoryIndex())
 	{
-		`log(`location @ `ShowVar(m_SeenEvents.Length) @ `ShowVar(m_LastViewedEvent), , 'XCom_Online');
+		`log(`location @ `ShowVar(m_SeenEvents.Length) @ `ShowVar(m_LastViewedEvent), , 'XCom_Challenge');
 		if (m_SeenEvents.Length > m_LastViewedEvent)
 		{
 			XComPlayerController(class'WorldInfo'.static.GetWorldInfo().GetALocalPlayerController()).Pres.UIChallengeEventBanner();
@@ -88,16 +91,25 @@ event OnVisualizationBlockComplete(XComGameState AssociatedGameState)
 //==============================================================================
 //		EXTERNAL INTERFACE:
 //==============================================================================
+function int GetTotalPlayersStarted()
+{
+	return m_TotalPlayersStarted;
+}
+
 function ResetAllData()
 {
+	local int i;
+	m_TotalPlayersStarted = 0;
 	m_SeenEvents.Length = 0;
 	m_LastViewedEvent = 0;
 
 	m_TurnEventMap.Length = 0;
 	m_TurnEventMap.Add(ECME_MAX);
+	for (i = 0; i < m_TurnEventMap.Length; ++i) m_TurnEventMap[i] = 0;
 
 	m_CurrentCombinedTurnEventMap.Length = 0;
 	m_CurrentCombinedTurnEventMap.Add(ECME_MAX);
+	for (i = 0; i < m_CurrentCombinedTurnEventMap.Length; ++i) m_CurrentCombinedTurnEventMap[i] = 0;
 
 	m_LastTurnUpdated = 0;
 	m_CurrentTurn = class'XComGameState_ChallengeData'.static.CalcCurrentTurnNumber();
@@ -176,10 +188,12 @@ function ViewAllPendingEvents()
 //==============================================================================
 function UpdateTotalEventModeMap()
 {
-	local int UpdateTurn, UpdateEvent, MaxTurns;
+	local int UpdateTurn, UpdateEvent, MaxTurns, i;
 
 	m_CurrentTotalTurnEventMap.Length = 0;
 	m_CurrentTotalTurnEventMap.Add(ECME_MAX);
+	for (i = 0; i < m_CurrentTotalTurnEventMap.Length; ++i) m_CurrentTotalTurnEventMap[i] = 0;
+
 	MaxTurns = OnlineMgr.m_ChallengeModeEventMap.Length / ECME_MAX;
 	for (UpdateTurn = 0; UpdateTurn < MaxTurns; ++UpdateTurn)
 	{
@@ -189,6 +203,8 @@ function UpdateTotalEventModeMap()
 			m_CurrentTotalTurnEventMap[UpdateEvent] += OnlineMgr.m_ChallengeModeEventMap[(UpdateEvent * MaxTurns) + UpdateTurn];
 		}
 	}
+	m_TotalPlayersStarted = OnlineMgr.m_ChallengeModeEventMap[ECME_StartedMission * MaxTurns];
+	`log(`location @ `ShowVar(m_TotalPlayersStarted), , 'XCom_Challenge');
 }
 
 function UpdateEventModeMap()
@@ -196,7 +212,7 @@ function UpdateEventModeMap()
 	local int UpdateTurn, UpdateEvent, MaxTurns;
 
 	MaxTurns = OnlineMgr.m_ChallengeModeEventMap.Length / ECME_MAX;
-	`log(`location @ `ShowVar(m_CurrentTurn) @ `ShowVar(m_LastTurnUpdated) @ `ShowVar(MaxTurns),,'XCom_Online');
+	`log(`location @ `ShowVar(m_CurrentTurn) @ `ShowVar(m_LastTurnUpdated) @ `ShowVar(MaxTurns),,'XCom_Challenge');
 
 	if (m_LastTurnUpdated > m_CurrentTurn)
 	{
@@ -222,11 +238,18 @@ function UpdateEventModeMap()
 	m_LastTurnUpdated = m_CurrentTurn;
 }
 
-function OnEventTriggered(EChallengeModeEventType EventType, int Turn, optional bool bOverrideValue=false)
+function OnEventTriggered(EChallengeModeEventType EventType, optional int Turn=-1, optional bool bOverrideValue=false)
 {
 	local int MaxTurns, EventIdx, SeenIdx;
 	local bool bAddNew;
+	local int EventTurn;
 
+	EventTurn = Turn;
+	if (Turn == -1)
+	{
+		EventTurn = m_CurrentTurn;
+	}
+		
 	SeenIdx = -1;
 
 	bAddNew = (m_TurnEventMap[EventType] == 0);
@@ -250,19 +273,19 @@ function OnEventTriggered(EChallengeModeEventType EventType, int Turn, optional 
 
 	if (SeenIdx != -1)
 	{
-		m_CurrentTurn = Max(Turn - 1, 0);
+		//m_CurrentTurn = Max(EventTurn - 1, 0);
 		UpdateEventModeMap(); // update the Combined Map for the Prior / Current /Subsequent data
 
 		MaxTurns = OnlineMgr.m_ChallengeModeEventMap.Length / ECME_MAX;
 		m_SeenEvents[SeenIdx].EventType = EventType;
-		m_SeenEvents[SeenIdx].Turn = Turn;
+		m_SeenEvents[SeenIdx].Turn = EventTurn;
 		m_SeenEvents[SeenIdx].NumPlayersPrior = m_CurrentCombinedTurnEventMap[EventType];
-		m_SeenEvents[SeenIdx].NumPlayersCurrent = OnlineMgr.m_ChallengeModeEventMap[(EventType * MaxTurns) + Turn];
+		m_SeenEvents[SeenIdx].NumPlayersCurrent = OnlineMgr.m_ChallengeModeEventMap[(EventType * MaxTurns) + EventTurn];
 		m_SeenEvents[SeenIdx].NumPlayersSubsequent = m_CurrentTotalTurnEventMap[EventType] - (m_SeenEvents[SeenIdx].NumPlayersCurrent + m_SeenEvents[SeenIdx].NumPlayersPrior);
-		`log(`location @ `ShowEnum(EChallengeModeEventType, m_SeenEvents[SeenIdx].EventType, EventType) @ `ShowVar(m_SeenEvents[SeenIdx].Turn) @ `ShowVar(m_SeenEvents[SeenIdx].NumPlayersPrior) @ `ShowVar(m_SeenEvents[SeenIdx].NumPlayersCurrent) @ `ShowVar(m_SeenEvents[SeenIdx].NumPlayersSubsequent),,'XCom_Online');
+		`log(`location @ `ShowEnum(EChallengeModeEventType, m_SeenEvents[SeenIdx].EventType, EventType) @ `ShowVar(m_SeenEvents[SeenIdx].Turn) @ `ShowVar(m_SeenEvents[SeenIdx].NumPlayersPrior) @ `ShowVar(m_SeenEvents[SeenIdx].NumPlayersCurrent) @ `ShowVar(m_SeenEvents[SeenIdx].NumPlayersSubsequent),,'XCom_Challenge');
 
 		// Update the Event Map to include the turn in which the event was seen - only do it once.
-		m_TurnEventMap[EventType] = Turn + 1; // Adding 1 here, since people typically do not see the first turn as turn 0.
+		m_TurnEventMap[EventType] = EventTurn + 1; // Adding 1 here, since people typically do not see the first turn as turn 0.
 	}
 }
 
@@ -274,9 +297,11 @@ function EventListenerReturn OnUnitDied(Object EventData, Object EventSource, XC
 	local XComGameState_Unit Unit, IterUnit;
 	local int DeadUnitCount;
 	local ETeam UnitTeam;
+	local Name UnitGroupTemplateName;
 
 	Unit = XComGameState_Unit(EventData);
 	UnitTeam = Unit.GetTeam();
+	UnitGroupTemplateName = Unit.GetMyTemplateGroupName();
 	foreach History.IterateByClassType(class'XComGameState_Unit', IterUnit)
 	{
 		if (IterUnit.IsDead() && IterUnit.GetTeam() == UnitTeam)
@@ -291,15 +316,27 @@ function EventListenerReturn OnUnitDied(Object EventData, Object EventSource, XC
 		{
 			OnEventTriggered(ECME_FirstXComKIA, m_CurrentTurn);
 		}
+		if (UnitGroupTemplateName == 'Sectopod' || UnitGroupTemplateName == 'Gatekeeper')
+		{
+			OnEventTriggered(ECME_LostSectopodGatekeeper, m_CurrentTurn);
+		}
 		break;
 	case eTeam_Alien:
 		if (DeadUnitCount >= 10)
 		{
 			OnEventTriggered(ECME_10EnemiesKIA, m_CurrentTurn);
 		}
+		else if (DeadUnitCount >= 5)
+		{
+			OnEventTriggered(ECME_5EnemiesKIA, m_CurrentTurn);
+		}
 		else if (DeadUnitCount >= 1)
 		{
 			OnEventTriggered(ECME_FirstAlienKill, m_CurrentTurn);
+		}
+		if (UnitGroupTemplateName == 'Sectopod' || UnitGroupTemplateName == 'Gatekeeper')
+		{
+			OnEventTriggered(ECME_KilledSectopodGatekeeper, m_CurrentTurn);
 		}
 		break;
 	default:
@@ -315,7 +352,17 @@ function EventListenerReturn OnPlayerTurnEnded(Object EventData, Object EventSou
 
 function EventListenerReturn OnObjectiveCompleted(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
 {
+	local SeqAct_DisplayMissionObjective SeqActDisplayMissionObjective;
+
+	SeqActDisplayMissionObjective = SeqAct_DisplayMissionObjective( EventSource );
+
+	if ((SeqActDisplayMissionObjective == none) || (class'XComGameState_ChallengeScore'.static.GetIndividualMissionObjectiveCompletedValue(SeqActDisplayMissionObjective) <= 0))
+	{
+		return ELR_NoInterrupt;
+	}
+
 	OnEventTriggered(ECME_MissionObjectiveComplete, m_CurrentTurn);
+
 	return ELR_NoInterrupt;
 }
 
@@ -323,29 +370,64 @@ function EventListenerReturn OnPlayerTurnBegun(Object EventData, Object EventSou
 {
 	local XComGameState_Player PlayerState;
 	local XComPresentationLayerBase PresLayer;
+	local bool bObjectiveBanner, bEnemyBanner;
+	local int NumPlayersCompletedThisTurn, TotalPlayersCompletedMission, MaxTurns;
 
 	PlayerState = XComGameState_Player(EventData);
 
 	if(PlayerState.GetTeam() == eTeam_XCom)
 	{
-	PresLayer = XComPlayerController(class'WorldInfo'.static.GetWorldInfo().GetALocalPlayerController()).Pres;
+		PresLayer = XComPlayerController(class'WorldInfo'.static.GetWorldInfo().GetALocalPlayerController()).Pres;
+		bObjectiveBanner = ShouldShowObjectiveBanner();
+		bEnemyBanner = ShouldShowEnemyBanner();
 
-	if(ShouldShowObjectiveBanner())
-	{
-		PresLayer.ObjectiveScoringDecreaseBanner();
-		m_ObjectiveBannerTurn = m_CurrentTurn;
-	}
+		if(bObjectiveBanner && bEnemyBanner)
+		{
+			PresLayer.ChallengeScoringDecreaseBanner();
+			m_ObjectiveBannerTurn = m_CurrentTurn;
+			m_EnemyBannerTurn = m_CurrentTurn;
+		}
+		else if(bEnemyBanner)
+		{
+			PresLayer.EnemyScoringDecreaseBanner();
+			m_EnemyBannerTurn = m_CurrentTurn;
+		}
+		else if(bObjectiveBanner)
+		{
+			PresLayer.ObjectiveScoringDecreaseBanner();
+			m_ObjectiveBannerTurn = m_CurrentTurn;
+		}
 
-	if(ShouldShowEnemyBanner())
-	{
-		PresLayer.EnemyScoringDecreaseBanner();
-		m_EnemyBannerTurn = m_CurrentTurn;
-	}
-	
+		MaxTurns = OnlineMgr.m_ChallengeModeEventMap.Length / ECME_MAX;
+		NumPlayersCompletedThisTurn = OnlineMgr.m_ChallengeModeEventMap[(ECME_CompletedMission * MaxTurns) + m_CurrentTurn];
+		TotalPlayersCompletedMission = m_CurrentTotalTurnEventMap[ECME_CompletedMission];
+		`log(`location @ `ShowVar(NumPlayersCompletedThisTurn) @ `ShowVar(TotalPlayersCompletedMission),,'XCom_Challenge');
+		if (NumPlayersCompletedThisTurn > 0)
+		{
+			PresLayer.UIChallengeCompletedBanner(m_CurrentTurn, NumPlayersCompletedThisTurn, TotalPlayersCompletedMission);
+		}
+
 		++m_CurrentTurn;
 		UpdateEventModeMap();
 	}
 	
+	return ELR_NoInterrupt;
+}
+
+function EventListenerReturn OnSquadConcealmentBroken(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+{
+	OnEventTriggered(ECME_ConcealmentBroken, m_CurrentTurn);
+	return ELR_NoInterrupt;
+}
+
+function EventListenerReturn OnUnitTookDamage(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData)
+{
+	local XComGameState_Unit Damagee;
+	Damagee = XComGameState_Unit(EventSource);
+	if (!Damagee.IsDead() && Damagee.GetTeam() == eTeam_XCom)
+	{
+		OnEventTriggered(ECME_FirstSoldierWounded, m_CurrentTurn);
+	}
 	return ELR_NoInterrupt;
 }
 

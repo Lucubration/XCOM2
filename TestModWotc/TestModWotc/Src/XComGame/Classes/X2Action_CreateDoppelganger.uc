@@ -182,7 +182,7 @@ simulated state Executing
 
 		DoppelgangerUnit.GetPawn().EnableFootIK(false);
 
-		AnimParams.AnimName = 'Pose';
+		AnimParams.AnimName = 'DoppelgangerPose';
 		AnimParams.Looping = true;
 		AnimParams.BlendTime = 0.0f;
 		AnimParams.HasPoseOverride = true;

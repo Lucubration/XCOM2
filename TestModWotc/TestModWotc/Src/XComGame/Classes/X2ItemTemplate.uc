@@ -32,6 +32,7 @@ var bool			bInfiniteItem;					// Does this item have infinite quantity in the in
 var bool			bAlwaysUnique;					// Item will never stack in HQ inventory b/c each itemstate is unique (PCS)
 var bool			bPriority;						// Flag as a priority to build
 var bool			bAlwaysRecovered;				// When this loot is rolled, auto recover it immediately; don't offer it as normal looting options.
+var bool			bOkayToConcealAsObjective;		// Even if this item is an objective item, it's okay to get concealed when carrying it (see: X2Condition_Stealth)
 
 var int				ReverseEngineeringValue;        // Data received when item is reverse engineered, 0 when can't reverse engineer
 var int				ReverseEngineeringBatchSize;    // Number required to get the ReverseEngineeringValue

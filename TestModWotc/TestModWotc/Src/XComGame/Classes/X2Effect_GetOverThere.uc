@@ -8,6 +8,7 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	local TTile TeleportToTile;
 	local Vector PreferredDirection;
 	local X2EventManager EventManager;
+	local X2Condition_Wrath MeleeCheckCondition;
 
 	World = `XWORLD;
 
@@ -19,18 +20,19 @@ simulated protected function OnEffectAdded(const out EffectAppliedData ApplyEffe
 	`assert(TargetUnitState != none);
 
 	PreferredDirection = Normal(World.GetPositionFromTileCoordinates(SourceUnitState.TileLocation) - World.GetPositionFromTileCoordinates(TargetUnitState.TileLocation));
-
-	if (TargetUnitState.FindAvailableNeighborTileWeighted(PreferredDirection, TeleportToTile))
+	MeleeCheckCondition = new class'X2Condition_Wrath';
+	MeleeCheckCondition.TargetTile = TargetUnitState.TileLocation;
+	if (TargetUnitState.FindAvailableNeighborTileWeighted(PreferredDirection, TeleportToTile, class'X2Condition_Wrath'.static.DefaultMeleeVisibility, MeleeCheckCondition))
 	{
-			EventManager = `XEVENTMGR;
+		EventManager = `XEVENTMGR;
 
-			// Move the source to this space
-			SourceUnitState.SetVisibilityLocation(TeleportToTile);
+		// Move the source to this space
+		SourceUnitState.SetVisibilityLocation(TeleportToTile);
 
-			EventManager.TriggerEvent('ObjectMoved', SourceUnitState, SourceUnitState, NewGameState);
-			EventManager.TriggerEvent('UnitMoveFinished', SourceUnitState, SourceUnitState, NewGameState);
-			return;
-		}
+		EventManager.TriggerEvent('ObjectMoved', SourceUnitState, SourceUnitState, NewGameState);
+		EventManager.TriggerEvent('UnitMoveFinished', SourceUnitState, SourceUnitState, NewGameState);
+		return;
+	}
 	`RedScreen("GetOverThere effect could not find a neighbor tile to land in - ability should not have been able to be activated! @gameplay @jbouscher");
 }
 

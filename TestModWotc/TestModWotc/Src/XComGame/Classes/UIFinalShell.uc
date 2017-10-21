@@ -32,6 +32,7 @@ var int m_iLoad;
 var int m_iOptions;
 var int m_iExit;
 
+var bool bIsFullScreenViewport;
 
 //--------------------------------------------------------------------------------------- 
 // Cached References
@@ -44,6 +45,8 @@ simulated function OnInit()
 {
 	super.OnInit();
 	
+	ImportBaseGameCharacterPool();
+
 	m_my2KButton = Spawn(class'UIButton', self);
 	m_my2KButton.LibID = 'My2KButton';
 	m_my2KButton.InitButton('My2KButton', ,  ProcessMy2KButtonClick);
@@ -62,10 +65,41 @@ simulated function OnInit()
 	UpdateMy2KButtonStatus();
 
 	SetTimer(1.0f, true, nameof(UpdateMy2KButtonStatus));
+
+	bIsFullScreenViewport = `XENGINE.GameViewport.IsFullScreenViewport();
+}
+
+function ImportBaseGameCharacterPool()
+{
+	local CharacterPoolManager CP;
+	local XComGameState_Unit ImportUnit;
+	local int iNumChars;
+
+	iNumChars = `XENGINE.m_CharacterPoolManager.CharacterPool.Length;
+	if (iNumChars == 0)
+	{
+		CP = new class'CharacterPoolManager';		
+		CP.LoadBaseGameCharacterPool();
+
+		if (CP.CharacterPool.Length > 0)
+		{
+			//Grab each unit and put it in the default pool
+			foreach CP.CharacterPool(ImportUnit)
+			{
+				if (ImportUnit != None)
+					`XENGINE.m_CharacterPoolManager.CharacterPool.AddItem(ImportUnit);
+			}
+
+			//Save the default character pool
+			`XENGINE.m_CharacterPoolManager.SaveCharacterPool();
+		}
+	}
 }
 
 simulated function UpdateMenu()
 {
+	local int i;
+
 	ClearMenu();
 
 	CreateItem('SP', m_sNewGame);
@@ -77,6 +111,10 @@ simulated function UpdateMenu()
 	CreateItem('Exit', m_sExitToDesktop);
 
 	MainMenuContainer.Navigator.SelectFirstAvailable();
+	for (i = 0; i < MainMenu.Length; ++i)
+	{
+		MainMenu[i].ProcessMouseEvents(OnChildMouseEvent);
+}
 }
 
 // Button callbacks
@@ -122,6 +160,18 @@ simulated function OnMenuButtonClicked(UIButton button)
 		{
 			ConsoleCommand("exit");
 		}
+		break;
+	}
+}
+
+simulated function OnChildMouseEvent(UIPanel control, int cmd)
+{
+	switch (cmd)
+	{
+	case class'UIUtilities_Input'.const.FXS_L_MOUSE_IN :
+	case class'UIUtilities_Input'.const.FXS_L_MOUSE_OVER :
+	case class'UIUtilities_Input'.const.FXS_L_MOUSE_DRAG_OVER :
+		MainMenuContainer.Navigator.SetSelected(control);
 		break;
 	}
 }
@@ -324,6 +374,16 @@ function OnReceivedChallengeModeIntervalEntry(qword IntervalSeedID, int Expirati
 	}
 }
 
+event Tick(float DeltaTime)
+{
+	super.Tick(DeltaTime);
+
+	if (bIsFullScreenViewport != `XENGINE.GameViewport.IsFullScreenViewport())
+	{
+		bIsFullScreenViewport = !bIsFullScreenViewport;
+		UpdateNavHelp();
+	}
+}
 
 //==============================================================================
 //		CLEANUP (can never be too careful):

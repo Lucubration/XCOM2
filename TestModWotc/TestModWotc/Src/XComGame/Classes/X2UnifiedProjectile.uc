@@ -399,8 +399,10 @@ function EndConstantProjectileEffects( )
 		{
 			Projectiles[Index].bConstantComplete = true;
 
+			Projectiles[ Index ].ParticleEffectComponent.OnSystemFinished = none;
 			Projectiles[ Index ].ParticleEffectComponent.DeactivateSystem( );
 			Projectiles[ Index ].ParticleEffectComponent.KillParticlesForced( );
+			Projectiles[ Index ].ParticleEffectComponent = none;
 			Projectiles[ Index ].SourceAttachActor.SetPhysics( PHYS_None );
 			Projectiles[ Index ].TargetAttachActor.SetPhysics( PHYS_None );
 		}
@@ -939,7 +941,7 @@ function FireProjectileInstance(int Index)
 					Projectiles[Index].InitialSourceLocation, 
 					rotator(TravelDirection),
 					Projectiles[Index].TargetAttachActor);
-			}
+			}		
 			break;
 		case eProjectileType_Ranged:
 		case eProjectileType_RangedConstant:
@@ -963,6 +965,7 @@ function FireProjectileInstance(int Index)
 		}
 
 		Projectiles[Index].ParticleEffectComponent.SetScale( Projectiles[Index].ProjectileElement.ParticleScale );
+		Projectiles[Index].ParticleEffectComponent.OnSystemFinished = OnParticleSystemFinished;
 
 		DistanceTravelled = Min( DistanceTravelled, Projectiles[ Index ].ProjectileElement.MaxTravelDistanceParam );
 		//Tells the particle system how far the projectile must travel to reach its target
@@ -1029,6 +1032,20 @@ function FireProjectileInstance(int Index)
 	{
 		//Play a fire sound if specified
 		Projectiles[Index].SourceAttachActor.PlayAkEvent(Projectiles[Index].ProjectileElement.FireSound);
+	}
+}
+
+function OnParticleSystemFinished(ParticleSystemComponent PSystem)
+{
+	local ProjectileElementInstance Element;
+
+	foreach Projectiles(Element)
+	{
+		if (Element.ParticleEffectComponent == PSystem)
+		{
+			Element.ParticleEffectComponent = none;
+			return;
+		}
 	}
 }
 
@@ -2045,6 +2062,7 @@ state Executing
 				// Traveling projectiles should be forcibly deactivated once they've reaced their destination (and the trail has caught up).
 				if(Projectiles[Index].ParticleEffectComponent != None && (Projectiles[Index].ProjectileElement.UseProjectileType == eProjectileType_Traveling) && (WorldInfo.TimeSeconds >= (Projectiles[Index].EndTime + Projectiles[Index].TrailAdjustmentTime)))
 				{
+					Projectiles[ Index ].ParticleEffectComponent.OnSystemFinished = none;
 					Projectiles[ Index ].ParticleEffectComponent.DeactivateSystem( );
 					Projectiles[ Index ].ParticleEffectComponent = none;
 				}
@@ -2092,6 +2110,7 @@ state Executing
 				// A fallback to catch bad projectile effects that are lasting too long (except for the constants)
 				if (!bProjectileEffectsComplete && (WorldInfo.TimeSeconds > (Projectiles[Index].EndTime + Projectiles[Index].TrailAdjustmentTime + 10.0)) && (Projectiles[Index].ProjectileElement.UseProjectileType != eProjectileType_RangedConstant))
 				{
+					Projectiles[ Index ].ParticleEffectComponent.OnSystemFinished = none;
 					Projectiles[ Index ].ParticleEffectComponent.DeactivateSystem( );
 					Projectiles[ Index ].ParticleEffectComponent = none;
 					//`RedScreen("Projectile " $ Index  $ " vfx for weapon " $ FireAction.SourceItemGameState.GetMyTemplateName() $ " still hasn't completed after 10 seconds past expected completion time");

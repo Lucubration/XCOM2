@@ -434,7 +434,10 @@ Begin:
 		Params.DesiredEndingAtoms[0].Scale = 1.0f;
 	}
 	
+	if( SourceUnitPawn.GetAnimTreeController().CanPlayAnimation(Params.AnimName) )
+	{
 	FinishAnim(SourceUnitPawn.GetAnimTreeController().PlayFullBodyDynamicAnim(Params));
+	}
 
 	if( bDoHackCaptainNarrative )
 	{
@@ -455,7 +458,10 @@ Begin:
 	Params = default.Params;
 	Params.AnimName = SourceLoopAnim;
 	Params.Looping = true;
+	if( SourceUnitPawn.GetAnimTreeController().CanPlayAnimation(Params.AnimName) )
+	{
 	SourceUnitPawn.GetAnimTreeController().PlayFullBodyDynamicAnim(Params);
+	}
 
 	if( !bSkipUIInput )
 	{

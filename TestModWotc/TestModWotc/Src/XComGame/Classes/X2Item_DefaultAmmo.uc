@@ -203,11 +203,13 @@ static function X2DataTemplate BluescreenRounds()
 	Condition_UnitProperty.ExcludeRobotic = true;
 	DamageValue.DamageType = 'Electrical';
 	DamageValue.Damage = default.BLUESCREEN_ORGANIC_DMGMOD;
+	Condition_UnitProperty.FailOnNonUnits = true;
 	Template.AddAmmoDamageModifier(Condition_UnitProperty, DamageValue);
 	Condition_UnitProperty = new class'X2Condition_UnitProperty';
 	Condition_UnitProperty.ExcludeOrganic = true;
 	Condition_UnitProperty.IncludeWeakAgainstTechLikeRobot = true;
 	Condition_UnitProperty.TreatMindControlledSquadmateAsHostile = true;
+	Condition_UnitProperty.FailOnNonUnits = true;
 	DamageValue.Damage = default.BLUESCREEN_DMGMOD;
 	Template.AddAmmoDamageModifier(Condition_UnitProperty, DamageValue);
 	Template.CanBeBuilt = true;

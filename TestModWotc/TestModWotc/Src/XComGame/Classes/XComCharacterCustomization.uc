@@ -2601,8 +2601,8 @@ simulated function SubmitUnitCustomizationChanges()
 	local XComGameState NewGameState;
 	local bool bIsUnitInHistory;
 
-	OriginalUnit = XComGameState_Unit(Unit.GetPreviousVersion());
 	bIsUnitInHistory = (History.GetGameStateForObjectID(Unit.ObjectID) != none);
+	OriginalUnit = bIsUnitInHistory ? XComGameState_Unit(Unit.GetPreviousVersion()) : none;
 
 	// Make sure that the Unit is in the history at some point, so we know we aren't in the character pool
 	// Then submit a modified version of the unit to the history if its customization has changed

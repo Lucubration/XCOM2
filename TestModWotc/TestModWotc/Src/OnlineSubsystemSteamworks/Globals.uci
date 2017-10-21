@@ -1,0 +1,9 @@
+/**
+ * Copyright 1998-2011 Epic Games, Inc. All Rights Reserved.
+ */
+
+// Enables/disables the lobby interface in OnlineSubsystemSteamworks (requires recompilation of native code)
+// FIRAXIS begin: UOnlineGameInterfaceXCOM Setup for Steamworks Lobbies as the source for game creation -ttalley
+`define STEAM_MATCHMAKING_LOBBY 1
+`define USE_STEAM_LOBBY_FOR_GAME_MATCHMAKING 1
+// FIRAXIS end: UOnlineGameInterfaceXCOM Setup for Steamworks Lobbies as the source for game creation -ttalley

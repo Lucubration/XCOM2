@@ -211,6 +211,8 @@ Begin:
 	{
 		Params.AnimName = 'HL_LootBodyStart';
 		Params.PlayRate = GetNonCriticalAnimationSpeed();
+		if( UnitPawn.GetAnimTreeController().CanPlayAnimation(Params.AnimName) )
+		{
 		PlayingSequence = UnitPawn.GetAnimTreeController().PlayFullBodyDynamicAnim(Params);
 		if( Metadata.VisualizeActor.CustomTimeDilation < 1.0 )
 		{
@@ -220,11 +222,16 @@ Begin:
 		{
 			FinishAnim(PlayingSequence);
 		}
+		}
+
 
 		// Loop while the UI is displayed
 		Params.AnimName = 'HL_LootLoop';
 		Params.Looping = true;
+		if( UnitPawn.GetAnimTreeController().CanPlayAnimation(Params.AnimName) )
+		{
 		UnitPawn.GetAnimTreeController().PlayFullBodyDynamicAnim(Params);
+		}
 
 		// show the UI, and wait for it to finish before playing the slurp
 		`PRES.UIInventoryTactical(NewUnitState, OldLootableObjectState, OnUIInventoryTacticalClosed);
@@ -248,6 +255,8 @@ Begin:
 		Params.AnimName = 'HL_LootStop';
 		Params.Looping = false;
 		Params.PlayRate = GetNonCriticalAnimationSpeed();
+		if( UnitPawn.GetAnimTreeController().CanPlayAnimation(Params.AnimName) )
+		{
 		PlayingSequence = UnitPawn.GetAnimTreeController().PlayFullBodyDynamicAnim(Params);
 		if( Metadata.VisualizeActor.CustomTimeDilation < 1.0 )
 		{
@@ -256,6 +265,7 @@ Begin:
 		else
 		{
 			FinishAnim(PlayingSequence);
+		}
 		}
 		
 		Unit.UnitSpeak('LootCaptured');

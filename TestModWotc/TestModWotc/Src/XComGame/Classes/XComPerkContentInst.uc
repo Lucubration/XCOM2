@@ -293,9 +293,26 @@ simulated function RemovePerkTarget(XGUnit kUnit)
 	local XComGameState_Unit VisualizedUnit;
 	local bool bVisualizedUnitIsDead;
 
+	// not sure how this can happen
+	//	crash from v 299394 using volt
+	//	crashing is PlaySoundCue...
+	if (kUnit == None)
+		return;
+
 	i = m_arrTargets.Find(kUnit);
 	if (i != -1)
 	{
+
+		// double safety for above check in here
+		//	nullptr is clearly being passed to the PlaySoundCue as a target...
+		if (m_arrTargets[i] == None || m_arrTargetPawns[i] == None)
+		{
+			m_arrTargets[i] = None;
+			m_arrTargetPawns[i] = None;
+			m_arrTargetEffects[i].ObjectID = 0;
+			return;
+		}
+
 		VisualizedUnit = kUnit.GetVisualizedGameState();
 		bVisualizedUnitIsDead = VisualizedUnit.IsDead();
 		if (IsInState( 'DurationActive' ))

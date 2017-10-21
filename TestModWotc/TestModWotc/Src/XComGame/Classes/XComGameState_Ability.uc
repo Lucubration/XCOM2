@@ -671,6 +671,9 @@ function bool MayBreakConcealmentOnActivation(int PotentialTargetID)
 	case eConceal_Always:               //  Always retain Concealment, period
 		bRetainConcealment = true;
 		break;
+	case eConceal_AlwaysEvenWithObjective:
+		bRetainConcealment = true;
+		break;
 	case eConceal_Never:                //  Never retain Concealment, period
 		bRetainConcealment = false;
 		break;
@@ -716,14 +719,13 @@ function bool RetainConcealmentOnActivation(XComGameStateContext_Ability Activat
 
 	AbilityTemplate = GetMyTemplate();
 
-	// Target definition should always retain concealment, even if defining an objective
-	if( AbilityTemplate.DataName == 'TargetDefinition' )
-	{
-		return true;
-	}
-
 	if (class'Helpers'.static.IsObjectiveTarget(ActivationContext.InputContext.PrimaryTarget.ObjectID))
+	{
+		if (AbilityTemplate.ConcealmentRule == eConceal_AlwaysEvenWithObjective)
+			return true;
+
 		return false;
+	}
 
 	ConcealmentRule = AbilityTemplate.ConcealmentRule;
 	PrimaryTargetUnitState = XComGameState_Unit(ActivationContext.AssociatedState.GetGameStateForObjectID(ActivationContext.InputContext.PrimaryTarget.ObjectID));
@@ -751,6 +753,9 @@ function bool RetainConcealmentOnActivation(XComGameStateContext_Ability Activat
 		bRetainConcealment = AbilityTemplate.Hostility != eHostility_Offensive;
 		break;
 	case eConceal_Always:               //  Always retain Concealment, period
+		bRetainConcealment = true;
+		break;
+	case eConceal_AlwaysEvenWithObjective:
 		bRetainConcealment = true;
 		break;
 	case eConceal_Never:                //  Never retain Concealment, period

@@ -581,6 +581,8 @@ cpptext
 									 FLOAT MinRange = 0.0f, FLOAT MaxRange = 0.0f, FLOAT MaxAngle = 360.0f);
 };
 
+native static final function OpenWindowsExplorerToPhotos(int Campaign);
+
 defaultproperties
 {
 }

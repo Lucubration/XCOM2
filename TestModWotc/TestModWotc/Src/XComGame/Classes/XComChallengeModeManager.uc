@@ -296,7 +296,9 @@ final native function GetTimeScoring(out ChallengeTimeScoring TimeScoring, optio
 final native function int GetTotalScore();
 final native function int GetTotalScoreFromHistory(XComGameStateHistory ChallengeHistory);
 final native function int GetMaxChallengeScore(optional int ChallengeIdx = -1);
+final native function int GetMaxChallengeScoreFromHistory(XComGameStateHistory History);
 final native function int GetChallengeMaxPossibleScoreTable(out array<ScoreTableEntry> ScoreTable, optional int ChallengeIdx = -1);
+final native function int GetChallengeMaxPossibleScoreTableFromHistory(out array<ScoreTableEntry> ScoreTable, XComGameStateHistory History, optional int ChallengeIdx = -1);
 
 final static native function EventListenerReturn OnTacticalGameEnd(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData);
 final static native function EventListenerReturn OnKillMail(Object EventData, Object EventSource, XComGameState GameState, Name Event, Object CallbackData);

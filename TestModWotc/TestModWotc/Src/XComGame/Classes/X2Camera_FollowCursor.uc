@@ -15,10 +15,27 @@ var vector PrevCursorLocation;
 
 function Activated(TPOV CurrentPOV, X2Camera PreviousActiveCamera, X2Camera_LookAt LastActiveLookAtCamera)
 {
+	local XCom3DCursor Cursor;
+	local XComGameStateHistory History;
+	local XComTacticalController LocalController;
+	local XComGameState_Unit ActiveUnit;
+
 	super.Activated(CurrentPOV, PreviousActiveCamera, LastActiveLookAtCamera);
 
 	// move the LookAt point to be centered on the cursor
-	LookAt = `CURSOR.Location;
+	// only re-init for player controlled units
+	LocalController = XComTacticalController(`BATTLE.GetALocalPlayerController());
+	History = `XCOMHISTORY;
+	ActiveUnit = XComGameState_Unit(History.GetGameStateForObjectID(LocalController.GetActiveUnitStateRef().ObjectID));
+	if( ActiveUnit != none
+		&& !ActiveUnit.ControllingPlayerIsAI()
+		&& ActiveUnit.ControllingPlayer == GetActivePlayer() )
+	{
+	Cursor = `CURSOR;
+	Cursor.RefreshUnitLocation();
+	LookAt = Cursor.Location;
+	PrevCursorLocation = LookAt;
+}
 }
 
 /// <summary>

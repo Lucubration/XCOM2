@@ -49,7 +49,7 @@ Begin:
 	SourcePawn.GetAnimTreeController().DetachChildController(UnitPawn.GetAnimTreeController());
 
 	// Ensure we hold our dead pose
-	Params.AnimName = 'Pose';
+	Params.AnimName = 'PutDownPose';
 	Params.HasPoseOverride = true;
 	Params.Pose = UnitPawn.Mesh.LocalAtoms;
 	Params.BlendTime = 0.0f;

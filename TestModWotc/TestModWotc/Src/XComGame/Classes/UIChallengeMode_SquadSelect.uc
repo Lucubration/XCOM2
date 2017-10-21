@@ -63,6 +63,7 @@ var array<UIPanel>						m_InfoButtonPanels;
 
 var int									m_ViewReplayIndex;
 var int									m_NumSoldierSlots;
+var int									m_LocalPlayerScore;
 
 var bool								m_bViewingSoldiers;
 var bool								m_bGlobalLeaderboards;
@@ -84,6 +85,10 @@ var localized string					m_strViewLeaderboardButtonLabel;
 var localized string					m_strAcceptChallengeButtonLabel;
 var localized string					m_strMostlyTag;
 var localized string					m_strToggleLeaderboard;
+
+var localized string					m_strCompletedScore;
+var localized string					m_strBestRank;
+var localized string					m_strPlayersCompleted;
 
 var localized string					m_strNoAchieveTitle;
 var localized string					m_strNoAchieveBody;
@@ -147,7 +152,9 @@ var array<IntervalInfo>					m_arrIntervals;
 var qword								m_CurrentIntervalSeedID;
 var FriendFetchInfo						m_FriendFetch;
 var StatsInfo							m_ChallengeStats;
-
+var array<delegate<RequestDelegate> >	m_FiraxisLiveRequestDelegates;
+var delegate<RequestDelegate>			m_CurrentRequestDelegate;
+var int									m_TotalPlayerCount;
 
 
 //--------------------------------------------------------------------------------------- 
@@ -421,6 +428,8 @@ simulated function OnInit()
 		MC.FunctionNum("setHighlight", m_ViewReplayIndex);
 	}
 	//bsg-jneal (5.5.17): end
+
+	OnlineSub.PlayerInterface.RequestUserInformation(`ONLINEEVENTMGR.LocalUserIndex, m_LocalPlayerID);
 }
 
 function NoAchievementPopup()
@@ -511,26 +520,24 @@ function OnReceivedChallengeModeLeaderboardEnd(qword IntervalSeedID)
 		`ONLINEEVENTMGR.SaveProfileSettings(true);
 		NoAchievementPopup();
 	}
+	RequestFinished(m_CurrentRequestDelegate);
 }
 
 /**
 * Received when the Challenge Mode data has been read.
 *
-* @param PlatformID, Unique Identifier for the OSS Platform (Steam/PS4/Xbox)
-* @param PlayerId, Unique Identifier for the particular player
-* @param PlayerName, Name to show on the leaderboard
-* @param IntervalSeedID, Specifies the entry's leaderboard (since there may be multiple days worth of leaderboards)
-* @param Rank, Location of the overall leaderboard
-* @param GameScore, Value of the entry
-* @param TimeStart, Epoch time in UTC whenever the player first started the challenge
-* @param TimeEnd, Epoch time in UTC whenever the player finished the challenge
+* @param Entry, Struct filled with all the data incoming from the server
 */
-function OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueNetId PlayerID, string PlayerName, qword IntervalSeedID, int Rank, int GameScore, qword TimeStart, qword TimeEnd)
+function OnReceivedChallengeModeLeaderboardEntry(ChallengeModeLeaderboardData Entry)
 {
 	local int Index;
 	local TLeaderboardEntry NewEntry;
+	local float TopPercentile;
 
-	`log(`location @ `ShowVar(OnlineSub.UniqueNetIdToString(PlatformID), PlatformID) @ `ShowVar(OnlineSub.UniqueNetIdToString(PlayerID), PlayerID) @ `ShowVar(PlayerName) @ QWordToString(IntervalSeedID) @ `ShowVar(GameScore) @`ShowVar(m_bUpdatingLeaderboardData), , 'XCom_Online');
+	`log(`location @ `ShowVar(OnlineSub.UniqueNetIdToString(Entry.PlatformID), PlatformID) @ `ShowVar(OnlineSub.UniqueNetIdToString(Entry.PlayerID), PlayerID)
+		@ QWordToString(Entry.IntervalSeedID) @ `ShowVar(Entry.Rank) @ `ShowVar(Entry.GameScore) @ `ShowVar(Entry.TimeStart) @ `ShowVar(Entry.TimeEnd) @ `ShowVar(Entry.UninjuredSoldiers)
+		@ `ShowVar(Entry.SoldiersAlive) @ `ShowVar(Entry.KilledEnemies) @ `ShowVar(Entry.CompletedObjectives) @ `ShowVar(Entry.CiviliansSaved) @ `ShowVar(Entry.TimeBonus)
+		@ `ShowVar(m_bUpdatingLeaderboardData), , 'XCom_Online');
 
 	if (m_bUpdatingLeaderboardData)
 	{
@@ -539,36 +546,66 @@ function OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueN
 	}
 	else
 	{
-		Index = FindLeaderboardIndex(PlayerID);
+		Index = FindLeaderboardIndex(Entry.PlayerID);
 	}
 
-	NewEntry.strPlayerName = PlayerName;
-	NewEntry.iRank = Rank;
-	NewEntry.iWins = 0;
-	NewEntry.iLosses = 0;
-	NewEntry.iDisconnects = 0;
-	NewEntry.iScore = GameScore;
-	NewEntry.iTime = 0;
-	NewEntry.PlayerID = PlayerID;
-	NewEntry.PlatformID = PlatformID;
+	TopPercentile = 100.0  - ((float(Entry.Rank) / float(m_TotalPlayerCount)) * 100.0);
+	//TopPercentile = (100.0 / m_TotalPlayerCount) * (Entry.Rank - 0.5);
+	`log(`location @ `ShowVar(Entry.Rank) @ `ShowVar(m_TotalPlayerCount) @ `ShowVar(TopPercentile));
+
+	NewEntry.iRank = Entry.Rank;
+	NewEntry.iScore = Entry.GameScore;
+	NewEntry.iTime = Entry.TimeEnd - Entry.TimeStart;
+	NewEntry.iPercentile = TopPercentile;
+
+	NewEntry.UninjuredSoldiers		= Entry.UninjuredSoldiers;
+	NewEntry.SoldiersAlive			= Entry.SoldiersAlive;
+	NewEntry.KilledEnemies			= Entry.KilledEnemies;
+	NewEntry.CompletedObjectives	= Entry.CompletedObjectives;
+	NewEntry.CiviliansSaved			= Entry.CiviliansSaved;
+	NewEntry.TimeBonus				= Entry.TimeBonus;
+
+	NewEntry.PlayerID = Entry.PlayerID;
+	NewEntry.PlatformID = Entry.PlatformID;
+
+	if (Entry.PlatformID == m_LocalPlayerID) // (!m_bFoundLocalPlayerLeaderboardData)
+	{
+		m_LocalPlayerScore = NewEntry.iScore;
+	}
 
 	if (Index != -1)
 	{
 		m_LeaderboardsData[Index] = NewEntry;
 		if (len(m_LeaderboardsData[Index].strPlayerName) == 0)
 		{
-			if (!OnlineSub.PlayerInterface.RequestUserInformation(`ONLINEEVENTMGR.LocalUserIndex, PlatformID))
+			if (!OnlineSub.PlayerInterface.RequestUserInformation(`ONLINEEVENTMGR.LocalUserIndex, Entry.PlatformID))
 			{
-				`RedScreen("Unable to lookup username for PlatformID: " $ OnlineSub.UniqueNetIdToString(PlatformID));
+				`RedScreen("Unable to lookup username for PlatformID: " $ OnlineSub.UniqueNetIdToString(Entry.PlatformID));
 			}
 		}
-		`log(`location @ "Setting Leaderboard Entry(" $ Index $ ")" @ `ShowVar(m_LeaderboardsData[Index].strPlayerName, PlayerName) @ `ShowVar(m_LeaderboardsData[Index].iScore, GameScore));
+		`log(`location @ "Setting Leaderboard Entry(" $ Index $ ")" @ `ShowVar(m_LeaderboardsData[Index].iScore, GameScore));
 
 		if (!m_bUpdatingLeaderboardData)
 		{
 			UpdateLeaderboardData();
 		}
 	}
+}
+
+simulated function string GetChallengeCompletedScreen()
+{
+	local XGParamTag kTag;
+	local string strChallengeExpiry;
+
+	kTag = XGParamTag(`XEXPANDCONTEXT.FindTag("XGParam"));
+
+	kTag.strValue0 = string(m_LocalPlayerScore);
+	strChallengeExpiry = `XEXPAND.ExpandString(m_strCompletedScore) @ "-";
+
+	kTag.strValue0 = string(m_TotalPlayerCount);
+	strChallengeExpiry @= "\n\n" $ "-" @ `XEXPAND.ExpandString(m_strPlayersCompleted);
+
+	return strChallengeExpiry;
 }
 
 simulated function string GetChallengeExpiryTime()
@@ -817,6 +854,18 @@ simulated function string GetObjectiveInfo()
 
 simulated function SetHeaderData()
 {
+	local TDateTime kDateTime;
+	local int year, month, day;
+	local string DateString;
+
+	class'XComGameState_TimerData'.static.GetUTCDate(class'XComGameState_TimerData'.static.GetUTCTimeInSeconds(), year, month, day);
+	kDateTime.m_iDay = day;
+	kDateTime.m_iMonth = month;
+	kDateTime.m_iYear = year;
+	DateString = "";
+
+	DateString = class'X2StrategyGameRulesetDataStructures'.static.GetDateString(kDateTime, true);
+
 	m_strCacheChallengeInfo  = "<font size='18' color ='#" $ class'UIUtilities_Colors'.const.HEADER_HTML_COLOR	$ "' face='" $ class'UIUtilities_Text'.const.TITLE_FONT_TYPE	$ "'>" $ m_strSquadHeader  $ ":</font>\n";
 	m_strCacheChallengeInfo $= "<font size='32' color ='#" $ class'UIUtilities_Colors'.const.GOOD_HTML_COLOR	$ "' face='" $ class'UIUtilities_Text'.const.TITLE_FONT_TYPE	$ "'>" $ GetSquadInfo() $ "</font>\n";
 	m_strCacheChallengeInfo $= "<font size='18' color ='#" $ class'UIUtilities_Colors'.const.HEADER_HTML_COLOR	$ "' face='" $ class'UIUtilities_Text'.const.TITLE_FONT_TYPE	$ "'>" $ m_strEnemiesHeader  $ ":</font>\n";
@@ -824,10 +873,17 @@ simulated function SetHeaderData()
 	m_strCacheChallengeInfo $= "<font size='18' color ='#" $ class'UIUtilities_Colors'.const.HEADER_HTML_COLOR	$ "' face='" $ class'UIUtilities_Text'.const.TITLE_FONT_TYPE	$ "'>" $ m_strObjectivesHeader  $ ":</font>\n";
 	m_strCacheChallengeInfo $= "<font size='24' color ='#" $ class'UIUtilities_Colors'.const.NORMAL_HTML_COLOR	$ "' face='" $ class'UIUtilities_Text'.const.BODY_FONT_TYPE		$ "'>" $ GetObjectiveInfo() $ "</font>\n\n";
 
-	m_strCacheChallengeInfo $= "<p align='center'><font size='22' color ='#" $ class'UIUtilities_Colors'.const.WARNING_HTML_COLOR $ "' face='" $ class'UIUtilities_Text'.const.TITLE_FONT_TYPE $ "'>- " $ GetChallengeExpiryTime() $ " -</font></p>";
+	if (IsReplayDownloadAccessible())
+	{
+		m_strCacheChallengeInfo $= "<p align='center'><font size='22' color ='#" $ class'UIUtilities_Colors'.const.GOOD_HTML_COLOR $ "' face='" $ class'UIUtilities_Text'.const.TITLE_FONT_TYPE $ "'>- " $ GetChallengeCompletedScreen() $ " -</font></p>";
+	}
+	else
+	{
+		m_strCacheChallengeInfo $= "<p align='center'><font size='22' color ='#" $ class'UIUtilities_Colors'.const.WARNING_HTML_COLOR $ "' face='" $ class'UIUtilities_Text'.const.TITLE_FONT_TYPE $ "'>- " $ GetChallengeExpiryTime() $ " -</font></p>";
+	}
 
 	MC.BeginFunctionOp("setHeaderData");
-	MC.QueueString(GetOpName());
+	MC.QueueString(GetOpName() @ "-" @ DateString);
 	MC.QueueString(m_strSquadInfo);
 	MC.QueueString(m_strCacheChallengeInfo);
 	MC.EndOp();
@@ -1321,7 +1377,6 @@ function AddSlotSoldier(int Index, XComGameState_Unit Unit)
 
 function RequestServerDataUpdate()
 {
-	local X2FiraxisLiveClient LiveClient;
 	local TProgressDialogData kDialogBoxData;
 
 	kDialogBoxData.strTitle = class'X2MPData_Shell'.default.m_strChallengeFetchingChallengeInfoDialogTitle;
@@ -1332,14 +1387,56 @@ function RequestServerDataUpdate()
 
 	m_arrIntervals.Length = 0; // Clear
 	`CHALLENGEMODE_MGR.ClearChallengeData();
-	PerformChallengeModeGetIntervals();
+	QueueRequest(PerformChallengeModeGetIntervals);
+	QueueRequest(PerformChallengeModeGetPlayerStats);
+	QueueRequest(PerformChallengeModeGetGlobalMissionStats);
 
 	// Prefetch the friend's list
 	ASyncReadFriendList(none);
+}
 
-	LiveClient = `FXSLIVE;
-	LiveClient.AddReceivedStatsKVPDelegate(OnReceivedStatsKVP);
-	LiveClient.GetStats(eKVPSCOPE_USER);
+/**
+* Used to queue up Firaxis Live Requests, such as: getting Intervals, getting user stats, and getting global stats
+*/
+delegate RequestDelegate(); // Will hookup to the PerformXXX functions.
+
+function QueueRequest(delegate<RequestDelegate> Request)
+{
+	`log(`location @ `ShowVar(Request));
+	m_FiraxisLiveRequestDelegates.AddItem(Request);
+	if (m_FiraxisLiveRequestDelegates.Length == 1)
+	{
+		// Call immediately - since we just queued one.
+		m_CurrentRequestDelegate = Request;
+		m_CurrentRequestDelegate();
+	}
+}
+
+function RequestFinished(delegate<RequestDelegate> Request)
+{
+	local int i;
+	`log(`location @ `ShowVar(Request));
+	for (i = 0; i < m_FiraxisLiveRequestDelegates.Length; ++i)
+	{
+		if (m_FiraxisLiveRequestDelegates[i] == Request)
+		{
+			`log(`location @ "Removing Delegate @" $ i);
+			m_FiraxisLiveRequestDelegates.Remove(i, 1);
+			break;
+		}
+	}
+	if (m_FiraxisLiveRequestDelegates.Length > 0)
+	{
+		// Perform the next request
+		m_CurrentRequestDelegate = m_FiraxisLiveRequestDelegates[0];
+		`log(`location @ "Kicking off next request:" @ `ShowVar(m_CurrentRequestDelegate));
+		m_CurrentRequestDelegate();
+}
+	else
+	{
+		`log(`location @ "All requests have been processed.");
+		m_CurrentRequestDelegate = none;
+	}
 }
 
 function PerformChallengeModeGetIntervals()
@@ -1350,9 +1447,20 @@ function PerformChallengeModeGetIntervals()
 	}
 }
 
-function OnReceivedStatsKVP(bool Success, array<string> GlobalKeys, array<int> GlobalValues, array<string> UserKeys, array<int> UserValues)
+function PerformChallengeModeGetPlayerStats()
+{
+	local X2FiraxisLiveClient LiveClient;
+	LiveClient = `FXSLIVE;
+	LiveClient.AddReceivedStatsKVPDelegate(OnReceivedPlayerStats);
+	LiveClient.GetStats(eKVPSCOPE_USER, "CMKS_");
+}
+
+function OnReceivedPlayerStats(bool Success, array<string> GlobalKeys, array<int> GlobalValues, array<string> UserKeys, array<int> UserValues)
 {
 	local int Idx;
+	local X2FiraxisLiveClient LiveClient;
+	LiveClient = `FXSLIVE;
+	LiveClient.ClearReceivedStatsKVPDelegate(OnReceivedPlayerStats);
 	`log(`location @ `ShowVar(Success) @ `ShowVar(GlobalKeys.Length) @ `ShowVar(GlobalValues.Length) @ `ShowVar(UserKeys.Length) @ `ShowVar(UserValues.Length));
 	for (Idx = 0; Idx < UserKeys.Length; ++Idx)
 	{
@@ -1375,6 +1483,33 @@ function OnReceivedStatsKVP(bool Success, array<string> GlobalKeys, array<int> G
 		}
 	}
 	UpdatePlayerData();
+	RequestFinished(PerformChallengeModeGetPlayerStats);
+}
+
+function PerformChallengeModeGetGlobalMissionStats()
+{
+	local X2FiraxisLiveClient LiveClient;
+	LiveClient = `FXSLIVE;
+	LiveClient.AddReceivedStatsKVPDelegate(OnReceivedGlobalMissionStats);
+	LiveClient.GetStats(eKVPSCOPE_GLOBAL, "CMK_Mission");
+}
+
+function OnReceivedGlobalMissionStats(bool Success, array<string> GlobalKeys, array<int> GlobalValues, array<string> UserKeys, array<int> UserValues)
+{
+	local int Idx;
+	local X2FiraxisLiveClient LiveClient;
+	LiveClient = `FXSLIVE;
+	LiveClient.ClearReceivedStatsKVPDelegate(OnReceivedGlobalMissionStats);
+	`log(`location @ `ShowVar(Success) @ `ShowVar(GlobalKeys.Length) @ `ShowVar(GlobalValues.Length) @ `ShowVar(UserKeys.Length) @ `ShowVar(UserValues.Length));
+	for (Idx = 0; Idx < GlobalKeys.Length; ++Idx)
+	{
+		`log(`location @ `ShowVar(GlobalKeys[Idx]) @ `ShowVar(GlobalValues[Idx]));
+		if (GlobalKeys[Idx] == "CMK_MissionComplete")
+		{
+			m_TotalPlayerCount = GlobalValues[Idx];
+		}
+	}
+	RequestFinished(PerformChallengeModeGetGlobalMissionStats);
 }
 
 
@@ -1480,6 +1615,7 @@ function bool GetFriendIDs(out array<string> PlayerIDs, optional int Offset = 0,
 		if (ReadState == OERS_Done)
 		{
 			PlayerIDs.Length = 0;
+			//PlayerIDs.AddItem(QWordToString(`ONLINEEVENTMGR.LocalUserIndex));
 			for (FriendIdx = 0; FriendIdx < Friends.Length; ++FriendIdx)
 			{
 				PlayerIDs.AddItem(QWordToString(Friends[FriendIdx].UniqueId.Uid));
@@ -2070,6 +2206,7 @@ function OnReceivedChallengeModeIntervalEnd()
 			LeaderboardScreen.SetDisplayNoChallengeDialogOnInit();
 		}
 	}
+	RequestFinished(PerformChallengeModeGetIntervals);
 }
 
 function OnReceivedChallengeModeIntervalEntry(qword IntervalSeedID, int ExpirationDate, int TimeLength, EChallengeStateType IntervalState, optional string IntervalName, optional array<byte> StartState)
@@ -2120,6 +2257,11 @@ simulated event OnReceiveChallengeModeActionFinished(ICMS_Action Action, bool bS
 
 public function TopPlayersButtonCallback(UIButton button)
 {
+	QueueRequest(PerformGetTopPlayerLeaderboard);
+}
+
+function PerformGetTopPlayerLeaderboard()
+{
 	`log(self $ "::" $ GetFuncName(), , 'uixcom_mp');
 	if (!m_bViewingSoldiers)
 	{
@@ -2135,6 +2277,11 @@ public function TopPlayersButtonCallback(UIButton button)
 }
 
 public function FriendRanksButtonCallback(UIButton button)
+{
+	QueueRequest(PerformGetFriendLeaderboard);
+}
+
+function PerformGetFriendLeaderboard()
 {
 	`log(self $ "::" $ GetFuncName(), , 'uixcom_mp');
 	if (!m_bViewingSoldiers)
@@ -2308,7 +2455,8 @@ simulated function Cleanup()
 	ClearDelegates();
 
 	LiveClient = `FXSLIVE;
-	LiveClient.ClearReceivedStatsKVPDelegate(OnReceivedStatsKVP);
+	LiveClient.ClearReceivedStatsKVPDelegate(OnReceivedPlayerStats);
+	LiveClient.ClearReceivedStatsKVPDelegate(OnReceivedGlobalMissionStats);
 	ChallengeModeInterface.ClearReceivedChallengeModeGetGameSaveDelegate(OnReceivedChallengeModeGetGameSave);
 
 	m_kMPShellManager.CancelLeaderboardsFetch();

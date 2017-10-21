@@ -27,6 +27,8 @@ var() XComGameStateVisualizationMgr VisualizationMgr;
 var() bool bDropshipLaunch;//Support the dropship transition map
 var init array<Emitter> TickLOD_Emitters;//A list of emitters allowed to use the LOD tick system - generated after the map loads and focused on keeping the map emitter cost reasonable.
 
+var private X2Photobooth					m_kPhotobooth;
+
 enum ESingleAnim
 {
 	eAnim_None,

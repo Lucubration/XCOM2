@@ -10,7 +10,7 @@ class X2FiraxisLiveClient extends object
 	inherits(FTickableObject, FCallbackEventDevice)
 	implements(X2ChallengeModeInterface)
 	dependson(X2ChallengeModeDataStructures)
-	native;
+	native(Online);
 
 // Used in my2KNotifications.h, update appropriately
 enum EFiraxisLiveAccountType
@@ -151,6 +151,7 @@ var private EFiraxisLiveAccountType CurrentAccountType;
 var private bool bAccountLoggedIn;
 var private bool bDeclinedEULAs;
 var private bool bFirstClientInitCalled;
+var private bool bInitialEngineTelemetrySent;
 var private EFLClientStateType LastState; // Received from ClientStateChange
 
 var private X2FiraxisLiveClient LiveClient;
@@ -593,7 +594,7 @@ native function bool UnlinkAccount();
 //	Get Stats KVP information
 //---------------------------------------------------------------------------------------
 
-native function bool GetStats( KVPScope Scope = eKVPSCOPE_GLOBAL );
+native function bool GetStats( optional KVPScope Scope = eKVPSCOPE_GLOBAL, optional string Filter );
 
 delegate OnReceivedStatsKVP( bool Success, array<string> GlobalKeys, array<int> GlobalValues, array<string> UserKeys, array<int> UserValues );
 `AddClearDelegates(ReceivedStatsKVP);
@@ -715,16 +716,9 @@ delegate OnReceivedChallengeModeLeaderboardEnd(qword IntervalSeedID);
 /**
 * Received when the Challenge Mode data has been read.
 *
-* @param PlatformID, Unique Identifier for the OSS Platform (Steam/PS4/Xbox)
-* @param PlayerId, Unique Identifier for the particular player
-* @param PlayerName, Name to show on the leaderboard
-* @param IntervalSeedID, Specifies the entry's leaderboard (since there may be multiple days worth of leaderboards)
-* @param Rank, Location of the overall leaderboard
-* @param GameScore, Value of the entry
-* @param TimeStart, Epoch time in UTC whenever the player first started the challenge
-* @param TimeEnd, Epoch time in UTC whenever the player finished the challenge
+* @param Entry, Struct filled with all the data incoming from the server
 */
-delegate OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueNetId PlayerID, string PlayerName, qword IntervalSeedID, int Rank, int GameScore, qword TimeStart, qword TimeEnd);
+delegate OnReceivedChallengeModeLeaderboardEntry(ChallengeModeLeaderboardData Entry);
 `AddClearDelegates(ReceivedChallengeModeLeaderboardEntry);
 
 

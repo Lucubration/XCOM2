@@ -513,6 +513,7 @@ static function X2AbilityTemplate BladestormAttack(name TemplateName = 'Bladesto
 	local X2Condition_UnitProperty          SourceNotConcealedCondition;
 	local X2Condition_Visibility			TargetVisibilityCondition;
 	local X2Condition_UnitEffects			UnitEffectsCondition;
+	local X2Condition_UnitProperty			ExcludeSquadmatesCondition;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
 
@@ -557,6 +558,10 @@ static function X2AbilityTemplate BladestormAttack(name TemplateName = 'Bladesto
 	TargetVisibilityCondition.bDisablePeeksOnMovement = true; //Don't use peek tiles for over watch shots	
 	Template.AbilityTargetConditions.AddItem(TargetVisibilityCondition);
 	Template.AbilityTargetConditions.AddItem(class'X2Ability_DefaultAbilitySet'.static.OverwatchTargetEffectsCondition());
+	// Adding exclusion condition to prevent friendly bladestorm fire when panicked.
+	ExcludeSquadmatesCondition = new class'X2Condition_UnitProperty';
+	ExcludeSquadmatesCondition.ExcludeSquadmates = true;
+	Template.AbilityTargetConditions.AddItem(ExcludeSquadmatesCondition);
 
 	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);	
 	Template.AddShooterEffectExclusions();

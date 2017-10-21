@@ -30,7 +30,7 @@ event name CallMeetsCondition(XComGameState_BaseObject kTarget)
 	arrItems = UnitState.GetAllInventoryItems();
 	foreach arrItems(ItemIter)
 	{
-		if (ItemIter.IsMissionObjectiveItem())
+		if (ItemIter.IsMissionObjectiveItem() && !ItemIter.GetMyTemplate().bOkayToConcealAsObjective)
 			return 'AA_NotWithAnObjectiveItem';
 	}
 

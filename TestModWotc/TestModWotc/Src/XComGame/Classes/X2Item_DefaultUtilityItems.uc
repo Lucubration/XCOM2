@@ -492,6 +492,7 @@ static function X2DataTemplate SKULLJACK()
 	Template.TradingPostValue = 15;
 	Template.MaxQuantity = 1;
 	Template.Tier = 1;
+	Template.bOkayToConcealAsObjective = true;
 
 	Template.GameArchetype = "WP_HackingKit.WP_SKULLJACK";
 

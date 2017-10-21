@@ -57,14 +57,14 @@ enum EChallengeModeEventType
 	ECME_MissionObjectiveComplete,
 	ECME_CommanderKIA,
 	ECME_10EnemiesKIA,
-	ECME_Placeholder6,
-	ECME_Placeholder7,
-	ECME_Placeholder8,
-	ECME_Placeholder9,
-	ECME_Placeholder10,
-	ECME_Placeholder11,
-	ECME_Placeholder12,
-	ECME_Placeholder13,
+	ECME_5EnemiesKIA,
+	ECME_ConcealmentBroken,
+	ECME_FirstSoldierWounded,
+	ECME_KilledSectopodGatekeeper,
+	ECME_LostSectopodGatekeeper,
+	ECME_CompletedMission,
+	ECME_FailedMission,
+	ECME_StartedMission,
 	ECME_Placeholder14,
 	ECME_Placeholder15,
 	ECME_Placeholder16,
@@ -139,11 +139,27 @@ struct native ChallengeModeLeaderboardData
 {
 	var int DataVersion;
 	var int DataType;
-	var int NumPlayers;
+
+	var qword IntervalSeedID;
+
+	var int Rank;
+	var int GameScore;
+	var int TimeStart;
+	var int TimeEnd;
+
+	var int UninjuredSoldiers;
+	var int SoldiersAlive;
+	var int KilledEnemies;
+	var int CompletedObjectives;
+	var int CiviliansSaved;
+	var int TimeBonus;
+
+	var UniqueNetId PlayerID;
+	var UniqueNetId PlatformID;
 
 	structdefaultproperties
 	{
-		DataVersion=1
+		DataVersion=2
 		DataType=ECMDT_LeaderboardReturn
 	}
 };

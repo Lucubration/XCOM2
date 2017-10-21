@@ -428,6 +428,8 @@ static function X2CharacterTemplate CreateTemplate_AdvPriestMP()
 	CharTemplate.bCanBeCriticallyWounded = false;
 	CharTemplate.bIsAfraidOfFire = false;
 
+	CharTemplate.Abilities.AddItem( 'PriestRemoved' );
+
 	AddChallengeModeAbilities(CharTemplate);
 
 	CharTemplate.AddTemplateAvailablility(CharTemplate.BITFIELD_GAMEAREA_Multiplayer); // Allow in MP!
@@ -1397,8 +1399,7 @@ static function X2CharacterTemplate CreateTemplate_ChryssalidCocoonMP(name Templ
 	CharTemplate.bSkipDefaultAbilities = true;
 
 	CharTemplate.Abilities.AddItem('CocoonGestationTimeStage1');
-
-	AddChallengeModeAbilities(CharTemplate);
+	CharTemplate.Abilities.AddItem('SpawnChryssalidMP');
 
 	CharTemplate.ImmuneTypes.AddItem('Mental');
 

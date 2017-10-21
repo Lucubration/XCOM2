@@ -611,7 +611,7 @@ simulated static function bool CanCycleTo(XComGameState_Unit Soldier)
 {
 	if (`SCREENSTACK.IsInStack(class'UIFacility_TrainingCenter'))
 	{
-		return super.CanCycleTo(Soldier) && Soldier.GetSoldierClassTemplate().bAllowAWCAbilities;
+		return super.CanCycleTo(Soldier) && (Soldier.GetSoldierClassTemplate().bAllowAWCAbilities || Soldier.IsResistanceHero());
 	}
 	else
 	{
@@ -719,7 +719,7 @@ function int GetAbilityPointCost(int Rank, int Branch)
 	
 	if (!UnitState.IsResistanceHero())
 	{
-		if (!UnitState.HasPurchasedPerkAtRank(Rank) && Branch < 2)
+		if (!UnitState.HasPurchasedPerkAtRank(Rank, 2) && Branch < 2)
 		{
 			// If this is a base game soldier with a promotion available, ability costs nothing since it would be their
 			// free promotion ability if they "bought" it through the Armory

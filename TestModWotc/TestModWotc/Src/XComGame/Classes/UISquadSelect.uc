@@ -779,11 +779,13 @@ simulated function MakeWoundedSoldierItemsAvailable()
 	{
 		UnitState = XComGameState_Unit(History.GetGameStateForObjectID(XComHQ.Crew[idx].ObjectID));
 		
+		// If the Resistance Order to allow lightly wounded soldiers is active, or the unit ignores injuries, do not drop their items
 		bIgnoreInjuries = UnitState.IgnoresInjuries() || (XComHQ.bAllowLightlyWoundedOnMissions && UnitState.IsLightlyInjured());
-		if(UnitState != None && UnitState.IsSoldier() && ((UnitState.IsInjured() && !bIgnoreInjuries && !UnitState.bRecoveryBoosted) || 
-			UnitState.IsTraining() || UnitState.IsOnCovertAction()))
+		
+		// Do not drop items for any unit on Covert Actions. Items should have been dropped already when the Action began.		
+		if(UnitState != None && UnitState.IsSoldier() && !UnitState.IsOnCovertAction() &&
+			((UnitState.IsInjured() && !bIgnoreInjuries && !UnitState.bRecoveryBoosted) || UnitState.IsTraining()))
 		{
-			// If the Resistance Order to allow lightly wounded soldiers is active, or the unit ignores injuries, do not drop their items
 			UnitState = XComGameState_Unit(UpdateState.ModifyStateObject(class'XComGameState_Unit', UnitState.ObjectID));
 			UnitState.MakeItemsAvailable(UpdateState, false, RelevantSlots);
 		}

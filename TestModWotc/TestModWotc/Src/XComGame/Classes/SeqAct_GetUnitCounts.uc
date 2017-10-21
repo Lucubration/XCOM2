@@ -15,6 +15,7 @@ var() string CharacterTemplateFilter; // Only characters of this type are counte
 var() array<string> CharacterTemplateFilters; // Only characters of this type are counted.  Takes precedence over IgnoreCharactersExcludedFromEvacZoneCounts.
 var() bool bSkipTurrets; // Turrets are not counted by default.
 var() bool bIgnoreGhostUnits; // Exclude templar ghosts from the count
+var() bool bIgnoreStasisUnits; // Exclude units in stasis from the count
 var() bool IgnoreCharactersExcludedFromEvacZoneCounts; // Specified in XComMissions.ini, array 'CharactersExcludedFromEvacZoneCounts' 
 var() string VolumeTag;
 
@@ -134,6 +135,9 @@ function protected int FilterUnitList(out array<XComGameState_Unit> Units)
 				// check if the volume filter passes
 				if( TestVolume == None || TestVolume.EncompassesPoint(WorldData.GetPositionFromTileCoordinates(UnitLocation)) )
 				{
+					// If we are flagged to ignore stasis units
+					if (!bIgnoreStasisUnits || (bIgnoreStasisUnits && UnitState.AffectedByEffectNames.Find('Stasis') == INDEX_NONE))
+					{
 					// Last if we are flagged to ignore templar ghosts, then verify then this isn't a ghost
 					if(!bIgnoreGhostUnits || (bIgnoreGhostUnits && UnitState.GhostSourceUnit.ObjectID == 0) )
 					{
@@ -141,6 +145,7 @@ function protected int FilterUnitList(out array<XComGameState_Unit> Units)
 					}
 				}
 			}
+		}
 		}
 
 		Units = FilteredUnits;

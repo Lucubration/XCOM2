@@ -595,37 +595,35 @@ function OnReceivedChallengeModeLeaderboardEnd(qword IntervalSeedID)
 /**
 * Received when the Challenge Mode data has been read.
 *
-* @param PlatformID, Unique Identifier for the OSS Platform (Steam/PS4/Xbox)
-* @param PlayerId, Unique Identifier for the particular player
-* @param PlayerName, Name to show on the leaderboard
-* @param IntervalSeedID, Specifies the entry's leaderboard (since there may be multiple days worth of leaderboards)
-* @param Rank, Location of the overall leaderboard
-* @param GameScore, Value of the entry
-* @param TimeStart, Epoch time in UTC whenever the player first started the challenge
-* @param TimeEnd, Epoch time in UTC whenever the player finished the challenge
+* @param Entry, Struct filled with all the data incoming from the server
 */
-function OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueNetId PlayerID, string PlayerName, qword IntervalSeedID, int Rank, int GameScore, qword TimeStart, qword TimeEnd)
+function OnReceivedChallengeModeLeaderboardEntry(ChallengeModeLeaderboardData Entry)
 {
 	local int Index;
-	`log(`location @ `ShowVar(OnlineSub.UniqueNetIdToString(PlatformID), PlatformID) @ `ShowVar(OnlineSub.UniqueNetIdToString(PlayerID), PlayerID) @ `ShowVar(PlayerName) @ QWordToString(IntervalSeedID) @ `ShowVar(GameScore) @`ShowVar(m_bUpdatingLeaderboardData),,'XCom_Online');
-	if (m_bUpdatingLeaderboardData)
+
+	`log(`location @ `ShowVar(OnlineSub.UniqueNetIdToString(Entry.PlatformID), PlatformID) @ `ShowVar(OnlineSub.UniqueNetIdToString(Entry.PlayerID), PlayerID)
+		@ QWordToString(Entry.IntervalSeedID) @ `ShowVar(Entry.Rank) @ `ShowVar(Entry.GameScore) @ `ShowVar(Entry.TimeStart) @ `ShowVar(Entry.TimeEnd) @ `ShowVar(Entry.UninjuredSoldiers)
+		@ `ShowVar(Entry.SoldiersAlive) @ `ShowVar(Entry.KilledEnemies) @ `ShowVar(Entry.CompletedObjectives) @ `ShowVar(Entry.CiviliansSaved) @ `ShowVar(Entry.TimeBonus)
+		@ `ShowVar(m_bUpdatingLeaderboardData), , 'XCom_Online');
+
+		if (m_bUpdatingLeaderboardData)
 	{
 		Index = m_LeaderboardData.Length;
 		m_LeaderboardData.Add(1);
 	}
 	else
 	{
-		Index = FindLeaderboardIndex(PlayerID, true, IntervalSeedID);
+		Index = FindLeaderboardIndex(Entry.PlayerID, true, Entry.IntervalSeedID);
 	}
 
 	if (Index != -1)
 	{
-		m_LeaderboardData[Index].PlayerName				 = PlayerName;
-		m_LeaderboardData[Index].SeedData.PlayerID		 = PlayerID;
-		m_LeaderboardData[Index].SeedData.IntervalSeedID = IntervalSeedID;
-		m_LeaderboardData[Index].SeedData.GameScore		 = GameScore;
-		m_LeaderboardData[Index].SeedData.StartTime		 = TimeStart;
-		m_LeaderboardData[Index].SeedData.EndTime		 = TimeEnd;
+		//m_LeaderboardData[Index].PlayerName				 = PlayerName;
+		m_LeaderboardData[Index].SeedData.PlayerID		 = Entry.PlayerID;
+		m_LeaderboardData[Index].SeedData.IntervalSeedID = Entry.IntervalSeedID;
+		m_LeaderboardData[Index].SeedData.GameScore		 = Entry.GameScore;
+		m_LeaderboardData[Index].SeedData.StartTime.A	 = Entry.TimeStart;
+		m_LeaderboardData[Index].SeedData.EndTime.A		 = Entry.TimeEnd;
 
 		if (!m_bUpdatingLeaderboardData)
 		{

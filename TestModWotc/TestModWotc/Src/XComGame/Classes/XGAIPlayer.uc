@@ -892,7 +892,7 @@ simulated function GatherUnitsToMove()
 
 		// Check if this unit has already moved this turn.  (Compare init history index to last turn start) 
 		// Also skip units that have currently no action points available.   They shouldn't be added to any lists.
-		if(bDead || UnitState.bRemovedFromPlay || UnitState.NumAllActionPoints() == 0 || (kBehavior != None && kBehavior.DecisionStartHistoryIndex > kAIPlayerData.m_iLastEndTurnHistoryIndex) )
+		if(bDead || UnitState.bRemovedFromPlay || UnitState.NumAllActionPoints() == 0 || kBehavior == None || kBehavior.DecisionStartHistoryIndex > kAIPlayerData.m_iLastEndTurnHistoryIndex)
 		{
 			continue;
 		}

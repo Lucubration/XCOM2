@@ -541,6 +541,7 @@ simulated function Superposition_BuildVisualization(XComGameState VisualizeGameS
 	local XGUnit OriginalCodex;
 	local X2Action_CameraLookAt LookAtAction;	
 	local X2Action_SuperpositionUnitGo MoveOriginalCodexAction;
+	local X2Action_UpdateFOW FOWAction;
 	
 	History = `XCOMHISTORY;
 
@@ -606,6 +607,9 @@ simulated function Superposition_BuildVisualization(XComGameState VisualizeGameS
 	MoveOriginalCodexAction = X2Action_SuperpositionUnitGo(class'X2Action_SuperpositionUnitGo'.static.AddToVisualizationTree(OriginalCodexMetadata, AbilityContext, false, SoundAndFlyOver));
 	MoveOriginalCodexAction.bWaitForSpawnedUnitStay = SpawnedUnit != none;
 	MoveOriginalCodexAction.Destination = AbilityContext.InputContext.MovementPaths[0].MovementData[1].Position;
+
+	FOWAction = X2Action_UpdateFOW( class'X2Action_UpdateFOW'.static.AddToVisualizationTree( OriginalCodexMetadata, AbilityContext ) );
+	FOWAction.ForceUpdate = true;
 }
 
 static function X2AbilityTemplate CreatePsiBombStage1Ability()

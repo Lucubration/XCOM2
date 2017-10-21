@@ -81,7 +81,7 @@ simulated function UpdateData(optional StateObjectReference UnitRef)
 	{
 		// TODO: Add support for soldiers MIA (missing in action)
 
-		if(Unit.IsInjured())
+		if(Unit.IsInjured() || Unit.GetStatus() == eStatus_Healing)
 		{
 			statusText = Caps(Unit.GetWoundStatus(injuryHours, true));
 			statusLabel = "wounded"; // corresponds to timeline label on 'AfterActionBG' mc in SquadList.fla

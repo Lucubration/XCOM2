@@ -9,3 +9,7 @@
 
 class X2Effect_Berserk extends X2Effect_Panicked
 	config(GameCore);
+defaultproperties
+{
+	EffectName="Berserk"
+}

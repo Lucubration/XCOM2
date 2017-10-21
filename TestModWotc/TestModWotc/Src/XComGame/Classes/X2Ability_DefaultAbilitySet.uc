@@ -1576,6 +1576,7 @@ static function X2AbilityTemplate CancelHack()
 	Template.BuildVisualizationFn = None;
 
 	Template.bDontDisplayInAbilitySummary = true;
+	Template.ConcealmentRule = eConceal_AlwaysEvenWithObjective;
 
 	return Template;
 }
@@ -1621,6 +1622,7 @@ static function X2AbilityTemplate AddHackAbility(optional name TemplateName = 'H
 	Template.CancelAbilityName = 'CancelHack';
 	Template.AdditionalAbilities.AddItem('FinalizeHack');
 	Template.AdditionalAbilities.AddItem('CancelHack');
+	Template.ConcealmentRule = eConceal_AlwaysEvenWithObjective;
 
 	Template.CinescriptCameraType = "Hack";
 
@@ -2419,6 +2421,7 @@ static function X2AbilityTemplate AddHunkerDownAbility(name TemplateName = 'Hunk
 
 	Template.Hostility = eHostility_Defensive;
 	Template.OverrideAbilityAvailabilityFn = HunkerDown_OverrideAbilityAvailability;
+	Template.ConcealmentRule = eConceal_AlwaysEvenWithObjective;
 
 	Template.bDontDisplayInAbilitySummary = true;
 

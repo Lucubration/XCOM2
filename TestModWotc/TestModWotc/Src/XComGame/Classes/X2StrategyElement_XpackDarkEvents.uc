@@ -611,6 +611,7 @@ static function X2DataTemplate CreateLostWorldTemplate()
 	Template.WeightDeltaPerPlay = -2;
 	Template.WeightDeltaPerActivate = 0;
 
+	Template.OnDeactivatedFn = DeactivateLostWorld;
 	Template.ModifyTacticalStartStateFn = LostWorldTacticalStartModifier;
 
 	return Template;
@@ -663,6 +664,22 @@ static function LostWorldTacticalStartModifier(XComGameState StartState)
 
 	XComHQ.TacticalGameplayTags.AddItem( 'SITREP_TheLost' );
 	BattleData.LostMaxWaves = 1;
+}
+
+//---------------------------------------------------------------------------------------
+static function DeactivateLostWorld(XComGameState NewGameState, StateObjectReference InRef)
+{
+	local XComGameState_HeadquartersXCom XComHQ;
+	local XComGameStateHistory History;
+
+	History = `XCOMHISTORY;
+	XComHQ = XComGameState_HeadquartersXCom(History.GetSingleGameStateObjectForClass(class'XComGameState_HeadquartersXCom'));
+
+	if (XComHQ.TacticalGameplayTags.Find('SITREP_TheLost') != INDEX_NONE)
+	{
+		XComHQ = XComGameState_HeadquartersXCom(NewGameState.ModifyStateObject(class'XComGameState_HeadquartersXCom', XComHQ.ObjectID));
+		XComHQ.TacticalGameplayTags.RemoveItem('SITREP_TheLost');
+	}
 }
 
 static function X2DataTemplate CreateCounterattackEventTemplate()

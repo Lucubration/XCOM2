@@ -1095,7 +1095,7 @@ simulated function bool PerformPath(XGUnit kUnit, optional bool bUserCreated=fal
 	local bool bSuccess;
 	// Prevent adding a second move for a unit already in motion
 	//if (`XCOMVISUALIZATIONMGR.IsSelectedActorMoving())
-	if (kUnit.m_bIsMoving)
+	if (kUnit.m_bIsMoving || (`TUTORIAL != none && !`TUTORIAL.IsInState('WaitForPlayerInput')))
 	{
 		return false;
 	}

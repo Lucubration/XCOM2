@@ -140,6 +140,12 @@ function AllowCacheRecycling()
 	bAllowCacheRecycling = true;
 }
 
+function PreventCacheRecycling()
+{
+	`log("PREVENTING AllowCacheRecycling = false, Movie= " $ Name, , 'uicore');
+	bAllowCacheRecycling = false;
+}
+
 event Destroyed()
 {
 	Pres.UnsubscribeToUIUpdate( ProcessQueuedCommands );
@@ -1168,6 +1174,8 @@ simulated function ControlOps(array<ASValue> arrData)
 	//`log("CO ================================", , 'uixcom');
 }
 
+native function CopyCommandQueue( out array<ASValue> ToBuffer);
+
  /* 
  * Process all queued commands (happens once every UI tick)
  */
@@ -1187,7 +1195,7 @@ simulated function ProcessQueuedCommands()
 
 		// NOTE: You must store the CommandQueue out here, because you may get callbacks manipulating 
 		// the queue while in the process of invoking in the ControlOps. -bsteiner 5/27/2015
-		CommandBuffer = CommandQueue;
+		CopyCommandQueue(CommandBuffer);
 		CommandQueue.length = 0; 
 		ControlOps(CommandBuffer);
 	}

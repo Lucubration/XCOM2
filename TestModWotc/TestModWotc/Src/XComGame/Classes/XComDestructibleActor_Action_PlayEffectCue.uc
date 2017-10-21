@@ -25,6 +25,8 @@ native function Deactivate();
 native function Load(float InTimeInState);
 native function bool Validate();
 
+native function OnParticleSystemFinished( ParticleSystemComponent PSC );
+
 simulated event ParticleSystemComponent SpawnEffect( Actor Actor, EffectCue Cue, Vector EffectLocation, Rotator EffectRotation, const out array<ParticleSysParam> InInstanceParameters, float InWarmupTime, vector InScale  )
 {
 	return class'EffectCue'.static.SpawnEffectWithInstanceParams( Actor.WorldInfo.MyEmitterPool, Cue, EffectLocation, EffectRotation, InInstanceParameters,InWarmupTime, InScale );

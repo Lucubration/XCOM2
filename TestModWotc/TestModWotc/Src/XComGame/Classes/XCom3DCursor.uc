@@ -221,6 +221,11 @@ reliable server function ServerSetChainedPawn(XComUnitPawn kChainedPawn)
 	ChainedPawn = kChainedPawn;
 }
 
+simulated function RefreshUnitLocation()
+{
+	MoveToUnit(LastUnitMovedTo);
+}
+
 // Take note of sister function MoveToUnitWithOffset,
 simulated function MoveToUnit( XComUnitPawn Unit, optional bool bSetCamView=true, optional bool bResetChainedDistance=true )
 {

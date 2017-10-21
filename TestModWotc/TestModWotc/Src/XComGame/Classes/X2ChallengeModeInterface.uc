@@ -153,16 +153,9 @@ delegate OnReceivedChallengeModeLeaderboardEnd(qword IntervalSeedID);
 /**
  * Received when the Challenge Mode data has been read.
  * 
- * @param PlatformID, Unique Identifier for the OSS Platform (Steam/PS4/Xbox)
- * @param PlayerId, Unique Identifier for the particular player
- * @param PlayerName, Name to show on the leaderboard
- * @param IntervalSeedID, Specifies the entry's leaderboard (since there may be multiple days worth of leaderboards)
- * @param Rank, Location of the overall leaderboard
- * @param GameScore, Value of the entry
- * @param TimeStart, Epoch time in UTC whenever the player first started the challenge
- * @param TimeEnd, Epoch time in UTC whenever the player finished the challenge
+ * @param Entry, Struct filled with all the data incoming from the server
  */
-delegate OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueNetId PlayerID, string PlayerName, qword IntervalSeedID, int Rank, int GameScore, qword TimeStart, qword TimeEnd);
+delegate OnReceivedChallengeModeLeaderboardEntry(ChallengeModeLeaderboardData Entry);
 `AddClearDelegatesPrototype(ReceivedChallengeModeLeaderboardEntry);
 
 

@@ -705,6 +705,12 @@ static function name SelectGuerillaOpRewardType(out array<name> ExcludeList, XCo
 				// If we're starting over with a new reward deck, wipe the old one to get rid of any excluded stragglers
 				CalendarState.MissionRewardDecks[SourceIndex].Rewards.Length = 0;
 				CreateGuerillaOpRewards(CalendarState);
+
+				// If this is a single region and we didn't find a reward, also wipe the reward exclusion deck to prevent infinite loops
+				if (bSingleRegion)
+				{
+					CalendarState.MissionRewardExcludeDecks[ExcludeIndex].Rewards.Length = 0;
+				}
 			}
 		}
 	}

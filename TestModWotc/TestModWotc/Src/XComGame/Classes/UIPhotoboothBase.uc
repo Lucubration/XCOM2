@@ -586,8 +586,8 @@ function MoveCaptureComponent()
 
 	`PHOTOBOOTH.SetCameraPOV(cameraPOV, false);
 
-	if (!bCameraOutlineInited)
-	{
+	//if (!bCameraOutlineInited)
+	//{
 		`PHOTOBOOTH.GetPosterCorners(TopLeft, BottomRight);
 		CameraOutline.SetPosition(TopLeft.x * movie.m_v2ScaledDimension.X + movie.m_v2ScaledOrigin.X - 4, TopLeft.y * movie.m_v2ScaledDimension.Y + movie.m_v2ScaledOrigin.Y);
 		CameraOutline.SetSize((BottomRight.x - TopLeft.x) * movie.m_v2ScaledDimension.X, (BottomRight.y - TopLeft.y) * movie.m_v2ScaledDimension.Y);
@@ -598,7 +598,7 @@ function MoveCaptureComponent()
 		{
 			bCameraOutlineInited = true;
 		}
-	}
+	//}
 }
 
 function MoveFormation()
@@ -618,6 +618,9 @@ function UpdateNavHelp() {}
 // override for custom behavior
 function OnCancel()
 {
+	if (bWaitingOnPhoto)
+		return;
+
 	switch (currentState)
 	{
 	case eUIPropagandaType_Base:
@@ -769,7 +772,24 @@ function OnClickBackgroundOptions()
 
 function SoldierPawnCreated()
 {
+	local Photobooth_AutoTextUsage autoText;
+
 	NeedsPopulateData();
+
+	switch (`PHOTOBOOTH.GetTotalActivePawns())
+	{
+	case 1:
+		autoText = ePBAT_SOLO;
+		break;
+	case 2:
+		autoText = ePBAT_DUO;
+		break;
+	default:
+		autoText = ePBAT_SQUAD;
+		break;
+}
+
+	`PHOTOBOOTH.SetAutoTextStrings(autoText, ePBTLS_Auto);
 }
 
 function SetSoldier(int LocationIndex, int SoldierIndex)
@@ -1073,7 +1093,7 @@ function int SetRandomAnimationPoseForSoldier(int LocationIndex, optional bool b
 				}
 			}
 
-			if (ClassFilter != ePAFT_None)
+			if (ClassFilter != ePAFT_None && DefaultSetupSettings.TextLayoutState != ePBTLS_DeadSoldier)
 			{
 				bUseClassPose = false;
 				for (i = 0; i < m_arrClassPoseChances.length; ++i)
@@ -1156,7 +1176,7 @@ function OnMakePosterSelected(UIButton ButtonControl)
 	local EPhotoDataType PhotoType;
 	local bool bDeleteAutoGenPhoto;
 
-	if (`PHOTOBOOTH.m_kAutoGenCaptureState != eAGCS_Capturing)
+	if (`PHOTOBOOTH.m_kAutoGenCaptureState != eAGCS_Capturing && !bWaitingOnPhoto)
 	{
 		if (class'X2StrategyGameRulesetDataStructures'.static.Roll(default.PhotoCommentChance))
 		{
@@ -2363,12 +2383,17 @@ function bool UpdateReset()
 
 		`PHOTOBOOTH.SetAutoTextStrings(autoText, DefaultSetupSettings.TextLayoutState, DefaultSetupSettings, true);
 
-		if (DefaultSetupSettings.BackgroundDisplayName == m_strEmptyOption)
+		if (!DefaultSetupSettings.bInitialized)
 		{
+			DefaultSetupSettings.bInitialized = true;
 			RandomSetBackground();
+			DefaultSetupSettings.bBackgroundTinting = `PHOTOBOOTH.m_kPhotoboothEffect.bOverrideBackgroundTextureColor;
 		}
-			
+		else
+		{
 		`PHOTOBOOTH.SetBackgroundTexture(DefaultSetupSettings.BackgroundDisplayName);
+			`PHOTOBOOTH.SetBackgroundColorOverride(DefaultSetupSettings.bBackgroundTinting);
+		}
 
 		if (DefaultSetupSettings.BackgroundGradientColor1 <= 0)
 		{
@@ -2800,7 +2825,7 @@ defaultproperties
 
 	m_kGenRandomState=eAGCS_Idle
 
-	DefaultSetupSettings = (BackgroundDisplayName = "None", CameraPresetDisplayName = "Full Frontal", BackgroundGradientColor1=-1, BackgroundGradientColor2=-1);
+	DefaultSetupSettings = (BackgroundDisplayName = "None", CameraPresetDisplayName = "Full Frontal", BackgroundGradientColor1=-1, BackgroundGradientColor2=-1, bInitialized = false);
 
 	NumPawnsNeedingUpdateAfterFormationChange = 0
 

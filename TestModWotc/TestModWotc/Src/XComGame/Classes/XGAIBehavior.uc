@@ -49,6 +49,7 @@ struct native AoETargetingInfo
 	var bool bRequireLoS;				// Require Line of Sight between the shooter and the target
 	var bool bCountAdjacentAsHits;		// if true, hitting adjacent tiles to targets count as a valid hit.
 	var bool bTestTargetEffectsApply;	// Only consider units that are valid for the MultiTarget effects on the ability.
+	var bool bIgnoreRepeatAttackList;   // Ignore restrictions on tiles that have already been used for AoEs.
 
 	structdefaultproperties
 	{
@@ -6271,7 +6272,7 @@ simulated function bool FindAoETarget(Name ProfileName, optional array<Name> Dep
 	local array<TTile> TargetList; // List of potential target locations;
 	local array<TTile> FailOnHitList; // List of locations that invalidate a potential target location.
 	local vector TargetLocation;
-	local bool bFoundTarget;
+	local bool bFoundTarget, bValidHits;
 	local XComGameState_Ability AbilityState;
 	local XComWorldData XWorld;
 	local TTile TargetTile;
@@ -6315,6 +6316,11 @@ simulated function bool FindAoETarget(Name ProfileName, optional array<Name> Dep
 		if( RequiredTarget != None )
 		{
 			RequiredTarget.GetVisibilityLocation(RequiredTileSet);
+			if (Profile.bCountAdjacentAsHits)
+			{
+				AdjacentTiles = GetAllAdjacentTiles(RequiredTileSet);
+				RequiredTileSet = AdjacentTiles;
+			}
 		}
 
 		// Get points to avoid. Include destructible Objective locations and teammates if friendly fire is to be avoided.
@@ -6367,29 +6373,32 @@ simulated function bool FindAoETarget(Name ProfileName, optional array<Name> Dep
 			if (Profile.bCountAdjacentAsHits)
 			{
 				AdjacentList = GetAllAdjacentTiles(TargetList);
-				TestAoEHits(TargetLocation, TargetStyle, AbilityState, AdjacentList, FailOnHitList, EnemyHits, BadHits);
+				bValidHits = TestAoEHits(TargetLocation, TargetStyle, AbilityState, AdjacentList, FailOnHitList, EnemyHits, BadHits, RequiredTileSet);
 			}
 			else
 			{
-				TestAoEHits(TargetLocation, TargetStyle, AbilityState, AllTargets, FailOnHitList, EnemyHits, BadHits);
+				bValidHits = TestAoEHits(TargetLocation, TargetStyle, AbilityState, AllTargets, FailOnHitList, EnemyHits, BadHits, RequiredTileSet);
 			}
-			if (EnemyHits >= TargetStates.Length &&  BadHits == 0)
+			if ( bValidHits )
 			{
-				TopAoETarget.Location = TargetLocation;
-				TopAoETarget.Ability = AbilityName;
-				TopAoETarget.Profile = Profile.Profile;
-				bFoundTarget = true;
-				`LogAIBT("Found AoE target location that hits "$TargetStates.Length@"targets! ");
-					break;
-			}
-			// Keep track of other decent options, but keep looking for better ones.
-			else if (EnemyHits >= Profile.MinTargets  && BadHits == 0 && EnemyHits >= TopHitCount)
-			{
-				TopHitCount = EnemyHits;
-				TopAoETarget.Location = TargetLocation;
-				TopAoETarget.Ability = AbilityName;
-				TopAoETarget.Profile = Profile.Profile;
-				bFoundTarget = true;
+				if (EnemyHits >= TargetStates.Length &&  BadHits == 0)
+				{
+					TopAoETarget.Location = TargetLocation;
+					TopAoETarget.Ability = AbilityName;
+					TopAoETarget.Profile = Profile.Profile;
+					bFoundTarget = true;
+					`LogAIBT("Found AoE target location that hits "$TargetStates.Length@"targets! ");
+						break;
+				}
+				// Keep track of other decent options, but keep looking for better ones.
+				else if (EnemyHits >= Profile.MinTargets && BadHits == 0 && EnemyHits >= TopHitCount)
+				{
+					TopHitCount = EnemyHits;
+					TopAoETarget.Location = TargetLocation;
+					TopAoETarget.Ability = AbilityName;
+					TopAoETarget.Profile = Profile.Profile;
+					bFoundTarget = true;
+				}
 			}
 			// Update debug data.
 			TestResult.Label = Name(AbilityName@ UnitState.ObjectID@ "Test "$TargetStates.Length@ ":" @EnemyHits@BadHits);
@@ -6415,29 +6424,32 @@ simulated function bool FindAoETarget(Name ProfileName, optional array<Name> Dep
 					TargetLocation = XWorld.GetPositionFromTileCoordinates(TargetTile);
 					if (Profile.bCountAdjacentAsHits)
 					{
-						TestAoEHits(TargetLocation, TargetStyle, AbilityState, AdjacentList, FailOnHitList, EnemyHits, BadHits);
+						TestAoEHits(TargetLocation, TargetStyle, AbilityState, AdjacentList, FailOnHitList, EnemyHits, BadHits, RequiredTileSet);
 					}
 					else
 					{
-						TestAoEHits(TargetLocation, TargetStyle, AbilityState, AllTargets, FailOnHitList, EnemyHits, BadHits);
+						TestAoEHits(TargetLocation, TargetStyle, AbilityState, AllTargets, FailOnHitList, EnemyHits, BadHits, RequiredTileSet);
 					}
-					if (EnemyHits >= TargetStates.Length &&  BadHits == 0)
+					if ( bValidHits )
 					{
-						TopAoETarget.Location = TargetLocation;
-						TopAoETarget.Ability = AbilityName;
-						TopAoETarget.Profile = Profile.Profile;
-						bFoundTarget = true;
-						`LogAIBT("Found AoE target location that hits "$TargetStates.Length@"targets! ");
-							break;
-					}
-					// Keep track of other decent options, but keep looking for better ones.
-					else if (EnemyHits >= Profile.MinTargets  && BadHits == 0 && EnemyHits >= TopHitCount)
-					{
-						TopHitCount = EnemyHits;
-						TopAoETarget.Location = TargetLocation;
-						TopAoETarget.Ability = AbilityName;
-						TopAoETarget.Profile = Profile.Profile;
-						bFoundTarget = true;
+						if (EnemyHits >= TargetStates.Length &&  BadHits == 0)
+						{
+							TopAoETarget.Location = TargetLocation;
+							TopAoETarget.Ability = AbilityName;
+							TopAoETarget.Profile = Profile.Profile;
+							bFoundTarget = true;
+							`LogAIBT("Found AoE target location that hits "$TargetStates.Length@"targets! ");
+								break;
+						}
+						// Keep track of other decent options, but keep looking for better ones.
+						else if (EnemyHits >= Profile.MinTargets  && BadHits == 0 && EnemyHits >= TopHitCount)
+						{
+							TopHitCount = EnemyHits;
+							TopAoETarget.Location = TargetLocation;
+							TopAoETarget.Ability = AbilityName;
+							TopAoETarget.Profile = Profile.Profile;
+							bFoundTarget = true;
+						}
 					}
 					// Update debug data.
 					TestResult.Label = Name(AbilityName@ UnitState.ObjectID@ "Test "$TargetStates.Length@ ":" @EnemyHits@BadHits);
@@ -6713,6 +6725,11 @@ function bool GetUnfilteredAoETargetList(out array<XComGameState_Unit> UnitList,
 			UnitList = PriorityList;
 		}
 	}
+
+	if (RequiredTarget != None && UnitList.Find(RequiredTarget) == INDEX_NONE)
+	{
+		UnitList.AddItem(RequiredTarget);
+	}
 	return UnitList.Length > 0;
 }
 
@@ -6944,7 +6961,7 @@ function GetAoEAvoidancePoints(out array<TTile> AvoidanceList, AoETargetingInfo 
 	}
 
 	// Avoid hitting the same tile multiple times in one turn.
-	if( m_kPlayer != None )
+	if( m_kPlayer != None && !Profile.bIgnoreRepeatAttackList)
 	{
 		foreach m_kPlayer.AoETargetedThisTurn(Tile)
 		{
@@ -7511,7 +7528,7 @@ function bool CanHitAoETarget( int AbilityObjectID, out AoETarget Target, AoETar
 	local float MaxDist, Dist, HitRange;
 	local AvailableAction Ability;
 	local XComGameState_Ability AbilityState;
-	local array<TTile> TargetList, FailOnHitList, AdjacentList;
+	local array<TTile> TargetList, FailOnHitList, AdjacentList, EmptyList;
 	local vector MyLoc;
 	local XComGameState_Unit RequiredTarget;
 	local int TargetsHit, AvoidanceHits;
@@ -7562,11 +7579,11 @@ function bool CanHitAoETarget( int AbilityObjectID, out AoETarget Target, AoETar
 		if (Profile.bCountAdjacentAsHits)
 		{
 			AdjacentList = GetAllAdjacentTiles(TargetList);
-			TestAoEHits(Target.Location, TargetStyle, AbilityState, AdjacentList, FailOnHitList, TargetsHit, AvoidanceHits);
+			TestAoEHits(Target.Location, TargetStyle, AbilityState, AdjacentList, FailOnHitList, TargetsHit, AvoidanceHits, EmptyList);
 		}
 		else
 		{
-			TestAoEHits(Target.Location, TargetStyle, AbilityState, TargetList, FailOnHitList, TargetsHit, AvoidanceHits);
+			TestAoEHits(Target.Location, TargetStyle, AbilityState, TargetList, FailOnHitList, TargetsHit, AvoidanceHits, EmptyList);
 		}
 
 		if( TargetsHit >= Profile.MinTargets &&  AvoidanceHits == 0 )
@@ -7585,12 +7602,17 @@ function bool CanHitAoETarget( int AbilityObjectID, out AoETarget Target, AoETar
 	return false;
 }
 
-function TestAoEHits(vector TargetLocation, X2AbilityMultiTargetStyle TargetStyle, XComGameState_Ability AbilityState, array<TTile> TargetList, array<TTile> BadTileList, out int HitCount, out int BadHits)
+function bool TestAoEHits(vector TargetLocation, X2AbilityMultiTargetStyle TargetStyle, XComGameState_Ability AbilityState, array<TTile> TargetList, array<TTile> BadTileList, out int HitCount, out int BadHits, out array<TTile> RequiredHitList)
 {
 	local array<TTile> TargetArea;
 	TargetStyle.GetValidTilesForLocation(AbilityState, TargetLocation, TargetArea);
 	HitCount = GetNumIntersectingTiles(TargetList, TargetArea, true);
 	BadHits = GetNumIntersectingTiles(BadTileList, TargetArea, true);
+	if (RequiredHitList.Length > 0)
+	{
+		return GetNumIntersectingTiles(RequiredHitList, TargetArea, true) > 0;
+	}
+	return HitCount > 0;
 }
 //
 //------------------------------------------------------------------------------------------------
@@ -10581,6 +10603,13 @@ function bool IsValidTarget(AvailableTarget kTarget)
 			}
 		}
 	}
+	// Prevent team-kills for Soldiers on berserk.
+	if (UnitState.IsUnitAffectedByEffectName(class'X2Effect_Berserk'.default.EffectName)
+		&& !UnitState.ControllingPlayerIsAI() && kTargetState != None && !kTargetState.IsEnemyTeam(UnitState.GetTeam() ) )
+	{
+		return false;
+	}
+
 	return true;
 }
 

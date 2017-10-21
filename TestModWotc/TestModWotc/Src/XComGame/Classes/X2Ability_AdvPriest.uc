@@ -43,6 +43,7 @@ static function array<X2DataTemplate> CreateTemplates()
 
 	// MP Abilities
 	Templates.AddItem(CreateHolyWarrior('HolyWarriorMP', default.HOLYWARRIOR_MP_MOBILITY, default.HOLYWARRIOR_MP_OFFENSE, default.HOLYWARRIOR_MP_CRIT, default.HOLYWARRIOR_MP_HP));
+	Templates.AddItem(CreatePriestRemoved());
 	
 	return Templates;
 }
@@ -207,6 +208,50 @@ function HolyWarriorDeath_MergeVisualization(X2Action BuildTree, out X2Action Vi
 	BuildTreeStartNode = LocalVisualizationMgr.GetNodeOfType(BuildTree, class'X2Action_MarkerTreeInsertBegin');
 	BuildTreeEndNode = LocalVisualizationMgr.GetNodeOfType(BuildTree, class'X2Action_MarkerTreeInsertEnd');
 	LocalVisualizationMgr.InsertSubtree(BuildTreeStartNode, BuildTreeEndNode, PriestDeathAction);
+}
+
+static function X2DataTemplate CreatePriestRemoved()
+{
+	local X2AbilityTemplate Template;
+	local X2AbilityTrigger_EventListener EventListener;
+	local X2Condition_UnitEffectsWithAbilitySource TargetEffectCondition;
+	local X2Effect_RemoveEffects RemoveEffects;
+
+	`CREATE_X2ABILITY_TEMPLATE(Template, 'PriestRemoved');
+	Template.bDontDisplayInAbilitySummary = true;
+	Template.AbilitySourceName = 'eAbilitySource_Standard';
+	Template.eAbilityIconBehaviorHUD = EAbilityIconBehavior_NeverShow;
+	Template.Hostility = eHostility_Neutral;
+
+	Template.AbilityToHitCalc = default.DeadEye;
+	Template.AbilityTargetStyle = default.SelfTarget;
+
+	//	Trigger if the source is removed from play (e.g. evacs)
+	EventListener = new class'X2AbilityTrigger_EventListener';
+	EventListener.ListenerData.Deferral = ELD_OnStateSubmitted;
+	EventListener.ListenerData.EventID = 'UnitRemovedFromPlay';
+	EventListener.ListenerData.Filter = eFilter_Unit;
+	EventListener.ListenerData.EventFn = class'XComGameState_Ability'.static.AbilityTriggerEventListener_SelfIgnoreCache;
+	EventListener.ListenerData.Priority = 75;	// We need this to happen before the unit is actually removed from play
+	Template.AbilityTriggers.AddItem(EventListener);
+
+	Template.AbilityMultiTargetStyle = new class'X2AbilityMultiTarget_AllUnits';
+
+	TargetEffectCondition = new class'X2Condition_UnitEffectsWithAbilitySource';
+	TargetEffectCondition.AddRequireEffect(default.HolyWarriorEffectName, 'AA_UnitIsImmune');
+	Template.AbilityMultiTargetConditions.AddItem(TargetEffectCondition);
+
+	RemoveEffects = new class'X2Effect_RemoveEffects';
+	RemoveEffects.EffectNamesToRemove.AddItem(default.HolyWarriorEffectName);
+	Template.AddMultiTargetEffect(RemoveEffects);
+
+	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
+	Template.BuildVisualizationFn = TypicalAbility_BuildVisualization;
+
+	Template.bSkipFireAction = true;
+	Template.FrameAbilityCameraType = eCameraFraming_Never;
+
+	return Template;
 }
 
 static function X2DataTemplate CreatePriestStasis()

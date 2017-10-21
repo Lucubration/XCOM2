@@ -422,6 +422,7 @@ static function X2StaffSlotTemplate CreateCovertActionStaffSlotTemplate(name Cov
 	Template.bPreventFilledPopup = true;
 	Template.FillFn = FillCovertActionSlot;
 	Template.EmptyFn = EmptyCovertActionSlot;
+	Template.CanStaffBeMovedFn = CanStaffBeMovedCovertActions;
 
 	return Template;
 }
@@ -637,6 +638,11 @@ static function EmptyCovertActionSlot(XComGameState NewGameState, StateObjectRef
 		// Don't change super soldier loadouts since they have specialized gear
 		if (NewUnitState.IsSoldier() && !NewUnitState.bIsSuperSoldier)
 		{
+			// First try to upgrade the soldier's primary weapons, in case a tier upgrade happened while
+			// they were away on the CA. This is needed to make sure weapon upgrades and customization transfer properly.
+			CheckToUpgradePrimaryWeapons(NewGameState, NewUnitState);
+
+			// Then try to equip the rest of the old items
 			NewUnitState.EquipOldItems(NewGameState);
 
 			// Try to restart any psi training projects
@@ -647,4 +653,60 @@ static function EmptyCovertActionSlot(XComGameState NewGameState, StateObjectRef
 	NewActionState = GetNewCovertActionState(NewGameState, NewSlotState);
 	NewActionState.UpdateNegatedRisks(NewGameState);
 	NewActionState.UpdateDurationForBondmates(NewGameState);
+}
+static function CheckToUpgradePrimaryWeapons(XComGameState NewGameState, XComGameState_Unit UnitState)
+{
+	local XComGameState_Item EquippedPrimaryWeapon, UpgradedItemState;
+	local array<X2WeaponTemplate> BestPrimaryWeapons;
+	local X2WeaponTemplate BestPrimaryWeaponTemplate;
+	local array<X2WeaponUpgradeTemplate> WeaponUpgrades;
+	local X2WeaponUpgradeTemplate WeaponUpgradeTemplate;
+	local EInventorySlot InventorySlot;
+	local int idx;
+
+	EquippedPrimaryWeapon = UnitState.GetItemInSlot(eInvSlot_PrimaryWeapon, NewGameState);
+	BestPrimaryWeapons = UnitState.GetBestPrimaryWeaponTemplates();
+
+	// Run the same logic used in XComGameState_HeadquartersXCom::UpgradeItems()
+	// but only for the primary weapons of the soldier, so we ensure that upgrades and customization transfer properly
+	if (EquippedPrimaryWeapon != none)
+	{
+		for (idx = 0; idx < BestPrimaryWeapons.Length; idx++)
+		{
+			BestPrimaryWeaponTemplate = BestPrimaryWeapons[idx];
+
+			if (BestPrimaryWeaponTemplate.Tier > EquippedPrimaryWeapon.GetMyTemplate().Tier)
+			{
+				if (BestPrimaryWeaponTemplate.WeaponCat != X2WeaponTemplate(EquippedPrimaryWeapon.GetMyTemplate()).WeaponCat)
+				{
+					continue;
+				}
+
+				UpgradedItemState = BestPrimaryWeaponTemplate.CreateInstanceFromTemplate(NewGameState);
+				UpgradedItemState.WeaponAppearance = EquippedPrimaryWeapon.WeaponAppearance;
+				UpgradedItemState.Nickname = EquippedPrimaryWeapon.Nickname;
+				InventorySlot = EquippedPrimaryWeapon.InventorySlot; // save the slot location for the new item
+
+				// Remove the old item from the soldier and transfer over all weapon upgrades to the new item
+				UnitState.RemoveItemFromInventory(EquippedPrimaryWeapon, NewGameState);
+				WeaponUpgrades = EquippedPrimaryWeapon.GetMyWeaponUpgradeTemplates();
+				foreach WeaponUpgrades(WeaponUpgradeTemplate)
+				{
+					UpgradedItemState.ApplyWeaponUpgradeTemplate(WeaponUpgradeTemplate);
+				}
+
+				// Delete the old item
+				NewGameState.RemoveStateObject(EquippedPrimaryWeapon.GetReference().ObjectID);
+
+				// Then add the new item to the soldier in the same slot
+				UnitState.AddItemToInventory(UpgradedItemState, InventorySlot, NewGameState);
+			}
+		}
+	}
+}
+
+static function bool CanStaffBeMovedCovertActions(StateObjectReference SlotRef)
+{
+	// Staff assigned to Covert Actions cannot be moved until the Covert Action completes and empties the slot
+	return false;
 }

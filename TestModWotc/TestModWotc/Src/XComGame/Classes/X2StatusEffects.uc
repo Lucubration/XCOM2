@@ -1581,6 +1581,7 @@ static function UnconsciousVisualizationRemoved(XComGameState VisualizeGameState
 	local XComGameState_Unit UnitState;
 	local X2Action_Knockback KnockBackAction;	
 	local XComGameStateVisualizationMgr VisualizationMgr;
+	local XGUnit Unit;
 
 	UnitState = XComGameState_Unit(ActionMetadata.StateObject_NewState);
 
@@ -1606,6 +1607,13 @@ static function UnconsciousVisualizationRemoved(XComGameState VisualizeGameState
 		"img:///UILibrary_PerkIcons.UIPerk_stun",
 		eUIState_Good);
 	UpdateUnitFlag(ActionMetadata, VisualizeGameState.GetContext());
+
+	// Need to reinit the behavior since this is destroyed upon adding the Unconscious effect (via X2Action_Death).
+	Unit = XGUnit(UnitState.GetVisualizer());
+	if (Unit != None && Unit.m_kBehavior == None)
+	{
+		Unit.InitBehavior();
+	}
 }
 
 static function UnconsciousCleansedVisualization(XComGameState VisualizeGameState, out VisualizationActionMetadata ActionMetadata, const name EffectApplyResult)

@@ -25,6 +25,7 @@ struct native DirectTransferInformation_UnitStats
 	var int                  ArmorShred; // amount armor that was shredded on this unit before the transfer
 	var int					 LowestHP; // for injuries, needs to be tracked across all parts of a mission
 	var int					 HighestHP; // for injuries, needs to be tracked across all parts of a mission
+	var int					 MissingHP; // for injuries, needs to be tracked across all parts of a mission
 	var int					 FocusAmount;	//	for templar focus amount to be restored properly
 	var bool			     RemovedFromRestOfMission; // if true, this unit was evac'd while carried, and cannot come on any further legs of the mission
 
@@ -693,7 +694,13 @@ function EventListenerReturn ActivateChosenAlert(Object EventData, Object EventS
 
 function EventListenerReturn ActivateChosenAlertOnUnitDeath(Object EventData, Object EventSource, XComGameState GameState, Name EventID, Object CallbackData)
 {
+	local XComGameState_Player PlayerState;
+	PlayerState = class'XComGameState_Player'.static.GetPlayerState(eTeam_XCom);
+	// Update for TTP 17473 -  do not activate the Chosen unless the enemy is unconcealed.
+	if (PlayerState.IsAnySquadMemberRevealed())
+	{
 	InternalActivateChosenAlert();
+	}
 
 	return ELR_NoInterrupt;
 }
@@ -1014,6 +1021,7 @@ static event AdvanceLostSpawning(int ActivationAmount, bool bSoundAdvance = fals
 	local XComGameState_HeadquartersXCom XComHQ;
 	local bool bLostHowlTriggered;
 	local XComGameState_Player PlayerState;
+	local bool bReinforcementSuccess;
 
 	XComHQ = `XCOMHQ;
 		BattleData = XComGameState_BattleData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_BattleData'));
@@ -1054,10 +1062,14 @@ static event AdvanceLostSpawning(int ActivationAmount, bool bSoundAdvance = fals
 		bLostHowlTriggered = true;
 
 		// Check against the lost spawning threshold to see if we need to queue a pack
-		if( BattleData.LostSpawningLevel == 0 )
+		if( BattleData.LostSpawningLevel <= 0 )
 		{
 			`log("calling Lost reinforcements.");
 
+			bReinforcementSuccess = class'XComGameState_AIReinforcementSpawner'.static.InitiateReinforcements(BattleData.LostGroupID, 0, , , BattleData.LostSpawningDistance, NewGameState, , 'TheLostSwarm', true, false, true, true, true);
+
+			if( bReinforcementSuccess )
+			{
 				// Set lost group strength
 				BattleData.LostQueueStrength += 1;
 
@@ -1068,8 +1080,7 @@ static event AdvanceLostSpawning(int ActivationAmount, bool bSoundAdvance = fals
 				NewGameState.GetContext().PostBuildVisualizationFn.AddItem(BattleData.LostSpawnVisualizationWorldMessage);
 
 				`XEVENTMGR.TriggerEvent('LostThresholdPassed', BattleData, BattleData, NewGameState);
-
-			class'XComGameState_AIReinforcementSpawner'.static.InitiateReinforcements(BattleData.LostGroupID, 0, , , BattleData.LostSpawningDistance, NewGameState, , 'TheLostSwarm', true, false, true, true, true);
+			}
 		}
 		else if( BattleData.LostSpawningLevel == 1 )
 		{
@@ -1181,6 +1192,7 @@ function StoreDirectTransferUnitStats(XComGameState_Unit UnitState)
 	DirectTransferInfo.TransferredUnitStats[TransferDataIndex].ArmorShred = UnitState.Shredded;
 	DirectTransferInfo.TransferredUnitStats[TransferDataIndex].LowestHP = UnitState.LowestHP;
 	DirectTransferInfo.TransferredUnitStats[TransferDataIndex].HighestHP = UnitState.HighestHP;
+	DirectTransferInfo.TransferredUnitStats[TransferDataIndex].MissingHP = UnitState.MissingHP;
 	DirectTransferInfo.TransferredUnitStats[TransferDataIndex].RemovedFromRestOfMission = 
 		DirectTransferInfo.TransferredUnitStats[TransferDataIndex].RemovedFromRestOfMission || UnitState.IsBeingCarried();
 

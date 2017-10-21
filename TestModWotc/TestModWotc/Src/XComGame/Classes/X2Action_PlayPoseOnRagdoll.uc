@@ -20,7 +20,7 @@ simulated state Executing
 {
 	function CopyPose()
 	{
-		AnimParams.AnimName = 'Pose';
+		AnimParams.AnimName = 'RagdollPose';
 		AnimParams.Looping = true;
 		AnimParams.BlendTime = 0.0f;
 		AnimParams.HasPoseOverride = true;

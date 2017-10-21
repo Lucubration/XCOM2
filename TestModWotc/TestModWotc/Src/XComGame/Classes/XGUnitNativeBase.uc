@@ -535,7 +535,7 @@ event bool ShouldUseWalkAnim(XComGameState ReleventGameState)
 		Unit = XComGameState_Unit(History.GetGameStateForObjectID(ObjectID, , ReleventGameState.HistoryIndex));
 
 		// for now forcing ACVs to always run.  Because they don't have any walk anims.
-		if(Unit.IsACV() != 0)
+		if(Unit.IsACV() != 0 || Unit.GetMyTemplateGroupName() == 'Archon')
 			return false;
 				
 		if (GetAlertLevel(Unit) == eAL_Green && !Unit.IsMindControlled())

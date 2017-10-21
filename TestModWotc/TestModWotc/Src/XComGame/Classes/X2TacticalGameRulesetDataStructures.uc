@@ -464,7 +464,7 @@ struct native CharacterStat
 		FLOAT GetMaxValue();
 		FLOAT GetCurrentValue() const;
 		FLOAT GetBaseValue() const;
-		void GetStatModifiers(TArray<class UXComGameState_Effect*>& Mods,TArray<FLOAT>& ModValues);
+		void GetStatModifiers(TArray<class UXComGameState_Effect*>& Mods,TArray<FLOAT>& ModValues,UXComGameStateHistory* GameStateHistoryObject=NULL);
 
 
 	private:

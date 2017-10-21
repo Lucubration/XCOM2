@@ -58,7 +58,7 @@ simulated state Executing
 		SavedRotation = UnitPawn.Rotation;
 		SavedTranslation = UnitPawn.Mesh.Translation;
 
-		AnimParams.AnimName = 'Pose';
+		AnimParams.AnimName = 'CocoonPose';
 		AnimParams.Looping = true;
 		AnimParams.BlendTime = 0.0f;
 		AnimParams.HasPoseOverride = true;

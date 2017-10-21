@@ -48,7 +48,9 @@ var localized string            m_strUninjuredSoldiers;
 
 var localized string            m_strPreviousChallenge;
 var localized string            m_strNextChallenge;
+var localized string			m_strChallenge;
 var UIButton					m_PreviousChallengeButton;
+var UIButton					m_NextChallengeButton;
 
 
 var privatewrite bool           m_bUpdatingLeaderboardData;
@@ -69,7 +71,9 @@ var private OnlineSubsystem		m_OnlineSub;
 
 var UniqueNetId					m_LocalPlayerID;
 
-const MAX_LEADERBOARDSENTRIES = 14;
+var UIButton					m_JumpToTopButton; 
+
+const MAX_LEADERBOARDSENTRIES = 12;
 
 
 //--------------------------------------------------------------------------------------- 
@@ -78,6 +82,7 @@ const MAX_LEADERBOARDSENTRIES = 14;
 var array<IntervalInfo>			m_arrIntervals;
 var int							m_iIncomingIntervalCount;
 var int							m_CurrentLeaderboardIndex;
+var int							m_TotalPlayerCount;
 
 
 simulated function string GetUsernameText()
@@ -128,8 +133,7 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	m_aChallengeHeaderButtons.AddItem( headerButton );
 
 	m_plrLeaderboardEntry = Spawn(class'UIChallengeLeaderboard_ListItem', self);
-	InitializeListItem(m_plrLeaderboardEntry);// , 'playerRow');
-	m_plrLeaderboardEntry.SetPosition(315, 265);
+	InitializeListItem(m_plrLeaderboardEntry, 'playerRow');
 	
 	SubscribeToOnCleanupWorld();
 
@@ -146,28 +150,31 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	//bsg-jneal (5.9.17): end
 	
 	PrevPageButton = Spawn(class'UIButton', self).InitButton('prevpage', m_strPreviousPageText, PreviousPageCallback);
-	PrevPageButton.AnchorBottomCenter();
-	PrevPageButton.SetPosition(-450, -40);
+	PrevPageButton.SetPosition(320, 960);//Inside the bottom BG area on stage.
 
-	TopPlayersButton = Spawn(class'UIButton', self).InitButton('topPlayers', m_strTopPlayersButtonText, TopPlayersButtonCallback);
-	TopPlayersButton.AnchorBottomCenter();
-	TopPlayersButton.SetPosition(-250, -40);
+	TopPlayersButton = Spawn(class'UIButton', self).InitButton('topPlayers', class'UIChallengeMode_SquadSelect'.default.m_strGlobalLeaderboardsLabel, TopPlayersButtonCallback);
+	TopPlayersButton.SetPosition(1280, 120);
 
 	YourRankButton = Spawn(class'UIButton', self).InitButton('yourRank', m_strYourRankButtonText, YourChallengeRankButtonCallback);
-	YourRankButton.AnchorBottomCenter();
-	YourRankButton.SetPosition(-50, -40);
+	YourRankButton.SetPosition(850, 960);//Inside the bottom BG area on stage.
 
-	FriendsButton = Spawn(class'UIButton', self).InitButton('friendsButton', m_strFriendRanksButtonText, FriendRanksButtonCallback);
-	FriendsButton.AnchorBottomCenter();
-	FriendsButton.SetPosition(150, -40);
+	FriendsButton = Spawn(class'UIButton', self).InitButton('friendsButton', class'UIChallengeMode_SquadSelect'.default.m_strFriendsLeaderboardsLabel, FriendRanksButtonCallback);
+	FriendsButton.SetPosition(1450, 120);
 	
 	NextPageButton  = Spawn(class'UIButton', self).InitButton('nextPage', m_strNextPageText, NextPageCallback);
-	NextPageButton.AnchorBottomCenter();
-	NextPageButton.SetPosition(350, -40);
+	NextPageButton.SetPosition(1420, 960);//Inside the bottom BG area on stage.
 
+	m_JumpToTopButton = Spawn(class'UIButton', self).InitButton('jumpToTop', m_strTopPlayersButtonText, TopPlayersButtonCallback);
+	m_JumpToTopButton.SetPosition(850, 925); //Inside the bottom BG area on stage.
+	
 	m_PreviousChallengeButton = Spawn(class'UIButton', self).InitButton('prevchallenge', m_strPreviousChallenge, PreviousChallengeCallback);
 	m_PreviousChallengeButton.AnchorBottomCenter();
-	m_PreviousChallengeButton.SetPosition(550, -40);
+	m_PreviousChallengeButton.SetPosition(-640, -40);
+
+	m_NextChallengeButton = Spawn(class'UIButton', self).InitButton('nextchallenge', m_strNextChallenge, NextChallengeCallback);
+	m_NextChallengeButton.AnchorBottomCenter();
+	m_NextChallengeButton.SetPosition(480, -40);
+	m_NextChallengeButton.DisableButton();
 
 	PrevPageButton.SetVisible(`ISCONTROLLERACTIVE == false);
 	TopPlayersButton.SetVisible(`ISCONTROLLERACTIVE == false);
@@ -175,6 +182,8 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	FriendsButton.SetVisible(`ISCONTROLLERACTIVE == false);
 	NextPageButton.SetVisible(`ISCONTROLLERACTIVE == false);
 	m_PreviousChallengeButton.SetVisible(`ISCONTROLLERACTIVE == false);
+	m_NextChallengeButton.SetVisible(`ISCONTROLLERACTIVE == false);
+	m_JumpToTopButton.SetVisible(`ISCONTROLLERACTIVE == false);
 
 	m_eSortOrder[0] = eLeaderboardSortType_Rank;
 	m_eSortOrder[1] = eLeaderboardSortType_Name;
@@ -183,6 +192,25 @@ simulated function InitScreen(XComPlayerController InitController, UIMovie InitM
 	m_eSortOrder[4] = eLeaderboardSortType_Replay;
 
 	m_iCurrentlySelectedHeaderButton = 0;
+}
+
+simulated function CompareEntries(TLeaderboardEntry entry)
+{
+	MC.BeginFunctionOp("SetOtherScoreBreakdown");
+	MC.QueueString(entry.strPlayerName);
+	MC.QueueString(string(entry.SoldiersAlive));
+	MC.QueueString(string(entry.KilledEnemies));
+	MC.QueueString(string(entry.CompletedObjectives));
+	MC.QueueString(string(entry.TimeBonus));
+	MC.QueueString(string(entry.CiviliansSaved));
+	MC.QueueString(string(entry.UninjuredSoldiers));
+	MC.EndOp();
+}
+
+simulated function CloseComparisson()
+{
+	MC.BeginFunctionOp("SetOtherScoreBreakdown");
+	MC.EndOp();
 }
 
 //bsg-jneal (5.9.17): refresh data to override label text for button image injection
@@ -201,6 +229,7 @@ simulated function OnListReplayChanged(UIList ContainerList, int ItemIndex)
 		}
 
 		listItem = UIChallengeLeaderboard_ListItem(m_kList.GetSelectedItem());
+		CompareEntries(listItem.m_LeaderboardEntry);
 		listItem.RefreshChallengeData(class'UIUtilities_Text'.static.InjectImage(class'UIUtilities_Input'.static.GetAdvanceButtonIcon(), 18, 18, -4) @ listItem.m_currentStatus);
 	}
 }
@@ -236,19 +265,14 @@ simulated function UpdateNavButtons()
 			m_NavHelp.AddCenterHelp(m_strNextPageText, class'UIUtilities_Input'.const.ICON_RB_R1);
 		}
 
-		if (m_CurrentLeaderboardIndex == m_arrIntervals.Length - 1)
-		{
-			m_navHelp.AddCenterHelp(m_strPreviousChallenge, class'UIUtilities_Input'.const.ICON_DPAD_LEFT);
-		}
-		else
-		{
-			m_navHelp.AddCenterHelp(m_strNextChallenge, class'UIUtilities_Input'.const.ICON_DPAD_LEFT);
-		}
+		
+		m_navHelp.AddCenterHelp(m_strPreviousChallenge, class'UIUtilities_Input'.const.ICON_DPAD_LEFT);
+		m_navHelp.AddCenterHelp(m_strNextChallenge, class'UIUtilities_Input'.const.ICON_DPAD_RIGHT);
 	}
 	else
 	{
-		PrevPageButton.SetDisabled(m_eLeaderboardType != eMPLeaderboard_TopPlayers);
-		NextPageButton.SetDisabled(m_eLeaderboardType != eMPLeaderboard_TopPlayers);
+		PrevPageButton.SetDisabled(m_eLeaderboardType != eMPLeaderboard_TopPlayers && m_eLeaderboardType != eMPLeaderboard_Friends);
+		NextPageButton.SetDisabled(m_eLeaderboardType != eMPLeaderboard_TopPlayers && m_eLeaderboardType != eMPLeaderboard_Friends);
 
 		if (m_eLeaderboardType == eMPLeaderboard_TopPlayers)
 		{
@@ -258,6 +282,7 @@ simulated function UpdateNavButtons()
 		TopPlayersButton.Show();
 		YourRankButton.Show();
 		FriendsButton.Show();
+		m_JumpToTopButton.Show();
 		if (!m_FriendFetch.bSuccess)
 		{
 			FriendsButton.Hide();
@@ -273,6 +298,18 @@ simulated function UpdateNavButtons()
 simulated function OnInit()
 {
 	local byte LocalUserNum;
+	local string DateString;
+	local TDateTime kDateTime;
+	local int year, month, day;
+
+	class'XComGameState_TimerData'.static.GetUTCDate(class'XComGameState_TimerData'.static.GetUTCTimeInSeconds(), year, month, day);
+	kDateTime.m_iDay = day;
+	kDateTime.m_iMonth = month;
+	kDateTime.m_iYear = year;
+	DateString = "";
+
+	DateString = class'X2StrategyGameRulesetDataStructures'.static.GetDateString(kDateTime, true);
+
 	super(UIMPShell_Base).OnInit();
 
 	LocalUserNum = `ONLINEEVENTMGR.LocalUserIndex;
@@ -295,9 +332,8 @@ simulated function OnInit()
 	ChallengeModeInterface.AddReceivedChallengeModeDeactivatedIntervalStartDelegate(OnReceivedChallengeModeDeactivatedIntervalStart);
 	ChallengeModeInterface.AddReceivedChallengeModeDeactivatedIntervalEndDelegate(OnReceivedChallengeModeDeactivatedIntervalEnd);
 	ChallengeModeInterface.AddReceivedChallengeModeDeactivatedIntervalEntryDelegate(OnReceivedChallengeModeDeactivatedIntervalEntry);
-	ChallengeModeInterface.AddReceivedChallengeModeGetGameSaveDelegate(OnReceivedChallengeModeGetGameSave);
 
-	SetTitle(m_strNextChallenge, "-"); // Challenge, Par
+	SetTitle(m_strChallenge @ "-" @ DateString, "-"); // Challenge, Par
 	SetScoreBreakdown();
 	SetPlayerRow(m_plrEntry);
 
@@ -430,6 +466,10 @@ simulated function bool OnUnrealCommand(int cmd, int arg)
 		SetScoreBreakdown();
 		PreviousChallengeCallback(none);
 		break;
+	case class'UIUtilities_Input'.const.FXS_DPAD_RIGHT :
+		SetScoreBreakdown();
+		NextChallengeCallback(none);
+		break;
 	default:
 		bHandled = false;
 		break;
@@ -464,48 +504,89 @@ public function PreviousPageCallback(UIButton button)
 
 public function NextChallengeCallback(UIButton button)
 {
-	if (m_arrIntervals.Length > 1)
-	{
-		m_CurrentLeaderboardIndex += 1;
-		if (m_arrIntervals.Length <= m_CurrentLeaderboardIndex)
-			m_CurrentLeaderboardIndex = m_arrIntervals.Length - 2;
+	local string DateString;
+	local TDateTime kDateTime;
+	local int year, month, day;
 
+	if (m_arrIntervals.Length > 1 && !m_NextChallengeButton.IsDisabled)
+	{
+		m_PreviousChallengeButton.EnableButton();
+		m_CurrentLeaderboardIndex += 1;
+		if (m_arrIntervals.Length == m_CurrentLeaderboardIndex + 1)
+		{
+			m_NextChallengeButton.DisableButton();
+		}
+
+		class'XComGameState_TimerData'.static.GetUTCDate(class'XComGameState_TimerData'.static.GetUTCTimeInSeconds() - ((m_arrIntervals.Length - 1 - m_CurrentLeaderboardIndex) * 24 * 60 * 60), year, month, day);
+		kDateTime.m_iDay = day;
+		kDateTime.m_iMonth = month;
+		kDateTime.m_iYear = year;
+		DateString = "";
+		DateString = class'X2StrategyGameRulesetDataStructures'.static.GetDateString(kDateTime, true);
+
+		SetTitle(m_strChallenge @ "-" @ DateString, "-");
+
+		m_plrEntry.iRank = 0;
 		m_plrEntry.iScore = 0;
 		m_plrEntry.iTime = 0;
+		m_plrEntry.TimeBonus = 0;
+		m_plrEntry.UninjuredSoldiers = 0;
+		m_plrEntry.CiviliansSaved = 0;
+		m_plrEntry.CompletedObjectives = 0;
+		m_plrEntry.KilledEnemies = 0;
+		m_plrEntry.SoldiersAlive = 0;
 
-		// Initialize the player entry item to this interval.
+		bLocalStartedMission = false;
 		m_plrLeaderboardEntry.UpdateData(m_plrEntry);
-		UpdateListItem(m_plrLeaderboardEntry);
 
-		m_eLeaderboardType = eMPLeaderboard_Friends;
+		SetScoreBreakdown();
+
 		// Populate the leaderboard
 		YourRankButtonCallback(none);
+
+		UpdateNavButtons();
 	}
 }
 
 public function PreviousChallengeCallback(UIButton button)
 {
-	if (m_arrIntervals.Length > 1)
-	{
-		m_CurrentLeaderboardIndex -= 1;
-		if (m_arrIntervals.Length - 2 > m_CurrentLeaderboardIndex)
-		{
-			m_PreviousChallengeButton.SetText(m_strPreviousChallenge);
-			m_CurrentLeaderboardIndex = m_arrIntervals.Length - 1;
-			SetTitle(m_strNextChallenge, string(ChallengeModeManager.GetMaxChallengeScore()));
-		}
-		else
-		{
-			m_PreviousChallengeButton.SetText(m_strNextChallenge);
-			SetTitle(m_strPreviousChallenge, string(ChallengeModeManager.GetMaxChallengeScore()));
-		}
+	local string DateString;
+	local TDateTime kDateTime;
+	local int year, month, day;
 
+	if (m_arrIntervals.Length > 1 && !m_PreviousChallengeButton.IsDisabled)
+	{
+		m_NextChallengeButton.EnableButton();
+		m_CurrentLeaderboardIndex -= 1;
+		
+		if (m_arrIntervals.Length - 6 > m_CurrentLeaderboardIndex)
+		{
+			m_PreviousChallengeButton.DisableButton();
+		}
+		
+		class'XComGameState_TimerData'.static.GetUTCDate(class'XComGameState_TimerData'.static.GetUTCTimeInSeconds() - ((m_arrIntervals.Length - 1 - m_CurrentLeaderboardIndex) * 24 * 60 * 60), year, month, day);
+		kDateTime.m_iDay = day;
+		kDateTime.m_iMonth = month;
+		kDateTime.m_iYear = year;
+		DateString = "";
+		DateString = class'X2StrategyGameRulesetDataStructures'.static.GetDateString(kDateTime, true);
+
+		SetTitle(m_strChallenge @ "-" @ DateString, "-");
+
+		m_plrEntry.iRank = 0;
 		m_plrEntry.iScore = 0;
 		m_plrEntry.iTime = 0;
+		m_plrEntry.TimeBonus = 0;
+		m_plrEntry.UninjuredSoldiers = 0;
+		m_plrEntry.CiviliansSaved = 0;
+		m_plrEntry.CompletedObjectives = 0;
+		m_plrEntry.KilledEnemies = 0;
+		m_plrEntry.SoldiersAlive = 0;
 
-		// Initialize the player entry item to this interval.
+		bLocalStartedMission = false;
 		m_plrLeaderboardEntry.UpdateData(m_plrEntry);
-		UpdateListItem(m_plrLeaderboardEntry);
+
+		SetScoreBreakdown();
 
 		// Populate the leaderboard
 		YourRankButtonCallback(none);
@@ -547,6 +628,16 @@ public function NextPageCallback(UIButton button)
 			m_LeaderboardOffset -= MAX_LEADERBOARDSENTRIES;
 		}
 	}
+	else if (m_eLeaderboardType == eMPLeaderboard_Friends)
+	{
+		m_LeaderboardOffset += MAX_LEADERBOARDSENTRIES;
+
+		if (!FetchFriendRanksListData()) // failed to fetch go back to first page of data. 
+		{
+			m_LeaderboardOffset = 0;
+			FetchFriendRanksListData();
+		}
+	}
 }
 
 function SetDisplayNoChallengeDialogOnInit()
@@ -570,7 +661,7 @@ function SetScoreBreakdown(optional string PlayerScore1 = "-", optional string P
 	MC.BeginFunctionOp("SetScoreBreakdown");
 	MC.QueueString(m_strScoreBreakdown); // title
 	MC.QueueString(m_strMissionComplete);
-	MC.QueueString(bLocalStartedMission ? m_strMissionFinished : m_strMissionNotStarted);
+	MC.QueueString(bLocalStartedMission ? m_strMissionFinished @ "-" @ m_plrEntry.iScore: m_strMissionNotStarted);
 	MC.QueueString(m_strAliveSoldiers);
 	MC.QueueString(PlayerScore1); //player score 1 value or -
 	MC.QueueString(m_strKilledEnemies);
@@ -590,7 +681,7 @@ function SetPlayerRow(const out TLeaderboardEntry PlayerEntry)
 {
 	MC.BeginFunctionOp("SetPlayerRow");
 	MC.QueueBoolean(true);
-	MC.QueueString(string(PlayerEntry.iRank));
+	MC.QueueString(string(PlayerEntry.iRank) @ "(" $ PlayerEntry.iPercentile $"%)");
 	MC.QueueString(PlayerEntry.strPlayerName);
 	MC.QueueString(string(PlayerEntry.iScore));
 	MC.QueueString(GetMinutesSecondsTime(PlayerEntry.iTime)); // maybe reformat this
@@ -610,7 +701,7 @@ function string GetMinutesSecondsTime(int TimeInSeconds)
 	local string time;
 	min = TimeInSeconds / 60;
 	sec = TimeInSeconds % 60;
-	time = (min < 10) ? "0" $ min : "" $ min;
+	time = "" $ min;
 	time $= ":" $ (sec < 10) ? "0" $ sec : "" $ sec;
 	return time;
 }
@@ -854,7 +945,8 @@ function bool InternalFetchLeaderboardData(EMPLeaderboardType kLeaderboardType)
 		bSuccess = ChallengeModeInterface.PerformChallengeModeGetTopGameScores(GetLeaderboardName(), m_LeaderboardOffset, m_LeaderboardLimit);
 		break;
 	case eMPLeaderboard_Friends:
-		bSuccess = PerformGetGameScoreFriends(, m_LeaderboardOffset, m_LeaderboardLimit);
+		PerformGetGameScoreFriends(, m_LeaderboardOffset, m_LeaderboardLimit);
+		bSuccess = m_FriendFetch.bSuccess;
 		break;
 	case eMPLeaderboard_YourRank:
 		AddPlayerIDForLeaderboardPlayerList(PlayerIDs);
@@ -939,6 +1031,8 @@ function bool GetCurrentIntervalFromUIChallengeMode_SquadSelect()
 			// Prefetch the friend's list
 			ASyncReadFriendList(OnFriendFetchComplete, m_LeaderboardOffset, m_LeaderboardLimit);
 		}
+		// Get total number of players that have completed a challenge
+		m_TotalPlayerCount = SquadSelectScreen.m_TotalPlayerCount;
 	}
 	return m_arrIntervals.Length > 0;
 }
@@ -952,6 +1046,7 @@ function bool GetCurrentIntervalFromTacticalGame()
 	local int Idx;
 	local bool bIsChallengeLocalPlayer, bIsReplay;
 	local qword IntervalID;
+	//local X2TacticalChallengeModeManager TacticalChallengeModeManager;
 
 	bIsChallengeLocalPlayer = false;
 	if (`TACTICALRULES != none)
@@ -1014,6 +1109,10 @@ function bool GetCurrentIntervalFromTacticalGame()
 			{
 				YourRankButtonCallback(none);
 			}
+
+			// Get total number of players that have completed a challenge
+			//TacticalChallengeModeManager = `TACTICALGRI.ChallengeModeManager;
+			//m_TotalPlayerCount = TacticalChallengeModeManager.m_CurrentTotalTurnEventMap[ECME_CompletedMission] + TacticalChallengeModeManager.m_CurrentTotalTurnEventMap[ECME_FailedMission];
 			return true;
 		}
 	}
@@ -1099,6 +1198,11 @@ function OnReceivedChallengeModeDeactivatedIntervalEnd()
 			// The default gamestate is not loaded, load the player's game save
 			m_bGetPlayerGameSave = true;
 			GetCurrentIntervalFromUIChallengeMode_SquadSelect();
+		}
+		else
+		{
+			// Prefetch the friend's list
+			ASyncReadFriendList(OnFriendFetchComplete, m_LeaderboardOffset, m_LeaderboardLimit);
 		}
 		m_CurrentLeaderboardIndex = m_arrIntervals.length -1;
 
@@ -1235,21 +1339,18 @@ function OnReceivedChallengeModeLeaderboardEnd(qword IntervalSeedID)
 /**
 * Received when the Challenge Mode data has been read.
 *
-* @param PlatformID, Unique Identifier for the OSS Platform (Steam/PS4/Xbox)
-* @param PlayerId, Unique Identifier for the particular player
-* @param PlayerName, Name to show on the leaderboard
-* @param IntervalSeedID, Specifies the entry's leaderboard (since there may be multiple days worth of leaderboards)
-* @param Rank, Location of the overall leaderboard
-* @param GameScore, Value of the entry
-* @param TimeStart, Epoch time in UTC whenever the player first started the challenge
-* @param TimeEnd, Epoch time in UTC whenever the player finished the challenge
+* @param Entry, Struct filled with all the data incoming from the server
 */
-function OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueNetId PlayerID, string PlayerName, qword IntervalSeedID, int Rank, int GameScore, qword TimeStart, qword TimeEnd)
+function OnReceivedChallengeModeLeaderboardEntry(ChallengeModeLeaderboardData Entry)
 {
 	local int Index;
 	local TLeaderboardEntry NewEntry;
+	local int TopPercentile;
 
-	`log(`location @ `ShowVar(m_OnlineSub.UniqueNetIdToString(PlatformID), PlatformID) @ `ShowVar(m_OnlineSub.UniqueNetIdToString(PlayerID), PlayerID) @ `ShowVar(PlayerName) @ QWordToString(IntervalSeedID) @ `ShowVar(GameScore) @`ShowVar(m_bUpdatingLeaderboardData) @ `ShowVar(TimeStart.A) @ `ShowVar(TimeEnd.A), , 'XCom_Online');
+	`log(`location @ `ShowVar(m_OnlineSub.UniqueNetIdToString(Entry.PlatformID), PlatformID) @ `ShowVar(m_OnlineSub.UniqueNetIdToString(Entry.PlayerID), PlayerID)
+		@ QWordToString(Entry.IntervalSeedID) @ `ShowVar(Entry.Rank) @ `ShowVar(Entry.GameScore) @ `ShowVar(Entry.TimeStart) @ `ShowVar(Entry.TimeEnd) @ `ShowVar(Entry.UninjuredSoldiers)
+		@ `ShowVar(Entry.SoldiersAlive) @ `ShowVar(Entry.KilledEnemies) @ `ShowVar(Entry.CompletedObjectives) @ `ShowVar(Entry.CiviliansSaved) @ `ShowVar(Entry.TimeBonus)
+		@ `ShowVar(m_bUpdatingLeaderboardData), , 'XCom_Online');
 	
 	if (m_bUpdatingLeaderboardData)
 	{
@@ -1258,30 +1359,41 @@ function OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueN
 	}
 	else
 	{
-		Index = FindLeaderboardIndex(PlayerID);
+		Index = FindLeaderboardIndex(Entry.PlayerID);
 	}
 
-	NewEntry.strPlayerName = PlayerName;
-	NewEntry.iRank = Rank;
-	NewEntry.iWins = 0;
-	NewEntry.iLosses = 0;
-	NewEntry.iDisconnects = 0;
-	NewEntry.iScore = GameScore;
-	NewEntry.iTime = TimeEnd.A - TimeStart.A;
-	NewEntry.PlayerID = PlayerID;
-	NewEntry.PlatformID = PlatformID;
+	m_TotalPlayerCount = 15;
+	TopPercentile = (float(m_TotalPlayerCount - Entry.Rank) / float(m_TotalPlayerCount)) * 100.0;
+	//TopPercentile = 100.0 - ((float(Entry.Rank) / float(m_TotalPlayerCount)) * 100.0);
+	//TopPercentile = (100.0 / m_TotalPlayerCount) * (Entry.Rank - 0.5);
+	`log(`location @ `ShowVar(Entry.Rank) @ `ShowVar(m_TotalPlayerCount) @ `ShowVar(TopPercentile));
 
-	if (PlatformID == m_LocalPlayerID) // (!m_bFoundLocalPlayerLeaderboardData)
+	NewEntry.iRank = Entry.Rank;
+	NewEntry.iScore = Entry.GameScore;
+	NewEntry.iTime = Entry.TimeEnd - Entry.TimeStart;
+	NewEntry.iPercentile = TopPercentile;
+
+	NewEntry.UninjuredSoldiers		= Entry.UninjuredSoldiers;
+	NewEntry.SoldiersAlive			= Entry.SoldiersAlive;
+	NewEntry.KilledEnemies			= Entry.KilledEnemies;
+	NewEntry.CompletedObjectives	= Entry.CompletedObjectives;
+	NewEntry.CiviliansSaved			= Entry.CiviliansSaved;
+	NewEntry.TimeBonus				= Entry.TimeBonus;
+
+	NewEntry.PlayerID = Entry.PlayerID;
+	NewEntry.PlatformID = Entry.PlatformID;
+
+	if (Entry.PlatformID == m_LocalPlayerID) // (!m_bFoundLocalPlayerLeaderboardData)
 	{
 		`log(`location @ "Got an entry for the local player");
+
+		bLocalStartedMission = true;
 		m_plrEntry = NewEntry;
+		m_plrLeaderboardEntry.m_IntervalID = m_arrIntervals[m_CurrentLeaderboardIndex].IntervalSeedID;
 		SetPlayerRow(m_plrEntry);
+		SetScoreBreakdown( string(NewEntry.SoldiersAlive), string(NewEntry.KilledEnemies), string(NewEntry.CompletedObjectives), string(NewEntry.CiviliansSaved), string(NewEntry.TimeBonus), string(NewEntry.UninjuredSoldiers));
 		m_plrLeaderboardEntry.UpdateData(m_plrEntry);
 		UpdateListItem(m_plrLeaderboardEntry);
-		if (m_bGetPlayerGameSave)
-		{
-			PerformGetPlayerGameSave(PlayerID);
-		}
 		m_bFoundLocalPlayerLeaderboardData = true;
 	}
 
@@ -1290,9 +1402,9 @@ function OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueN
 		m_LeaderboardsData[Index] = NewEntry;
 		if (len(m_LeaderboardsData[Index].strPlayerName) == 0)
 		{
-			if (!m_OnlineSub.PlayerInterface.RequestUserInformation(`ONLINEEVENTMGR.LocalUserIndex, PlatformID))
+			if (!m_OnlineSub.PlayerInterface.RequestUserInformation(`ONLINEEVENTMGR.LocalUserIndex, Entry.PlatformID))
 			{
-				`RedScreen("Unable to lookup username for PlatformID: " $ m_OnlineSub.UniqueNetIdToString(PlatformID));
+				`RedScreen("Unable to lookup username for PlatformID: " $ m_OnlineSub.UniqueNetIdToString(Entry.PlatformID));
 			}
 		}
 		`log(`location @ "Setting Leaderboard Entry(" $ Index $ ")" @ `ShowVar(m_LeaderboardsData[Index].strPlayerName, PlayerName) @ `ShowVar(m_LeaderboardsData[Index].iScore, GameScore));
@@ -1300,44 +1412,6 @@ function OnReceivedChallengeModeLeaderboardEntry(UniqueNetId PlatformID, UniqueN
 		if (!m_bUpdatingLeaderboardData)
 		{
 			UpdateData();
-		}
-	}
-}
-
-function PerformGetPlayerGameSave(UniqueNetId PlayerID)
-{
-	local bool bSuccess;
-	bSuccess = ChallengeModeInterface.PerformChallengeModeGetGameSave(PlayerID, m_arrIntervals[m_CurrentLeaderboardIndex].IntervalSeedID);
-	`log(`location @ `ShowVar(QWordToString(PlayerID.Uid), PlayerID) @ `ShowVar(QWordToString(m_arrIntervals[m_CurrentLeaderboardIndex].IntervalSeedID), IntervalSeedID) @ `ShowVar(bSuccess));
-}
-
-/**
- * Received when the Challenge Mode data has been read.
- *
- * @param PlayerId, Unique Identifier for the particular player
- * @param PlayerName, Name to show on the leaderboard
- * @param IntervalSeedID, Specifies the entry's leaderboard (since there may be multiple days worth of leaderboards)
- * @param LevelSeed, Seed used for the level generation
- * @param PlayerSeed, Seed specific for that player
- * @param TimeLimit, Time allowed to play the level
- * @param GameScore, Value of the entry
- * @param TimeStart, Epoch time in UTC whenever the player first started the challenge
- * @param TimeEnd, Epoch time in UTC whenever the player finished the challenge
- * @param GameData, History data for replay / validation
- */
-function OnReceivedChallengeModeGetGameSave(UniqueNetId PlayerID, string PlayerName, qword IntervalSeedID, int LevelSeed, int PlayerSeed, int TimeLimit, int GameScore, qword TimeStart, qword TimeEnd, array<byte> GameData)
-{
-	`log(`location @ `ShowVar(Class'GameEngine'.static.GetOnlineSubsystem().UniqueNetIdToString(PlayerID), PlayerID) @ `ShowVar(PlayerName) @ QWordToString(IntervalSeedID) @ `ShowVar(LevelSeed) @ `ShowVar(PlayerSeed) @ `ShowVar(TimeLimit) @ `ShowVar(GameScore), , 'XCom_Online');
-	if (PlayerID == m_plrEntry.PlayerID)
-	{
-		m_plrLeaderboardEntry.SetPlayerGameData(GameData);
-		if (ChallengeModeInterface.ChallengeModeLoadGameData(GameData))
-		{
-			LoadScoreComponentsFromHistory();
-		}
-		else
-		{
-			`RedScreen("Failed to load the player's own replay data! Cannot read stats to display in the UI. @ttalley");
 		}
 	}
 }
@@ -1375,7 +1449,7 @@ function OnFriendFetchComplete()
 	}
 }
 
-function bool PerformGetGameScoreFriends(optional delegate<FriendFetchComplete> OnFriendFetchCompleteDelegate = OnFriendFetchComplete, optional int Offset = 0, optional int Limit = 10)
+function bool PerformGetGameScoreFriends(optional delegate<FriendFetchComplete> OnFriendFetchCompleteDelegate = OnFriendFetchComplete, optional int Offset = 0, optional int Limit = 14)
 {
 	`log(`location @ `ShowVar(OnFriendFetchCompleteDelegate) @ `ShowVar(Offset) @ `ShowVar(Limit));
 	if (IsFriendFetchComplete(Offset, Limit))
@@ -1402,7 +1476,7 @@ function bool IsFriendFetchComplete(int Offset, int Limit)
 	return m_FriendFetch.bComplete && m_FriendFetch.Offset == Offset && m_FriendFetch.Limit == Limit && m_friendFetch.bSuccess;
 }
 
-function bool ASyncReadFriendList(delegate<FriendFetchComplete> OnFriendFetchCompleteDelegate, optional int Offset = 0, optional int Limit = 10)
+function bool ASyncReadFriendList(delegate<FriendFetchComplete> OnFriendFetchCompleteDelegate, optional int Offset = 0, optional int Limit = 14)
 {
 	`log(`location @ `ShowVar(OnFriendFetchCompleteDelegate) @ `ShowVar(Offset) @ `ShowVar(Limit));
 	m_FriendFetch.bFetchingFriends = true;
@@ -1415,7 +1489,7 @@ function bool ASyncReadFriendList(delegate<FriendFetchComplete> OnFriendFetchCom
 }
 
 // Must call ASyncReadFriendList prior to getting the list
-function bool GetFriendIDs(out array<string> PlayerIDs, optional int Offset = 0, optional int Limit = 10)
+function bool GetFriendIDs(out array<string> PlayerIDs, optional int Offset = 0, optional int Limit = 14)
 {
 	local array<OnlineFriend> Friends;
 	local EOnlineEnumerationReadState ReadState;
@@ -1451,13 +1525,15 @@ function OnFriendsChange()
 public function FriendRanksButtonCallback(UIButton button)
 {
 	`log(self $ "::" $ GetFuncName(), , 'uixcom_mp');
-	
+
 	if (m_kMPShellManager.m_bLeaderboardsFriendsDataLoaded)
 	{
 		OnLeaderBoardFetchComplete(m_kMpShellManager.m_tLeaderboardsFriendsData);
 	}
 	else
 	{
+		m_LeaderboardOffset = 0;
+		
 		FetchLeaderboardData(eMPLeaderboard_Friends);
 	}
 }
@@ -1571,7 +1647,6 @@ function Cleanup()
 	ChallengeModeInterface.ClearReceivedChallengeModeDeactivatedIntervalStartDelegate(OnReceivedChallengeModeDeactivatedIntervalStart);
 	ChallengeModeInterface.ClearReceivedChallengeModeDeactivatedIntervalEndDelegate(OnReceivedChallengeModeDeactivatedIntervalEnd);
 	ChallengeModeInterface.ClearReceivedChallengeModeDeactivatedIntervalEntryDelegate(OnReceivedChallengeModeDeactivatedIntervalEntry);
-	ChallengeModeInterface.ClearReceivedChallengeModeGetGameSaveDelegate(OnReceivedChallengeModeGetGameSave);
 
 	m_kMPShellManager.ClearLeaderboardFetchCompleteDelegate(OnLeaderBoardFetchComplete);
 	m_kMPShellManager.CancelLeaderboardsFetch();

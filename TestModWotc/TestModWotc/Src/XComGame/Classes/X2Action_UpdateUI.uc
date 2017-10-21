@@ -187,6 +187,21 @@ simulated state Executing
 
 Begin:
 	UpdateUI();
+	switch (UpdateType)
+	{
+	case EUIUT_SuperConcealRoll:
+		if (`REPLAY.bInReplay)
+		{
+			`PRES.GetTacticalHUD().VisualizerForceShow();
+			`PRES.GetTacticalHUD().ReplayToggleReaperHUD(true);
+			Sleep(3.0f);
+			`PRES.GetTacticalHUD().ReplayToggleReaperHUD(false);
+			`PRES.GetTacticalHUD().Hide();
+		}
+		break;
+	default:
+		break;
+	}
 
 	CompleteAction();
 }

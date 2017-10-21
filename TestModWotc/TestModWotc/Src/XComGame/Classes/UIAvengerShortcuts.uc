@@ -1221,7 +1221,12 @@ function ViewScientistsHotlink(StateObjectReference FacilityRef)
 function SelectChooseResearch(StateObjectReference FacilityRef)
 {
 	if(!class'XComGameState_HeadquartersXCom'.static.IsObjectiveCompleted('T0_M1_WelcomeToLabs'))
+	{
+		if( !class'XComGameState_HeadquartersXCom'.static.IsWelcomeToLabsInProgressTutorial() )
 		return;
+	}
+
+	//If Welcome to Labs is in progress, we'll let you come back in to Choose Research, rather than get stuck outside on the main menu.  
 	SelectFacilityHotlink(FacilityRef);
 
 	// get to personnel view, once we're on a labs screen. 

@@ -4,7 +4,6 @@ class XComGameState_Unit_AsyncLoadRequest extends AsynchronousLoadRequest;
 
 var string ArchetypeName;
 
-var Actor PawnOwner;
 var vector UseLocation;
 var rotator UseRotation;
 var int NumContentRequests;

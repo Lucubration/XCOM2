@@ -875,7 +875,7 @@ function SetArmorTints(X2CharacterTemplate CharacterTemplate)
 	}
 
 	//For generated soldiers, weapon tint now defaults to no tint
-	kSoldier.kAppearance.iWeaponTint = -1;
+	kSoldier.kAppearance.iWeaponTint = 20;
 
 	kSoldier.kAppearance.iTattooTint = `SYNC_RAND(ArmorPalette.Entries.length - SkipColors);
 }

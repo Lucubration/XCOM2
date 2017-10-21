@@ -289,13 +289,47 @@ simulated function ChosenDirectedAttact_MergeVisualization(X2Action BuildTree, o
 	LocalVisualizationMgr.ConnectAction(MarkerAction, VisualizationTree, false, BuildTreeEndNode);
 }
 
+static function SetChosenKidnapExtractBaseConditions(out X2AbilityTemplate Template, int iRange=-1)
+{
+	local X2Condition_UnitProperty UnitPropertyCondition;
+	local X2Condition_UnitType ExcludeVolunteerArmyCondition;
+	local X2Condition_UnitEffects ExcludeEffects;
+
+	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+
+	// The Target must be alive and a humanoid
+	UnitPropertyCondition = new class'X2Condition_UnitProperty';
+	UnitPropertyCondition.ExcludeDead = false;
+	UnitPropertyCondition.ExcludeRobotic = true;
+	UnitPropertyCondition.ExcludeAlien = true;
+	UnitPropertyCondition.ExcludeFriendlyToSource = true;
+	UnitPropertyCondition.FailOnNonUnits = true;
+	UnitPropertyCondition.RequireUnitSelectedFromHQ = true;
+	UnitPropertyCondition.ExcludeAdvent = true;
+	if (iRange > 0)
+	{
+		UnitPropertyCondition.RequireWithinRange = true;
+		UnitPropertyCondition.WithinRange = iRange;
+	}
+	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
+
+	ExcludeVolunteerArmyCondition = new class'X2Condition_UnitType';
+	ExcludeVolunteerArmyCondition.ExcludeTypes.AddItem('CivilianMilitia');
+	Template.AbilityTargetConditions.AddItem(ExcludeVolunteerArmyCondition);
+
+	// Cannot target units being carried.
+	ExcludeEffects = new class'X2Condition_UnitEffects';
+	ExcludeEffects.AddExcludeEffect(class'X2Ability_CarryUnit'.default.CarryUnitEffectName, 'AA_UnitIsImmune');
+	ExcludeEffects.AddExcludeEffect(class'X2AbilityTemplateManager'.default.BeingCarriedEffectName, 'AA_UnitIsImmune');
+	ExcludeEffects.AddRequireEffect(class'X2AbilityTemplateManager'.default.DazedName, 'AA_MissingRequiredEffect');
+	Template.AbilityTargetConditions.AddItem(ExcludeEffects);
+}
+
 static function X2DataTemplate CreateChosenKidnapMove()
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_Persistent MarkForKidnapEffect;
-	local X2Condition_UnitProperty UnitPropertyCondition;
 	local X2AbilityCost_ActionPoints ActionPointCost;
-	local X2Condition_UnitEffects ExcludeEffects;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ChosenKidnapMove');
 	Template.IconImage = "img:///UILibrary_XPACK_Common.PerkIcons.UIPerk_kidnap";
@@ -317,8 +351,6 @@ static function X2DataTemplate CreateChosenKidnapMove()
 
 	Template.AdditionalAbilities.AddItem('ChosenKidnap');
 
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-
 	MarkForKidnapEffect = new class'X2Effect_Persistent';
 	MarkForKidnapEffect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnBegin);
 	MarkForKidnapEffect.DuplicateResponse = eDupe_Allow;
@@ -327,22 +359,7 @@ static function X2DataTemplate CreateChosenKidnapMove()
 
 	Template.AbilityTargetConditions.AddItem(default.MeleeVisibilityCondition);
 
-	// The Target must be alive and a humanoid
-	UnitPropertyCondition = new class'X2Condition_UnitProperty';
-	UnitPropertyCondition.ExcludeDead = false;
-	UnitPropertyCondition.ExcludeRobotic = true;
-	UnitPropertyCondition.ExcludeAlien = true;
-	UnitPropertyCondition.ExcludeFriendlyToSource = true;
-	UnitPropertyCondition.FailOnNonUnits = true;
-	UnitPropertyCondition.RequireUnitSelectedFromHQ = true;
-	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
-
-	// Cannot target units being carried.
-	ExcludeEffects = new class'X2Condition_UnitEffects';
-	ExcludeEffects.AddExcludeEffect(class'X2Ability_CarryUnit'.default.CarryUnitEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddExcludeEffect(class'X2AbilityTemplateManager'.default.BeingCarriedEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddRequireEffect(class'X2AbilityTemplateManager'.default.DazedName, 'AA_MissingRequiredEffect');
-	Template.AbilityTargetConditions.AddItem(ExcludeEffects);
+	SetChosenKidnapExtractBaseConditions(Template);
 
 	MarkForKidnapEffect = new class'X2Effect_Persistent';
 	MarkForKidnapEffect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnBegin);
@@ -379,11 +396,9 @@ static function X2DataTemplate CreateChosenKidnap()
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_Persistent KidnapEffect;
-	local X2Condition_UnitProperty UnitPropertyCondition;
 	local X2Condition_UnitEffectsWithAbilitySource UnitEffectsCondition;
 	local X2Effect_SetUnitValue SetUnitValue;
 	local X2AbilityTrigger_EventListener EventListener;
-	local X2Condition_UnitEffects ExcludeEffects;
 	local X2Effect_SuspendMissionTimer MissionTimerEffect;
 	local X2Effect_RemoveEffects RemoveEffects;
 	local X2Condition_UnitEffects MultiTargetCondition;
@@ -409,7 +424,7 @@ static function X2DataTemplate CreateChosenKidnap()
 	EventListener.ListenerData.Filter = eFilter_Unit;
 	Template.AbilityTriggers.AddItem(EventListener);
 
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
+	SetChosenKidnapExtractBaseConditions(Template, default.KIDNAP_DISTANCE_UNITS);
 
 	// Source must be targeting
 	UnitEffectsCondition = new class'X2Condition_UnitEffectsWithAbilitySource';
@@ -438,25 +453,6 @@ static function X2DataTemplate CreateChosenKidnap()
 	UnitEffectsCondition = new class'X2Condition_UnitEffectsWithAbilitySource';
 	UnitEffectsCondition.AddRequireEffect(default.KidnapMarkTargetEffectName, 'AA_MissingRequiredEffect');
 	Template.AbilityTargetConditions.AddItem(UnitEffectsCondition);
-
-	// The Target must be alive and a humanoid
-	UnitPropertyCondition = new class'X2Condition_UnitProperty';
-	UnitPropertyCondition.ExcludeDead = false;
-	UnitPropertyCondition.ExcludeRobotic = true;
-	UnitPropertyCondition.ExcludeAlien = true;
-	UnitPropertyCondition.ExcludeFriendlyToSource = true;
-	UnitPropertyCondition.RequireWithinRange = true;
-	UnitPropertyCondition.WithinRange = default.KIDNAP_DISTANCE_UNITS;
-	UnitPropertyCondition.FailOnNonUnits = true;
-	UnitPropertyCondition.RequireUnitSelectedFromHQ = true;
-	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
-
-	// Cannot target units being carried.
-	ExcludeEffects = new class'X2Condition_UnitEffects';
-	ExcludeEffects.AddExcludeEffect(class'X2Ability_CarryUnit'.default.CarryUnitEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddExcludeEffect(class'X2AbilityTemplateManager'.default.BeingCarriedEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddRequireEffect(class'X2AbilityTemplateManager'.default.DazedName, 'AA_MissingRequiredEffect');
-	Template.AbilityTargetConditions.AddItem(ExcludeEffects);
 
 	KidnapEffect = new class'X2Effect_Persistent';
 	KidnapEffect.BuildPersistentEffect(1, true, false, false, eGameRule_TacticalGameStart);
@@ -634,9 +630,7 @@ static function X2DataTemplate CreateChosenExtractKnowledgeMove()
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_Persistent MarkForExtractKnowledgeEffect;
-	local X2Condition_UnitProperty UnitPropertyCondition;
 	local X2AbilityCost_ActionPoints ActionPointCost;
-	local X2Condition_UnitEffects ExcludeEffects;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, 'ChosenExtractKnowledgeMove');
 	Template.IconImage = "img:///UILibrary_XPACK_Common.PerkIcons.UIPerk_extractknowledge";
@@ -658,8 +652,6 @@ static function X2DataTemplate CreateChosenExtractKnowledgeMove()
 
 	Template.AdditionalAbilities.AddItem('ChosenExtractKnowledge');
 
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-
 	MarkForExtractKnowledgeEffect = new class'X2Effect_Persistent';
 	MarkForExtractKnowledgeEffect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnBegin);
 	MarkForExtractKnowledgeEffect.DuplicateResponse = eDupe_Allow;
@@ -668,22 +660,7 @@ static function X2DataTemplate CreateChosenExtractKnowledgeMove()
 
 	Template.AbilityTargetConditions.AddItem(default.MeleeVisibilityCondition);
 
-	// The Target must be alive and a humanoid
-	UnitPropertyCondition = new class'X2Condition_UnitProperty';
-	UnitPropertyCondition.ExcludeDead = false;
-	UnitPropertyCondition.ExcludeRobotic = true;
-	UnitPropertyCondition.ExcludeAlien = true;
-	UnitPropertyCondition.ExcludeFriendlyToSource = true;
-	UnitPropertyCondition.FailOnNonUnits = true;
-	UnitPropertyCondition.RequireUnitSelectedFromHQ = true;
-	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
-
-	// Cannot target units being carried.
-	ExcludeEffects = new class'X2Condition_UnitEffects';
-	ExcludeEffects.AddExcludeEffect(class'X2Ability_CarryUnit'.default.CarryUnitEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddExcludeEffect(class'X2AbilityTemplateManager'.default.BeingCarriedEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddRequireEffect(class'X2AbilityTemplateManager'.default.DazedName, 'AA_MissingRequiredEffect');
-	Template.AbilityTargetConditions.AddItem(ExcludeEffects);
+	SetChosenKidnapExtractBaseConditions(Template);
 
 	MarkForExtractKnowledgeEffect = new class'X2Effect_Persistent';
 	MarkForExtractKnowledgeEffect.BuildPersistentEffect(1, false, true, false, eGameRule_PlayerTurnBegin);
@@ -712,10 +689,8 @@ static function X2DataTemplate CreateChosenExtractKnowledge()
 {
 	local X2AbilityTemplate Template;
 	local X2Effect_Persistent ExtractKnowledgeEffect;
-	local X2Condition_UnitProperty UnitPropertyCondition;
 	local X2Effect_SetUnitValue SetUnitValue;
 	local X2AbilityTrigger_EventListener EventListener;
-	local X2Condition_UnitEffects ExcludeEffects;
 	local X2Effect_SuspendMissionTimer MissionTimerEffect;
 	local X2Effect_RemoveEffects RemoveEffects;
 	local X2Condition_UnitEffects MultiTargetCondition;
@@ -742,26 +717,7 @@ static function X2DataTemplate CreateChosenExtractKnowledge()
 	EventListener.ListenerData.Filter = eFilter_Unit;
 	Template.AbilityTriggers.AddItem(EventListener);
 
-	Template.AbilityShooterConditions.AddItem(default.LivingShooterProperty);
-
-	// The Target must be alive and a humanoid
-	UnitPropertyCondition = new class'X2Condition_UnitProperty';
-	UnitPropertyCondition.ExcludeDead = false;
-	UnitPropertyCondition.ExcludeRobotic = true;
-	UnitPropertyCondition.ExcludeAlien = true;
-	UnitPropertyCondition.ExcludeFriendlyToSource = true;
-	UnitPropertyCondition.RequireWithinRange = true;
-	UnitPropertyCondition.WithinRange = default.KIDNAP_DISTANCE_UNITS;
-	UnitPropertyCondition.FailOnNonUnits = true;
-	UnitPropertyCondition.RequireUnitSelectedFromHQ = true;
-	Template.AbilityTargetConditions.AddItem(UnitPropertyCondition);
-
-	// Cannot target units being carried.
-	ExcludeEffects = new class'X2Condition_UnitEffects';
-	ExcludeEffects.AddExcludeEffect(class'X2Ability_CarryUnit'.default.CarryUnitEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddExcludeEffect(class'X2AbilityTemplateManager'.default.BeingCarriedEffectName, 'AA_UnitIsImmune');
-	ExcludeEffects.AddRequireEffect(class'X2AbilityTemplateManager'.default.DazedName, 'AA_MissingRequiredEffect');
-	Template.AbilityTargetConditions.AddItem(ExcludeEffects);
+	SetChosenKidnapExtractBaseConditions(Template, default.KIDNAP_DISTANCE_UNITS);
 
 	ExtractKnowledgeEffect = new class'X2Effect_Persistent';
 	ExtractKnowledgeEffect.BuildPersistentEffect(1, true, false, false, eGameRule_TacticalGameStart);

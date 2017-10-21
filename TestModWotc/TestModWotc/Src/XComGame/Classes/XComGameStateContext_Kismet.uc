@@ -73,6 +73,17 @@ protected function ContextBuildVisualization()
 {
 	local SequenceOp SeqOp;
 	local X2KismetSeqOpVisualizer VisInterface; 
+	local XComGameState_TimerData Timer;
+
+	//If we are watching a replay, and this replay is of a challenge mode run, skip kismet driven visualization (ie. narratives)
+	if (`REPLAY.bInReplay && !`REPLAY.bInTutorial)
+	{
+		Timer = XComGameState_TimerData(`XCOMHISTORY.GetSingleGameStateObjectForClass(class'XComGameState_TimerData', true));
+		if ((Timer != none) && Timer.bIsChallengeModeTimer)
+		{
+			return;
+		}
+	}
 
 	SeqOp = FindSequenceOp();
 	if(SeqOp != none)

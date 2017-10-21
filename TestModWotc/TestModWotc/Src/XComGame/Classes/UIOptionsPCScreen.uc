@@ -124,6 +124,8 @@ var int m_kCurrentSupportedResolutionIndex;
 
 var array<PartPackPresetSliderMapping> SliderMapping;
 
+var bool bGraphicsAutoDetectInProgress;
+
 enum EUI_PCOptions_Graphics
 {
 	ePCGraphics_Preset,
@@ -1140,15 +1142,10 @@ simulated function UpdateNavHelp( bool bWipeButtons = false )
 
 	NavHelp.ClearButtonHelp();
 	NavHelp.bIsVerticalHelp = true; //bsg-hlee (05.05.17): Stacking the B button at the bottom left nav help to match the rest of the main menu screens.
+	NavHelp.AddBackButton(GoBack);
 
 	if (bIsControllerSelectedOnSpinner)
 	{
-		//bsg-hlee (05.05.17): Add a back button if controller is active.
-		if(`ISCONTROLLERACTIVE)
-		{
-			NavHelp.AddBackButton();
-		}
-
 		//determines if focus is on the RIGHT column
 		if (AttentionType == COAT_DETAILS)
 		{
@@ -1316,7 +1313,7 @@ simulated function bool OnUnrealCommand(int cmd, int ActionMask)
 {
 	local bool bHandled;
 
-	if( !bIsInited || m_bSavingInProgress ) return true; 
+	if( !bIsInited || m_bSavingInProgress || bGraphicsAutoDetectInProgress) return true;
 
 	bInputReceived = true;
 	// Ignore releases, only pay attention to presses.
@@ -2695,7 +2692,7 @@ simulated function OnReceiveFocus()
 	//reshow the gamma logo in case we're coming back from the credits
 	//if( m_iCurrentTab == ePCTab_Video )
 		//XComHUD(WorldInfo.GetALocalPlayerController().myHUD).SetGammaLogoDrawing(true);
-
+	
 	Show(); 
 	NavHelp.ClearButtonHelp();
 
@@ -2707,7 +2704,7 @@ simulated function OnLoseFocus()
 	//hide gamma logo so it does not overlap the credits
 	//if( m_iCurrentTab == ePCTab_Video )
 		//XComHUD(WorldInfo.GetALocalPlayerController().myHUD).SetGammaLogoDrawing(false);
-
+	
 	Hide(); 
 	NavHelp.ClearButtonHelp();
 }
@@ -2781,7 +2778,9 @@ simulated public function RunGPUAutoDetectFromOptions(UIButton Button)
 	if (m_iCurrentTab != ePCTab_Graphics) 
 		SetSelectedTab(ePCTab_Graphics);
 
+	bGraphicsAutoDetectInProgress = true;
 	Hide();
+	NavHelp.Hide();
 	`XENGINE.RunGPUAutoDetect(true, GPUAutoDetectFinished);
 }
 simulated public function GPUAutoDetectFinished()
@@ -2791,7 +2790,10 @@ simulated public function GPUAutoDetectFinished()
 	SetPresetState();
 	m_bAnyValueChanged = true;
 	Show();
+	NavHelp.Show();
 	class'WorldInfo'.static.GetWorldInfo().GetALocalPlayerController().ClientSetCameraFade(false, MakeColor(0, 0, 0), vect2d(1, 0), 0.2);
+
+	bGraphicsAutoDetectInProgress = false;
 }
 
 simulated public function SaveAndExit(UIButton Button)
@@ -3169,4 +3171,6 @@ DefaultProperties
 	m_bSavingInProgress = false
 	bConsumeMouseEvents = true
 	bShowDuringCinematic = true
+
+	bGraphicsAutoDetectInProgress = false
 }

@@ -680,7 +680,7 @@ static function X2DataTemplate CreateChosenCapturedSoldierRewardTemplate()
 	Template.GetRewardStringFn = GetPersonnelRewardString;
 	Template.GetBlackMarketStringFn = GetSoldierBlackMarketString;
 	Template.GetRewardIconFn = GetGenericRewardIcon;
-	Template.CleanUpRewardFn = CleanUpUnitReward;
+	Template.CleanUpRewardFn = CleanUpRewardWithoutRemoval;
 
 	return Template;
 }

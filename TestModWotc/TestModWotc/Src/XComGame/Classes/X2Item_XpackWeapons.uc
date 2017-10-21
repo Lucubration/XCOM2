@@ -324,6 +324,9 @@ var config int CHOSENSNIPERPISTOL_XCOM_ICLIPSIZE;
 var config int CHOSENSNIPERPISTOL_XCOM_ISOUNDRANGE;
 var config int CHOSENSNIPERPISTOL_XCOM_IENVIRONMENTDAMAGE;
 
+// Adding a pistol range so it doesn't default to sight range (ChosenHunters' sight range is 1000 m).
+var config int CHOSENSNIPERPISTOL_RANGE;
+
 var config WeaponDamageValue PSI_DEATH_EXPLOSION_BASEDAMAGE;
 
 var config int ADVPURIFIER_FLAMETHROWER_ISOUNDRANGE;
@@ -2507,6 +2510,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_Conventional()
 	Template.EquipSound = "Secondary_Weapon_Equip_Conventional";
 	Template.Tier = 1;
 
+	Template.iRange = default.CHOSENSNIPERPISTOL_RANGE;
 	Template.RangeAccuracy = class'X2Item_DefaultWeapons'.default.SHORT_MAGNETIC_RANGE;
 	Template.BaseDamage = default.CHOSENSNIPERPISTOL_CONVENTIONAL_BASEDAMAGE;
 	Template.Aim = default.CHOSENSNIPERPISTOL_CONVENTIONAL_AIM;
@@ -2526,6 +2530,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_Conventional()
 	Template.Abilities.AddItem('PistolOverwatchShot');
 	Template.Abilities.AddItem('Reload');
 	Template.Abilities.AddItem('LethalDose');
+	Template.Abilities.AddItem('HotLoadAmmo');
 
 	Template.SetAnimationNameForAbility('FanFire', 'FF_FireLethalDose');
 
@@ -2554,6 +2559,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_Magnetic()
 	Template.EquipSound = "Secondary_Weapon_Equip_Magnetic";
 	Template.Tier = 3;
 
+	Template.iRange = default.CHOSENSNIPERPISTOL_RANGE;
 	Template.RangeAccuracy = class'X2Item_DefaultWeapons'.default.SHORT_MAGNETIC_RANGE;
 	Template.BaseDamage = default.CHOSENSNIPERPISTOL_MAGNETIC_BASEDAMAGE;
 	Template.Aim = default.CHOSENSNIPERPISTOL_MAGNETIC_AIM;
@@ -2573,6 +2579,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_Magnetic()
 	Template.Abilities.AddItem('PistolOverwatchShot');
 	Template.Abilities.AddItem('Reload');
 	Template.Abilities.AddItem('LethalDose');
+	Template.Abilities.AddItem('HotLoadAmmo');
 
 	Template.SetAnimationNameForAbility('FanFire', 'FF_FireMultiShotMagA');
 
@@ -2601,6 +2608,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_Beam()
 	Template.EquipSound = "Secondary_Weapon_Equip_Beam";
 	Template.Tier = 3;
 
+	Template.iRange = default.CHOSENSNIPERPISTOL_RANGE;
 	Template.RangeAccuracy = class'X2Item_DefaultWeapons'.default.SHORT_MAGNETIC_RANGE;
 	Template.BaseDamage = default.CHOSENSNIPERPISTOL_BEAM_BASEDAMAGE;
 	Template.Aim = default.CHOSENSNIPERPISTOL_BEAM_AIM;
@@ -2620,6 +2628,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_Beam()
 	Template.Abilities.AddItem('PistolOverwatchShot');
 	Template.Abilities.AddItem('Reload');
 	Template.Abilities.AddItem('LethalDose');
+	Template.Abilities.AddItem('HotLoadAmmo');
 
 	Template.SetAnimationNameForAbility('FanFire', 'FF_FireMultiShotMagA');
 
@@ -2650,6 +2659,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_T4()
 	Template.EquipSound = "Secondary_Weapon_Equip_Beam";
 	Template.Tier = 3;
 
+	Template.iRange = default.CHOSENSNIPERPISTOL_RANGE;
 	Template.RangeAccuracy = class'X2Item_DefaultWeapons'.default.SHORT_MAGNETIC_RANGE;
 	Template.BaseDamage = default.CHOSENSNIPERPISTOL_T4_BASEDAMAGE;
 	Template.Aim = default.CHOSENSNIPERPISTOL_T4_AIM;
@@ -2669,6 +2679,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_T4()
 	Template.Abilities.AddItem('PistolOverwatchShot');
 	Template.Abilities.AddItem('Reload');
 	Template.Abilities.AddItem('LethalDose');
+	Template.Abilities.AddItem('HotLoadAmmo');
 
 	Template.SetAnimationNameForAbility('FanFire', 'FF_FireMultiShotMagA');
 
@@ -2699,6 +2710,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_XCOM()
 	Template.EquipSound = "Secondary_Weapon_Equip_Beam";
 	Template.Tier = 6;
 
+	Template.iRange = default.CHOSENSNIPERPISTOL_RANGE;
 	Template.RangeAccuracy = class'X2Item_DefaultWeapons'.default.SHORT_MAGNETIC_RANGE;
 	Template.BaseDamage = default.CHOSENSNIPERPISTOL_XCOM_BASEDAMAGE;
 	Template.Aim = default.CHOSENSNIPERPISTOL_XCOM_AIM;
@@ -2716,6 +2728,7 @@ static function X2DataTemplate CreateTemplate_ChosenSniperPistol_XCOM()
 	Template.Abilities.AddItem('PistolOverwatch');
 	Template.Abilities.AddItem('PistolOverwatchShot');
 	Template.Abilities.AddItem('Reload');
+	Template.Abilities.AddItem('HotLoadAmmo');
 
 	Template.SetAnimationNameForAbility('FanFire', 'FF_FireMultiShotMagA');
 
@@ -3341,7 +3354,6 @@ static function X2DataTemplate CreateTemplate_Claymore()
 
 	Template.ItemCat = 'weapon';
 	Template.WeaponCat = 'claymore';
-	Template.WeaponTech = 'conventional';
 	Template.strImage = "img:///UILibrary_XPACK_StrategyImages.Inv_ReaperIED";
 	Template.InventorySlot = eInvSlot_SecondaryWeapon;
 

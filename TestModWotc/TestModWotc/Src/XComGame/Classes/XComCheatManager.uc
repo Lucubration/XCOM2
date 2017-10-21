@@ -3451,6 +3451,139 @@ exec function LoadChallengeReplay(string LeaderBoardSuffix)
 	ConsoleCommand(BattleDataState.m_strMapCommand);
 }
 
+// copied from X2TacticalGameRuleset
+private static function Object GetEventFilterObject(AbilityEventFilter eventFilter, XComGameState_Unit FilterUnit, XComGameState_Player FilterPlayerState)
+{
+	local Object FilterObj;
+
+	switch(eventFilter)
+	{
+		case eFilter_None:
+			FilterObj = none;
+			break;
+		case eFilter_Unit:
+			FilterObj = FilterUnit;
+			break;
+		case eFilter_Player:
+			FilterObj = FilterPlayerState;
+			break;
+	}
+
+	return FilterObj;
+}
+
+exec function ResaveChallengeStart(string LeaderBoardSuffix)
+{
+	local XComGameStateHistory History;
+	local XComGameState StartState;
+	local StateObjectReference StateRef;
+	local XComGameState_Player PlayerState;
+	local XComGameState_Unit Unit;
+	local array<AbilitySetupData> AbilityInitData;
+	local AbilitySetupData AbilityData;
+	local XComGameState_Ability AbilityState;
+	local X2CharacterTemplate CharTemplate;
+	local int i, ChallengeDifficultyLevel;
+	local float TemplateBaseStat, CharBaseStat;
+	local X2CharacterTemplateManager CharTemplateManager;
+	local array<X2DataTemplate> AllTemplates;
+	local AbilityEventListener kListener;
+	local X2AbilityTrigger Trigger;
+	local Object FilterObj, SourceObj;
+	local X2EventManager EventManager;
+	local X2AbilityTrigger_EventListener AbilityTriggerEventListener;
+
+	EventManager = `XEVENTMGR;
+
+	ChallengeDifficultyLevel = 2;
+
+	History = class'XComGameStateHistory'.static.GetGameStateHistory();
+	CharTemplateManager = class'X2CharacterTemplateManager'.static.GetCharacterTemplateManager();
+
+	History.ReadHistoryFromFile("SaveData_Dev/", "ChallengeStartState_" $ LeaderBoardSuffix);
+
+	StartState = History.GetStartState( );
+
+	foreach History.IterateByClassType( class'XComGameState_Unit', Unit )
+	{
+		StateRef.ObjectID = Unit.GetAssociatedPlayerID();
+		PlayerState = XComGameState_Player( History.GetGameStateForObjectID( StateRef.ObjectID ) );
+
+		AbilityInitData = Unit.GatherUnitAbilitiesForInit( StartState, PlayerState, false );
+
+		foreach AbilityInitData( AbilityData )
+		{
+			StateRef = Unit.FindAbility( AbilityData.TemplateName );
+			AbilityState = XComGameState_Ability( History.GetGameStateForObjectID( StateRef.ObjectID ) );
+
+			if (AbilityState == none)
+			{
+				OutputMsg( Unit.GetMyTemplateName() @ "missing ability" @ AbilityData.TemplateName );
+				class'X2TacticalGameRuleset'.static.InitAbilityForUnit( AbilityData.Template, Unit, StartState, AbilityData.SourceWeaponRef, AbilityData.SourceAmmoRef );
+			}
+			else
+			{
+				SourceObj = AbilityState;
+
+				foreach AbilityData.Template.AbilityEventListeners(kListener)
+				{
+					FilterObj = GetEventFilterObject(kListener.Filter, Unit, PlayerState);
+
+					if (!EventManager.IsRegistered( SourceObj, kListener.EventID, kListener.Deferral, kListener.EventFn ))
+					{
+						OutputMsg( Unit.GetMyTemplateName() @ AbilityData.TemplateName  @ "missing event listener" );
+						EventManager.RegisterForEvent(SourceObj, kListener.EventID, kListener.EventFn, kListener.Deferral, /*priority*/, FilterObj);
+					}
+				}
+
+				foreach AbilityData.Template.AbilityTriggers(Trigger)
+				{
+					if (Trigger.IsA('X2AbilityTrigger_EventListener'))
+					{
+						AbilityTriggerEventListener = X2AbilityTrigger_EventListener(Trigger);
+
+						FilterObj = GetEventFilterObject(AbilityTriggerEventListener.ListenerData.Filter, Unit, PlayerState);
+						if (AbilityTriggerEventListener.FixupRegisterListener(AbilityState, FilterObj))
+						{
+							OutputMsg( Unit.GetMyTemplateName() @ AbilityData.TemplateName  @ "missing event listener" );
+						}
+					}
+				}
+			}
+		}
+
+		if (Unit.GetMyTemplate().bShouldCreateDifficultyVariants)
+		{
+			// After reading the history, the cache of pre-computed templates will be out of sync with the difficulty of the
+			// history that we've loaded.  Since Challenge Mode is exactly Commander-level, get that template directly
+			// instead of rebuilding the entire cache of Character Templates.
+			CharTemplateManager.FindDataTemplateAllDifficulties( Unit.GetMyTemplateName(), AllTemplates );
+			CharTemplate = X2CharacterTemplate( AllTemplates[ ChallengeDifficultyLevel ] );
+		}
+		else
+		{
+			// No difficulty variation so the returned template is the correct one.
+			CharTemplate = Unit.GetMyTemplate( );
+		}
+
+		for (i = 0; i < eStat_MAX; ++i)
+		{
+			TemplateBaseStat = CharTemplate.GetCharacterBaseStat( ECharStatType(i) );
+			CharBaseStat = Unit.GetBaseStat( ECharStatType(i) );
+
+			if (CharBaseStat != TemplateBaseStat)
+			{
+				OutputMsg( Unit.GetMyTemplateName() @ "base stat mismatch" @ `ShowEnum(ECharStatType, i) );
+				Unit.SetBaseMaxStat( ECharStatType(i), TemplateBaseStat );
+			}
+		}
+	}
+
+	History.WriteHistoryToFile( "SaveData_Dev/", "ChallengeStartState_" $ LeaderBoardSuffix );
+
+	OutputMsg( "Resave of Challenge" @ LeaderBoardSuffix @ "complete." );
+}
+
 exec function MPWriteTacticalGameStartState()
 {
 	local XComGameStateHistory History;

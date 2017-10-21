@@ -34,6 +34,7 @@ struct native ReactionFireInstance
 	var X2Camera ShooterCam;
 	var bool bStarted; //tracks whether this instance was started or not
 	var bool bReadyForNext; //tracks whether this instance is 'done' or not
+	var bool bComplete; // tracks whether this instance has been popped off the set of reactions
 	var Vector ShotDir; //Direction of the shot for this reaction fire. Used to order / sort the reaction fire sequence
 };
 var protectedwrite array<ReactionFireInstance> ReactionFireInstances;

@@ -281,7 +281,15 @@ static function CreateCampaignSettings(
 
 	Settings.BizAnalyticsCampaignID = `FXSLIVE.GetGUID( );
 
+	// If we are coming from the tutorial, copy the Second Wave options here so they can be used when setting up the strategy objectives
+	if (InTutorialEnabled && InSecondWaveOptions.Length == 0)
+	{
+		Settings.SecondWaveOptions = EventManager.CampaignSecondWaveOptions;
+	}
+	else
+	{
 	Settings.SecondWaveOptions = InSecondWaveOptions;
+}
 }
 
 static event int GetCampaignDifficultyFromSettings()

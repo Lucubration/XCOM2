@@ -15,8 +15,6 @@ var qword m_IntervalID;
 var UniqueNetId m_LocalPlayerID;
 var string m_LeaderboardName;
 
-var UIButton m_LoadReplayButton;
-
 
 simulated function UIChallengeLeaderboard_ListItem InitChallengeListItem(qword IntervalID, optional name InitName, optional name InitLibID)
 {
@@ -28,9 +26,8 @@ simulated function UIChallengeLeaderboard_ListItem InitChallengeListItem(qword I
 	Class'GameEngine'.static.GetOnlineSubsystem().PlayerInterface.GetUniquePlayerId(`ONLINEEVENTMGR.LocalUserIndex, m_LocalPlayerID);
 
 	InitPanel(InitName, InitLibID);
+
 	
-	m_LoadReplayButton = Spawn(class'UIButton', self);
-	m_LoadReplayButton.InitButton('replayButton', "");
 	return self;
 }
 
@@ -125,7 +122,6 @@ auto state ReplayUnavailable
 {
 Begin:
 	m_currentStatus = m_replayNotAvailable;
-	m_LoadReplayButton.DisableButton(m_replayNotAvailableTooltip);
 	RefreshChallengeData();
 }
 
@@ -217,6 +213,14 @@ simulated function OnMouseEvent(int cmd, array<string> args)
 	{
 		StartChallengeReplayDownload(); //bsg-jneal (5.9.17): stub out replay download for access by controller
 	}
+	else if (cmd == class'UIUtilities_Input'.const.FXS_L_MOUSE_IN)
+	{
+		UIChallengeLeaderboards(`SCREENSTACK.GetFirstInstanceOf(class'UIChallengeLeaderboards')).CompareEntries(m_Entry);
+	}
+	else if (cmd == class'UIUtilities_Input'.const.FXS_L_MOUSE_OUT || cmd == class'UIUtilities_Input'.const.FXS_L_MOUSE_DRAG_OUT)
+	{
+		UIChallengeLeaderboards(`SCREENSTACK.GetFirstInstanceOf(class'UIChallengeLeaderboards')).CloseComparisson();
+	}
 }
 
 //bsg-jneal (5.9.17): stub out replay download for access by controller
@@ -233,7 +237,7 @@ function string GetMinutesSecondsTime(int TimeInSeconds)
 	local string time;
 	min = TimeInSeconds / 60;
 	sec = TimeInSeconds % 60;
-	time = (min < 10) ? "0" $ min : "" $ min;
+	time $= min;
 	time $= ":" $ (sec < 10) ? "0" $ sec : "" $ sec;
 	return time;
 }
@@ -247,7 +251,7 @@ simulated function UpdateData(const out TLeaderboardEntry entry)
 	bIsPlayer = entry.PlatformID == m_LocalPlayerID;
 
 	`log(`location @ `ShowVar(QWordToString(m_IntervalID), m_IntervalID) @ `ShowVar(QWordToString(m_Entry.PlayerID.Uid), PlayerID) @ `ShowVar(QWordToString(m_Entry.PlatformID.Uid), PlatformID) @ `ShowVar(bIsPlayer) @ `ShowVar(m_Entry.iRank) @ `ShowVar(m_Entry.strPlayerName) @ `ShowVar(m_Entry.iScore) @ `ShowVar(m_Entry.iTime));
-	SetChallengeData(bIsPlayer, string(m_Entry.iRank), m_Entry.strPlayerName, string(m_Entry.iScore), GetMinutesSecondsTime(m_Entry.iTime), m_currentStatus);
+	SetChallengeData(bIsPlayer, string(m_Entry.iRank), m_Entry.strPlayerName, string(m_Entry.iScore), GetMinutesSecondsTime(m_Entry.iTime), m_currentStatus, string(m_Entry.iPercentile));
 
 	if (entry.iRank > 0 && (m_IntervalID.A != 0 || m_IntervalID.B != 0))
 	{
@@ -262,15 +266,22 @@ simulated function UpdateData(const out TLeaderboardEntry entry)
 //bsg-jneal (5.9.17): refresh data to override label text for button image injection
 function RefreshChallengeData(optional string statusOverride)
 {
-	SetChallengeData(m_Entry.PlatformID == m_LocalPlayerID, string(m_Entry.iRank), m_Entry.strPlayerName, string(m_Entry.iScore), GetMinutesSecondsTime(m_Entry.iTime), statusOverride != "" ? statusOverride $"</img>" : m_currentStatus);
+	SetChallengeData(m_Entry.PlatformID == m_LocalPlayerID, string(m_Entry.iRank), m_Entry.strPlayerName, string(m_Entry.iScore), GetMinutesSecondsTime(m_Entry.iTime), statusOverride != "" ? statusOverride $"</img>" : m_currentStatus, string(m_Entry.iPercentile));
 }
 //bsg-jneal (5.9.17): end
 
-function SetChallengeData(bool bIsPlayer, string rank, string playerName, string Score, string Time, string Replay)
+function SetChallengeData(bool bIsPlayer, string Rank, string playerName, string Score, string Time, string Replay, string TopPercentile)
 {
 	mc.BeginFunctionOp("setData");
 	mc.QueueBoolean(bIsPlayer);
-	mc.QueueString(rank);
+	if( bIsPlayer )
+	{
+		mc.QueueString(Rank @ "(" $ TopPercentile $"%)");
+	}
+	else
+	{
+		mc.QueueString(Rank);
+	}
 	mc.QueueString(playerName);
 	mc.QueueString(Score);
 	mc.QueueString(Time);

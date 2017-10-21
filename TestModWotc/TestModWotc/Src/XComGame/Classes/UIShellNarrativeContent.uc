@@ -291,7 +291,17 @@ simulated function OnIntegratedDLCCheckboxChanged(UICheckbox CheckboxControl)
 
 simulated function OnCheckboxChanged(UICheckbox CheckboxControl)
 {
+	local int index;
 	bCheckboxUpdate = true;
+
+	for (index = 0; index < m_List.ItemCount; index++)
+	{
+		if (UIMechaListItem(m_List.GetItem(index)).Checkbox == CheckboxControl)
+			break;
+	}
+
+	if (index != m_List.ItemCount)
+		OnClicked(m_List, index);
 }
 
 simulated function OnClicked(UIList ContainerList, int ItemIndex)
@@ -317,12 +327,12 @@ simulated function OnClicked(UIList ContainerList, int ItemIndex)
 		{
 			m_kProfileSettings = `XPROFILESETTINGS;
 			AllDLCFlags = m_kProfileSettings.Data.m_arrNarrativeContentEnabled;
-			DLCFlagIndex = AllDLCFlags.Find('DLCName', Name(DLCInfos[ItemIndex - 1].DLCIdentifier)) - 1; // minus one because of the Integrated option at zero 
+			DLCFlagIndex = AllDLCFlags.Find('DLCName', Name(DLCInfos[ItemIndex - 1].DLCIdentifier)); // minus one because of the Integrated option at zero 
 
-			if( DLCFlagIndex != INDEX_NONE && AllDLCFlags[DLCFlagIndex].NarrativeContentEnabled && !checkedBox.bChecked )
+			if( DLCFlagIndex != INDEX_NONE)
 			{
 				// Only turn the flag off if it is true, so should only happen once
-				m_kProfileSettings.Data.m_arrNarrativeContentEnabled[DLCFlagIndex].NarrativeContentEnabled = false;
+				m_kProfileSettings.Data.m_arrNarrativeContentEnabled[DLCFlagIndex].NarrativeContentEnabled = checkedBox.bChecked;
 				`ONLINEEVENTMGR.SaveProfileSettings(true);
 			}
 

@@ -1,6 +1,6 @@
 class XComCopyProtection extends object
 	dependson(XComMCP)
-	native;
+	native(Online);
 
 var bool bProtectionPassed;
 var int ControllerId;

@@ -313,7 +313,7 @@ static function X2DataTemplate CreateVanishReveal()
 	Template.AbilityTriggers.AddItem(Trigger);
 
 	//	This functionality has been deprecated -jbouscher
-	// This ability fires when a linked Shadowbound unit dies
+	// This ability fires when a linked Shadowbound unit dies 
 	//Trigger = new class'X2AbilityTrigger_EventListener';
 	//Trigger.ListenerData.Deferral = ELD_OnStateSubmitted;
 	//Trigger.ListenerData.EventID = 'UnitDied';
@@ -459,6 +459,7 @@ static function X2DataTemplate CreateShadowbind(name AbilityTemplateName, name U
 	local X2AbilityCost_ActionPoints ActionPointCost;
 	local X2Condition_UnitProperty UnitPropertyCondition;
 	local X2Condition_UnitImmunities UnitImmunityCondition;
+	local X2Effect_RemoveEffects RemoveEffects;
 	local X2Effect_SpawnShadowbindUnit SpawnShadowbindUnit;
 	local X2AbilityCooldown_LocalAndGlobal Cooldown;
 	local X2Effect_OverrideDeathAction DeathActionEffect;
@@ -513,6 +514,10 @@ static function X2DataTemplate CreateShadowbind(name AbilityTemplateName, name U
 	UnitImmunityCondition.AddExcludeDamageType('Unconscious');
 	Template.AbilityTargetConditions.AddItem(UnitImmunityCondition);
 
+	RemoveEffects = new class'X2Effect_RemoveEffects';
+	RemoveEffects.EffectNamesToRemove.AddItem(class'X2Effect_ParthenogenicPoison'.default.EffectName);
+	Template.AddTargetEffect(RemoveEffects);
+
 	DeathActionEffect = new class'X2Effect_OverrideDeathAction';
 	DeathActionEffect.DeathActionClass = class'X2Action_ShadowbindTarget';
 	DeathActionEffect.EffectName = 'ShadowbindUnconcious';
@@ -524,8 +529,8 @@ static function X2DataTemplate CreateShadowbind(name AbilityTemplateName, name U
 	Template.AddTargetEffect(UnconsciousEffect);
 
 	SpawnShadowbindUnit = new class'X2Effect_SpawnShadowbindUnit';
-	SpawnShadowbindUnit.BuildPersistentEffect(1, true, true, true);
-	SpawnShadowbindUnit.bRemoveWhenTargetDies = true;
+	SpawnShadowbindUnit.BuildPersistentEffect(1, true, false, true);
+	SpawnShadowbindUnit.bRemoveWhenTargetDies = false;
 	SpawnShadowbindUnit.UnitToSpawnName = UnitToSpawnName;
 	Template.AddTargetEffect(SpawnShadowbindUnit);
 
@@ -578,6 +583,9 @@ simulated function Shadowbind_BuildVisualization(XComGameState VisualizeGameStat
 	local X2Action_ShadowbindTarget TargetShadowbind;
 	local XComGameState_Item ItemState;
 	local X2GremlinTemplate GremlinTemplate;
+	local Array<X2Action> FoundNodes;
+	local int ScanNodes;
+	local X2Action_MarkerNamed JoinAction;
 
 	TypicalAbility_BuildVisualization(VisualizeGameState);
 
@@ -590,6 +598,16 @@ simulated function Shadowbind_BuildVisualization(XComGameState VisualizeGameStat
 	TargetMetaData.StateObject_NewState = VisualizeGameState.GetGameStateForObjectID(Context.InputContext.PrimaryTarget.ObjectID);
 	TargetMetaData.VisualizeActor = History.GetVisualizer(Context.InputContext.PrimaryTarget.ObjectID);
 	TargetUnitState = XComGameState_Unit(TargetMetaData.StateObject_OldState);
+
+	VisMgr.GetNodesOfType(VisMgr.BuildVisTree, class'X2Action_MarkerNamed', FoundNodes);
+	for( ScanNodes = 0; ScanNodes < FoundNodes.Length; ++ScanNodes )
+	{
+		JoinAction = X2Action_MarkerNamed(FoundNodes[ScanNodes]);
+		if( JoinAction.MarkerName == 'Join' )
+		{
+			break;
+		}
+	}
 
 	// Find the Fire and MoveBegin for the Source
 	SourceFire = X2Action_Fire(VisMgr.GetNodeOfType(VisMgr.BuildVisTree, class'X2Action_Fire', , Context.InputContext.SourceObject.ObjectID));
@@ -611,12 +629,19 @@ simulated function Shadowbind_BuildVisualization(XComGameState VisualizeGameStat
 		MoveTurnAction.m_vFacePoint = `XWORLD.GetPositionFromTileCoordinates(TargetUnitState.TileLocation);
 		MoveTurnAction.ForceSetPawnRotation = true;
 
+		VisMgr.ConnectAction(JoinAction, VisMgr.BuildVisTree, false, MoveTurnAction);
+
 		TransformStopParents.AddItem(MoveTurnAction);
 
 		SpectreMoveInsertTransform(VisualizeGameState, SourceMetaData, SourceMoveBegin.ParentActions, TransformStopParents);
 	}
 
 	// Line up the Source's Fire, Target's React, and Shadow's anim
+	if( TargetShadowbind != None && TargetShadowbind.ParentActions.Length != 0 )
+	{
+		VisMgr.ConnectAction(JoinAction, VisMgr.BuildVisTree, false, , TargetShadowbind.ParentActions);
+	}
+	
 	VisMgr.DisconnectAction(TargetShadowbind);
 	VisMgr.ConnectAction(TargetShadowbind, VisMgr.BuildVisTree, false, , SourceFire.ParentActions);
 
@@ -650,11 +675,15 @@ simulated function Shadowbind_BuildVisualization(XComGameState VisualizeGameStat
 		AnimAction.Params.AnimName = 'HL_Shadowbind_TargetShadow';
 		AnimAction.Params.BlendTime = 0.0f;
 
+		VisMgr.ConnectAction(JoinAction, VisMgr.BuildVisTree, false, AnimAction);
+
 		AddAnimAction = X2Action_PlayAnimation(class'X2Action_PlayAnimation'.static.AddToVisualizationTree(ShadowMetaData, Context, false, TargetShadowbind));
 		AddAnimAction.bFinishAnimationWait = false;
 		AddAnimAction.Params.AnimName = 'ADD_HL_Shadowbind_FadeIn';
 		AddAnimAction.Params.Additive = true;
 		AddAnimAction.Params.BlendTime = 0.0f;
+
+		VisMgr.ConnectAction(JoinAction, VisMgr.BuildVisTree, false, AddAnimAction);
 
 		// Look for a gremlin that got copied
 		ItemState = ShadowUnit.GetSecondaryWeapon();
@@ -673,6 +702,8 @@ simulated function Shadowbind_BuildVisualization(XComGameState VisualizeGameStat
 			AddAnimAction.Params.AnimName = 'ADD_HL_Shadowbind_FadeIn';
 			AddAnimAction.Params.Additive = true;
 			AddAnimAction.Params.BlendTime = 0.0f;
+
+			VisMgr.ConnectAction(JoinAction, VisMgr.BuildVisTree, false, AddAnimAction);
 		}
 	}
 }
